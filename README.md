@@ -1,0 +1,2 @@
+# fitlog
+📋CLI Workout Logger
