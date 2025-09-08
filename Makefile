@@ -1,41 +1,41 @@
-# The name of our final program
 TARGET_NAME = fitlog
 
-# Directories
 DIST_DIR = dist
+OBJ_DIR = obj
+SRC_DIR = src
 TARGET = $(DIST_DIR)/$(TARGET_NAME)
 
-# The C compiler and flags
-# -Iinclude tells the compiler to look in the 'include' folder for header files
 CC = gcc
 CFLAGS = -Wall -Wextra -g -Iinclude
 
-# The source file for the main function
-SRC = src/main.c
+SRCS := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c)
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-# Default rule: build the program
 all: $(TARGET)
 
-# Rule to link the final executable
-$(TARGET): $(SRC)
-	@echo "Compiling..."
-	@mkdir $(DIST_DIR)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
-	@echo "Done! Run with ./$(TARGET)"
+$(TARGET): $(OBJS)
+	@echo "Linking..."
+	-@mkdir $(DIST_DIR)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+	@echo "Build complete! Run with ./$(TARGET) or 'make run'"
 
-# Command to run the program
-run:
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@echo "Compiling $<..."
+	-@mkdir $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+run: all
+	@echo "Running..."
 	./$(TARGET)
 
-# A rule to clean up the compiled files
 clean:
 	@echo "Cleaning up..."
 ifeq ($(OS),Windows_NT)
 	-if exist $(DIST_DIR) rd /s /q $(DIST_DIR)
+	-if exist $(OBJ_DIR) rd /s /q $(OBJ_DIR)
 else
-	-rm -rf $(DIST_DIR)
+	-rm -rf $(DIST_DIR) $(OBJ_DIR)
 endif
 
-# Phony targets don't represent actual files
 .PHONY: all clean run
 
