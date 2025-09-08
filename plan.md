@@ -29,7 +29,7 @@ fitlog show --date 2025-09-07    # workouts on specific date
 fitlog show --recent             # last N=5 workouts (configurable)
 fitlog show --all                # all workouts
 fitlog show --week               # this week's workouts
-fitlog show --verbose            # TODO
+fitlog show --verbose            # add with other options (not a standalone one)
 ```
 
 ### 3. Remove Workout
@@ -56,14 +56,12 @@ fitlog stats                     # overall statistics
 fitlog stats "Bench Press"       # exercise-specific stats
 fitlog stats --exercise "Squats" --days 30
 fitlog stats --pr                # personal records
-fitlog stats --volume            # volume progression
 
 # Options
 --exercise NAME      # specific exercise
 --days N            # last N days
 --weeks N           # last N weeks
 --pr                # personal records only
---progression       # progress over time
 ```
 
 ### 5. Config
@@ -78,7 +76,7 @@ fitlog config list              # list all config options
 
 ```
 
-### 6. Export Data
+### 6. Export/Import Data
 
 ```bash
 fitlog export [options]
@@ -87,12 +85,19 @@ fitlog import <file> [options]
 # Examples
 fitlog export --csv workouts.csv
 fitlog export --json --days 30 recent.json
+fitlog import workouts.csv
+fitlog import --merge olddata.json
 
 # Export Options
 --csv               # CSV format
 --json              # JSON format
 --days N            # last N days only
 --exercise NAME     # specific exercise only
+
+# Import Options
+--merge             # merge with existing data
+--replace           # replace existing data
+--preview           # preview import without saving
 ```
 
 ## Global Options
@@ -100,4 +105,27 @@ fitlog export --json --days 30 recent.json
 ```bash
 -h, --help          # show help
 -v, --version       # show version
+```
+
+## Features
+
+- Add workouts with specified sets and reps and an optional date input
+- Delete workouts by date, specific workout on a data, or the last workout. Followed by a confirmation statement showing the brief of the workout.
+- Display workouts (all, current day, current week, recent, date)
+- See the stats of all time, of a specific workout, or filter by last N dyas
+- See personal records
+- Import and export your local workout database
+
+## Config Options
+
+```ini
+# Date and time formatting
+date_format=YYYY-MM-DD              # YYYY-MM-DD, MM/DD/YYYY, DD/MM/YYYY, DD-MMM-YYYY
+time_format=24h                     # 12h, 24h
+show_timestamps=true                # show time with exercises
+
+# Units and measurements
+weight_unit=lbs                     # lbs, kg
+distance_unit=miles                 # miles, km (for cardio)
+decimal_places=1                    # precision for weight display
 ```
