@@ -11,6 +11,7 @@
 #include "fitlog/constants.h"
 
 // Core functions
+int cmd_create(int argc, char *argv[]);
 int cmd_add(int argc, char *argv[]);
 int cmd_show(int argc, char *argv[]);
 int cmd_remove(int argc, char *argv[]);

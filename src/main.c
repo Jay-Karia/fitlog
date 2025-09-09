@@ -27,6 +27,10 @@ int main(int argc, char *argv[])
     {
         return cmd_add(argc - 1, argv + 1);
     }
+    else if (strcmp(command, "create") == 0)
+    {
+        return cmd_create(argc - 1, argv + 1);
+    }
     else if (strcmp(command, "show") == 0)
     {
         return cmd_show(argc - 1, argv + 1);
