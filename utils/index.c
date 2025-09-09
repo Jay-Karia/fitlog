@@ -11,7 +11,9 @@ void print_usage(void)
     printf("  add         Log a new exercise\n");
     printf("  show        Display workouts\n");
     printf("  remove      Remove exercises or logs\n");
-    printf("  help        Show this help message\n");
+    printf("  help        Show this help message\n\n");
+    printf("Options:\n");
+    printf("  --version     Show version information\n");
     printf("\nFor command-specific help: fitlog <command> --help\n");
 }
 

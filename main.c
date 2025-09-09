@@ -16,6 +16,12 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    // Check for version flag
+    if (strcmp(command, "--version") == 0 || strcmp(command, "-v") == 0) {
+        printf("fitlog version %s\n", FITLOG_VERSION);
+        return 0;
+    }
+
     if (strcmp(command, "add") == 0) {
         return cmd_add(argc - 1, argv + 1);
     } else if (strcmp(command, "init") == 0) {
