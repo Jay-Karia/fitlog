@@ -1,4 +1,4 @@
-#include "../../include/fitlog.h"
+#include "../include/fitlog.h"
 
 int cmd_remove(int argc, char* argv[]) {
     printf("Remove command - arguments: %d\n", argc);

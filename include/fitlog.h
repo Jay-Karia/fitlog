@@ -9,11 +9,16 @@
 
 #include "fitlog/types.h"
 #include "fitlog/constants.h"
+#include "fitlog/utils.h"
 
 // Core functions
+int cmd_init(int argc, char *argv[]);
 int cmd_create(int argc, char *argv[]);
 int cmd_add(int argc, char *argv[]);
 int cmd_show(int argc, char *argv[]);
 int cmd_remove(int argc, char *argv[]);
+
+// Utility functions
+void print_usage(void);
 
 #endif

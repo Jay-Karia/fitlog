@@ -100,6 +100,12 @@ fitlog import --merge olddata.json
 --preview           # preview import without saving
 ```
 
+### 7. Create Exercise
+
+```bash
+
+```
+
 ## Global Options
 
 ```bash

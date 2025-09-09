@@ -1,4 +1,4 @@
-#include "../../include/fitlog.h"
+#include "../include/fitlog.h"
 
 int cmd_show(int argc, char* argv[]) {
     printf("SHOW command - arguments: %d\n", argc);

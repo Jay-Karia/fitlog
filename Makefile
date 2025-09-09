@@ -3,12 +3,13 @@ TARGET_NAME = fitlog
 DIST_DIR = dist
 OBJ_DIR = obj
 CORE_DIR = core
+UTILS_DIR = utils
 TARGET = $(DIST_DIR)/$(TARGET_NAME)
 
 CC = gcc
 CFLAGS = -Wall -Wextra -g -Iinclude
 
-SRCS := $(wildcard *.c) $(wildcard $(CORE_DIR)/*.c)
+SRCS := $(wildcard *.c) $(wildcard $(CORE_DIR)/*.c) $(wildcard $(UTILS_DIR)/*.c)
 OBJS := $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
 
 all: $(TARGET)
