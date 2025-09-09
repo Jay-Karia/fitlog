@@ -4,6 +4,7 @@
 #define FITLOG_DIR ".fitlog"
 #define CONFIG_FILE "config.ini"
 #define WORKOUTS_FILE "workouts.csv"
+#define SHORTCUTS_FILE "shortcuts.map"
 
 int cmd_init(int argc, char *argv[])
 {
@@ -52,7 +53,6 @@ int cmd_init(int argc, char *argv[])
     fprintf(config_fp, "show_timestamps=true\n\n");
     fprintf(config_fp, "# Units and measurements\n");
     fprintf(config_fp, "weight_unit=lbs\n");
-    fprintf(config_fp, "distance_unit=miles\n");
     fprintf(config_fp, "decimal_places=1\n");
 
     fclose(config_fp);
@@ -69,6 +69,17 @@ int cmd_init(int argc, char *argv[])
 
     fprintf(workouts_fp, "Date,Exercise,Sets,Reps,Weight,Notes\n");
     fclose(workouts_fp);
+
+    // Create the shortcuts map file
+    char shortcuts_path[256];
+    sprintf(shortcuts_path, "%s/%s", FITLOG_DIR, SHORTCUTS_FILE);
+    FILE *shortcuts_fp = fopen(shortcuts_path, "w");
+    if (shortcuts_fp == NULL) {
+        perror("Error creating shortcuts map file");
+        return 1;
+    }
+
+    fclose(shortcuts_fp);
 
     printf("Initialized fitlog in ./%s/\n", FITLOG_DIR);
 
