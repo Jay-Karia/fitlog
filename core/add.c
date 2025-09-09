@@ -161,12 +161,12 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Sets,Reps,Weight,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%.2f,%d,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%s,%d,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets,
                 reps,
-                weight,
+                weight_str,
                 0,
                 date_str,
                 notes);
@@ -219,6 +219,22 @@ int cmd_add(int argc, char *argv[])
             return 1;
         }
 
+        // Get time unit
+        char *time_unit_str;
+        switch (get_config_time_unit()) {
+        case TIME_S:
+            time_unit_str = "s";
+            break;
+        case TIME_HR:
+            time_unit_str = "hr";
+            break;
+        default:
+            time_unit_str = "min";
+            break;
+        }
+        char time_str[50];
+        snprintf(time_str, sizeof(time_str), "%.2d %s", duration, time_unit_str);
+
         // Get the id
         int next_id = get_next_exercise_id();
         increment_exercise_id();
@@ -235,13 +251,13 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Duration,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%d,%d,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%d,%s,%s,%s\n",
                 next_id,
                 exercise_name,
                 0,
                 0,
                 0,
-                duration,
+                time_str,
                 date_str,
                 notes);
 
@@ -252,7 +268,7 @@ int cmd_add(int argc, char *argv[])
         printf(BOLD_TEXT "Exercise Logged :\n" ANSI_COLOR_RESET);
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
-        printf(DARK_GRAY_TEXT "  Duration: %d minutes\n" ANSI_COLOR_RESET, duration);
+        printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
         printf("  Date: %s\n", date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");

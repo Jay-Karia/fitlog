@@ -65,7 +65,7 @@ WeightUnit get_config_weight_unit() {
     char buffer[32];
     int result = read_config_value("weight_unit", "kg", buffer, sizeof(buffer));
     if (result == 0 || result == 1) {
-        if (strcmp(buffer, "lb") == 0) {
+        if (strcmp(buffer, "lbs") == 0) {
             return UNIT_LBS;
         } else {
             return UNIT_KG;
@@ -88,5 +88,21 @@ DateFormat get_config_date_format() {
         }
     } else {
         return DEFAULT_DATE_FORMAT; // Default if error
+    }
+}
+
+TimeUnit get_config_time_unit() {
+    char buffer[32];
+    int result = read_config_value("time_unit", "s", buffer, sizeof(buffer));
+    if (result == 0 || result == 1) {
+        if (strcmp(buffer, "min") == 0) {
+            return TIME_MIN;
+        } else if (strcmp(buffer, "hr") == 0) {
+            return TIME_HR;
+        } else {
+            return TIME_S;
+        }
+    } else {
+        return DEFAULT_TIME_UNIT; // Default if error
     }
 }

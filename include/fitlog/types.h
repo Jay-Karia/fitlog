@@ -10,6 +10,7 @@ typedef enum WeightUnit WeightUnit;
 typedef enum TimeFormat TimeFormat;
 typedef enum DateFormat DateFormat;
 typedef enum ExerciseType ExerciseType;
+typedef enum TimeUnit TimeUnit;
 
 struct Exercise
 {
@@ -40,6 +41,13 @@ enum TimeFormat
 {
     TIME_24H,
     TIME_12H
+};
+
+enum TimeUnit
+{
+    TIME_S,
+    TIME_MIN,
+    TIME_HR
 };
 
 enum DateFormat
