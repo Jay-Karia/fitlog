@@ -1,11 +1,6 @@
 #include "../include/fitlog.h"
 #include <unistd.h>
 
-#define FITLOG_DIR ".fitlog"
-#define CONFIG_FILE "config.ini"
-#define WORKOUTS_FILE "workouts.csv"
-#define SHORTCUTS_FILE "shortcuts.map"
-
 int cmd_init(int argc, char *argv[])
 {
     // Check for help flag
@@ -80,6 +75,19 @@ int cmd_init(int argc, char *argv[])
     }
 
     fclose(shortcuts_fp);
+
+    // Create the exercises database file
+    char exercises_path[256];
+    sprintf(exercises_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    FILE *exercises_fp = fopen(exercises_path, "w");
+
+    if (exercises_fp == NULL) {
+        perror("Error creating exercises database file");
+        return 1;
+    }
+
+    fprintf(exercises_fp, "ExerciseName,Shortcut,Description\n");
+    fclose(exercises_fp);
 
     printf("Initialized fitlog in ./%s/\n", FITLOG_DIR);
 

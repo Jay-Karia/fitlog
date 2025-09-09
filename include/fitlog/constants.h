@@ -1,9 +1,17 @@
 #ifndef FITLOG_CONSTANTS_H
 #define FITLOG_CONSTANTS_H
 
+// Internal
 #define FITLOG_VERSION "0.1.0"
 #define MAX_EXERCISE_NAME 64
 #define MAX_NOTES 128
+
+// Files
+#define FITLOG_DIR ".fitlog"
+#define CONFIG_FILE "config.ini"
+#define WORKOUTS_FILE "workouts.csv"
+#define SHORTCUTS_FILE "shortcuts.map"
+#define EXERCISES_FILE "exercises.csv"
 
 // Default configuration values
 #define DEFAULT_DATE_FORMAT "YYYY-MM-DD"

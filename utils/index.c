@@ -63,7 +63,6 @@ void print_create_help(void)
     printf("Arguments:\n");
     printf("  <name>                Name of the exercise to create\n\n");
     printf("Options:\n");
-    printf("  --category <cat>      Specify exercise category (e.g., cardio, strength)\n");
     printf("  --desc <text>         Add a description for the exercise\n");
     printf("  --shortcut <text>     Register a shortcut for the exercisr\n");
     printf("  --help                Show this help message\n");
