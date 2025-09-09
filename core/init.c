@@ -86,7 +86,7 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    fprintf(exercises_fp, "ExerciseName,Shortcut,Description\n");
+    fprintf(exercises_fp, "Name,Shortcut,Description,Type\n");
     fclose(exercises_fp);
 
     printf("Initialized fitlog in ./%s/\n", FITLOG_DIR);

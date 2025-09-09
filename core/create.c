@@ -25,6 +25,7 @@ int cmd_create(int argc, char *argv[])
     // Parse command-line options first to check for shortcuts later
     const char *description = NULL;
     const char *shortcut = NULL;
+    enum ExerciseType type = TYPE_SETS;
 
     for (int i = 2; i < argc; i++)
     {
@@ -35,6 +36,23 @@ int cmd_create(int argc, char *argv[])
         else if (strcmp(argv[i], "--shortcut") == 0 && i + 1 < argc)
         {
             shortcut = argv[++i];
+        }
+        else if (strcmp(argv[i], "--type") == 0 && i + 1 < argc)
+        {
+            i++; // Move to the type value
+            if (strcmp(argv[i], "sets") == 0)
+            {
+                type = TYPE_SETS;
+            }
+            else if (strcmp(argv[i], "time") == 0)
+            {
+                type = TYPE_TIME;
+            }
+            else
+            {
+                fprintf(stderr, "Error: Invalid exercise type. Use 'sets' or 'time'.\n");
+                return 1;
+            }
         }
         else
         {
@@ -109,6 +127,7 @@ int cmd_create(int argc, char *argv[])
     {
         printf("  Shortcut: %s\n", shortcut);
     }
+    printf("  Type: %s\n", type == TYPE_SETS ? "sets" : "time");
 
     // Access the database file - path already defined above
     // Directory existence already checked at the beginning
@@ -121,7 +140,7 @@ int cmd_create(int argc, char *argv[])
     }
 
     // Write the new exercise to the file as a new line in CSV format
-    fprintf(fp, "%s,%s,%s\n", exercise_name, shortcut, description);
+    fprintf(fp, "%s,%s,%s,%s\n", exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : "time");
     fclose(fp);
 
     // Print the final message

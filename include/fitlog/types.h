@@ -6,6 +6,10 @@
 
 typedef struct Exercise Exercise;
 typedef struct Config Config;
+typedef enum WeightUnit WeightUnit;
+typedef enum TimeFormat TimeFormat;
+typedef enum DateFormat DateFormat;
+typedef enum ExerciseType ExerciseType;
 
 struct Exercise
 {
@@ -24,6 +28,31 @@ struct Config
     char weight_unit[8];
     int decimal_places;
     int recent_count;
+};
+
+enum WeightUnit
+{
+    UNIT_KG,
+    UNIT_LBS
+};
+
+enum TimeFormat
+{
+    TIME_24H,
+    TIME_12H
+};
+
+enum DateFormat
+{
+    DATE_YYYY_MM_DD,
+    DATE_DD_MM_YYYY,
+    DATE_MM_DD_YYYY
+};
+
+enum ExerciseType
+{
+    TYPE_SETS,
+    TYPE_TIME,
 };
 
 #endif

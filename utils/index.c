@@ -61,11 +61,12 @@ void print_create_help(void)
     printf("fitlog create - Create a new exercise\n\n");
     printf("Usage: fitlog create <name> [options]\n\n");
     printf("Arguments:\n");
-    printf("  <name>                Name of the exercise to create\n\n");
+    printf("  <name>                   Name of the exercise to create\n\n");
     printf("Options:\n");
-    printf("  --desc <text>         Add a description for the exercise\n");
-    printf("  --shortcut <text>     Register a shortcut for the exercisr\n");
-    printf("  --help                Show this help message\n");
+    printf("  --desc <text>            Add a description for the exercise\n");
+    printf("  --shortcut <text>        Register a shortcut for the exercisr\n");
+    printf("  --type <sets | time>     Enter the type of the exercise (sets is default)\n");
+    printf("  --help                   Show this help message\n");
     printf("\nDescription:\n");
     printf("  This command creates a new exercise definition that can be\n");
     printf("  referenced when logging workouts with the 'add' command.\n");
