@@ -1,3 +1,5 @@
+#include "../fitlog.h"
+
 #ifndef FITLOG_CONSTANTS_H
 #define FITLOG_CONSTANTS_H
 
@@ -10,14 +12,14 @@
 #define FITLOG_DIR ".fitlog"
 #define CONFIG_FILE "config.ini"
 #define WORKOUTS_FILE "workouts.csv"
-#define SHORTCUTS_FILE "shortcuts.map"
+#define SHORTCUTS_FILE "shortcuts.json"
 #define EXERCISES_FILE "exercises.csv"
 #define ID_COUNTER_FILE "id_counter.txt"
 
 // Default configuration values
-#define DEFAULT_DATE_FORMAT "YYYY-MM-DD"
+#define DEFAULT_DATE_FORMAT DATE_YYYY_MM_DD
 #define DEFAULT_TIME_FORMAT "HH:MM"
-#define DEFAULT_WEIGHT_UNIT "kg"
+#define DEFAULT_WEIGHT_UNIT UNIT_KG
 #define DEFAULT_DECIMAL_PLACES 1
 #define DEFAULT_RECENT_COUNT 5
 

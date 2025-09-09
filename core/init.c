@@ -47,7 +47,8 @@ int cmd_init(int argc, char *argv[])
     fprintf(config_fp, "show_timestamps=true\n\n");
     fprintf(config_fp, "# Units and measurements\n");
     fprintf(config_fp, "weight_unit=lbs\n");
-    fprintf(config_fp, "decimal_places=1\n\n");
+    fprintf(config_fp, "decimal_places=1\n");
+    fprintf(config_fp, "time_unit=s\n\n");
     fprintf(config_fp, "# Behaviour\n");
     fprintf(config_fp, "default_exercise_type=sets\n");
 
@@ -64,7 +65,7 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    fprintf(workouts_fp, "Date,Exercise,Sets,Reps,Weight,Notes\n");
+    fprintf(workouts_fp, "Id,Exercise,Sets,Reps,Weight,Time,Date,Notes\n");
     fclose(workouts_fp);
 
     // Create the shortcuts map file
@@ -76,6 +77,9 @@ int cmd_init(int argc, char *argv[])
         perror(ANSI_COLOR_RED "Error creating shortcuts map file" ANSI_COLOR_RESET);
         return 1;
     }
+
+    // Write empty JSON object
+    fprintf(shortcuts_fp, "{}\n");
 
     fclose(shortcuts_fp);
 
@@ -107,7 +111,7 @@ int cmd_init(int argc, char *argv[])
     fprintf(id_fp, "1\n");
     fclose(id_fp);
 
-    printf(ANSI_COLOR_GREEN "Initialized fitlog\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_GREEN "\nInitialized fitlog\n" ANSI_COLOR_RESET);
 
     return 0;
 }

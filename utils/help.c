@@ -80,11 +80,12 @@ void print_add_help(void)
     printf("fitlog add - Log a new exercise\n\n");
     printf("Usage: fitlog add <exercise> [options]\n\n");
     printf("Arguments:\n");
-    printf("  <exercise>          Name of the exercise to log or the shortcut registered\n\n");
+    printf("  <exercise>          Name of the exercise or shortcut to log\n\n");
     printf("Options:\n");
     printf("  --sets <number>     Number of sets performed (default: 1)\n");
     printf("  --reps <number>     Number of repetitions per set\n");
     printf("  --weight <value>    Weight used for the exercise\n");
+    printf("  --time <value>      Time taken to complete the exercise\n");
     printf("  --date <date>       Date of the workout (default: today)\n");
     printf("  --notes <text>      Additional notes about the workout\n");
     printf("  --help              Show this help message\n");

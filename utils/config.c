@@ -60,3 +60,33 @@ int read_config_value(const char* key, const char* default_value, char* buffer, 
     fclose(fp);
     return 2; // Key not found
 }
+
+WeightUnit get_config_weight_unit() {
+    char buffer[32];
+    int result = read_config_value("weight_unit", "kg", buffer, sizeof(buffer));
+    if (result == 0 || result == 1) {
+        if (strcmp(buffer, "lb") == 0) {
+            return UNIT_LBS;
+        } else {
+            return UNIT_KG;
+        }
+    } else {
+        return DEFAULT_WEIGHT_UNIT; // Default if error
+    }
+}
+
+DateFormat get_config_date_format() {
+    char buffer[32];
+    int result = read_config_value("date_format", "YYYY-MM-DD", buffer, sizeof(buffer));
+    if (result == 0 || result == 1) {
+        if (strcmp(buffer, "YYYY-MM-DD") == 0) {
+            return DATE_YYYY_MM_DD;
+        } else if (strcmp(buffer, "DD-MM-YYYY") == 0) {
+            return DATE_DD_MM_YYYY;
+        } else {
+            return DATE_MM_DD_YYYY;
+        }
+    } else {
+        return DEFAULT_DATE_FORMAT; // Default if error
+    }
+}
