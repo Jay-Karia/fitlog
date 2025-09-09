@@ -16,8 +16,7 @@ int cmd_init(int argc, char *argv[])
     // Check for .fitlog directory
     if (access(FITLOG_DIR, F_OK) != -1)
     {
-        fprintf(stderr, "fitlog is already initialized in this directory.\n\n");
-        fprintf(stderr, "Delete the %s directory and re-run this command to re-initialize.\nTHIS WILL REMOVE ALL THE WORKOUT DATA, EXPORT IT FIRST!\n", FITLOG_DIR);
+        fprintf(stderr, ANSI_COLOR_RED "fitlog is already initialized in this directory.\n\n" ANSI_COLOR_RESET  "Delete the %s directory and re-run this command to re-initialize.\nTHIS WILL REMOVE ALL THE WORKOUT DATA, EXPORT IT FIRST!\n", FITLOG_DIR);
         return 1;
     }
 
@@ -26,7 +25,7 @@ int cmd_init(int argc, char *argv[])
     // Create .fitlog directory
     if (mkdir(FITLOG_DIR) == -1)
     {
-        perror("Error creating .fitlog directory");
+        perror(ANSI_COLOR_RED "Error creating .fitlog directory" ANSI_COLOR_RESET);
         return 1;
     }
     printf("Created .fitlog directory.\n");
@@ -38,7 +37,7 @@ int cmd_init(int argc, char *argv[])
     FILE *config_fp = fopen(config_path, "w");
     if (config_fp == NULL)
     {
-        perror("Error creating config file");
+        perror(ANSI_COLOR_RED "Error creating config file" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -61,7 +60,7 @@ int cmd_init(int argc, char *argv[])
     FILE *workouts_fp = fopen(workouts_path, "w");
     if (workouts_fp == NULL)
     {
-        perror("Error creating workouts data file");
+        perror(ANSI_COLOR_RED "Error creating workouts data file" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -74,7 +73,7 @@ int cmd_init(int argc, char *argv[])
     FILE *shortcuts_fp = fopen(shortcuts_path, "w");
     if (shortcuts_fp == NULL)
     {
-        perror("Error creating shortcuts map file");
+        perror(ANSI_COLOR_RED "Error creating shortcuts map file" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -87,7 +86,7 @@ int cmd_init(int argc, char *argv[])
 
     if (exercises_fp == NULL)
     {
-        perror("Error creating exercises database file");
+        perror(ANSI_COLOR_RED "Error creating exercises database file" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -101,14 +100,14 @@ int cmd_init(int argc, char *argv[])
 
     if (id_fp == NULL)
     {
-        perror("Error creating ID counter file");
+        perror(ANSI_COLOR_RED "Error creating ID counter file" ANSI_COLOR_RESET);
         return 1;
     }
 
     fprintf(id_fp, "1\n");
     fclose(id_fp);
 
-    printf("Initialized fitlog in ./%s/\n", FITLOG_DIR);
+    printf(ANSI_COLOR_GREEN "Initialized fitlog in ./%s/\n" ANSI_COLOR_RESET, FITLOG_DIR);
 
     return 0;
 }

@@ -35,8 +35,7 @@ int main(int argc, char *argv[])
         }
         return 0;
     } else {
-        printf("Unknown command: %s\n", command);
-        print_usage();
+        printf(ANSI_COLOR_RED "Unknown command: %s\n" ANSI_COLOR_RESET, command);
         return 1;
     }
 

@@ -15,7 +15,7 @@ int cmd_create(int argc, char *argv[])
 
     if (argc < 2)
     {
-        fprintf(stderr, "Error: Exercise name is required.\n");
+        fprintf(stderr, ANSI_COLOR_RED "Exercise name is required.\n" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -62,14 +62,13 @@ int cmd_create(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, "Error: Invalid exercise type. Use 'sets' or 'time'.\n");
+                fprintf(stderr, ANSI_COLOR_RED "Invalid exercise type. Use 'sets' or 'time'.\n" ANSI_COLOR_RESET);
                 return 1;
             }
         }
         else
         {
-            fprintf(stderr, "Unknown option: %s\n", argv[i]);
-            print_create_help();
+            fprintf(stderr, ANSI_COLOR_RED "Unknown option: %s\n" ANSI_COLOR_RESET, argv[i]);
             return 1;
         }
     }
@@ -78,7 +77,7 @@ int cmd_create(int argc, char *argv[])
     struct stat st = {0};
     if (stat(FITLOG_DIR, &st) == -1)
     {
-        fprintf(stderr, "Error: fitlog is not initialized. Run 'fitlog init' first.\n");
+        fprintf(stderr, ANSI_COLOR_RED "fitlog is not initialized. Run 'fitlog init' first.\n" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -90,7 +89,7 @@ int cmd_create(int argc, char *argv[])
     if (rfp == NULL)
     {
         // Directory exists but file doesn't
-        printf("Exercise database not found\n");
+        printf(ANSI_COLOR_RED "Exercise database not found\n" ANSI_COLOR_RESET);
         return 1;
     }
     else
@@ -113,7 +112,7 @@ int cmd_create(int argc, char *argv[])
 
             if (name && strcmp(name, exercise_name) == 0)
             {
-                fprintf(stderr, "Error: Exercise '%s' already exists.\n", exercise_name);
+                fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' already exists.\n" ANSI_COLOR_RESET, exercise_name);
                 fclose(rfp);
                 return 1;
             }
@@ -122,7 +121,7 @@ int cmd_create(int argc, char *argv[])
             {
                 if (strcmp(shortcut_check, shortcut) == 0)
                 {
-                    fprintf(stderr, "Error: Shortcut '%s' already exists.\n", shortcut);
+                    fprintf(stderr, ANSI_COLOR_RED "Shortcut '%s' already exists.\n" ANSI_COLOR_RESET, shortcut);
                     fclose(rfp);
                     return 1;
                 }
@@ -148,7 +147,7 @@ int cmd_create(int argc, char *argv[])
     FILE *fp = fopen(db_path, "a");
     if (fp == NULL)
     {
-        perror("Error: Could not open exercises database");
+        perror(ANSI_COLOR_RED "Could not open exercises database" ANSI_COLOR_RESET);
         return 1;
     }
 
@@ -160,7 +159,7 @@ int cmd_create(int argc, char *argv[])
     fclose(fp);
 
     // Print the final message
-    printf("Exercise '%s' created successfully.\n", exercise_name);
+    printf(ANSI_COLOR_GREEN"Exercise '%s' created successfully.\n" ANSI_COLOR_RESET, exercise_name);
 
     return 0;
 }

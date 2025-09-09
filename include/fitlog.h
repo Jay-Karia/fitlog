@@ -10,6 +10,7 @@
 #include "fitlog/types.h"
 #include "fitlog/constants.h"
 #include "fitlog/utils.h"
+#include "fitlog/colors.h"
 
 // Core functions
 int cmd_init(int argc, char *argv[]);
