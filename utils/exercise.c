@@ -76,7 +76,7 @@ bool is_valid_date_format(const char *input_date, const enum DateFormat required
     if (required_format == DATE_DD_MM_YYYY)
     {
         int day, month, year;
-        if (sscanf(input_date, "%d/%d/%d", &day, &month, &year) != 3)
+        if (sscanf(input_date, "%d-%d-%d", &day, &month, &year) != 3)
             return false;
         if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100)
             return false;
@@ -91,7 +91,7 @@ bool is_valid_date_format(const char *input_date, const enum DateFormat required
     else if (required_format == DATE_MM_DD_YYYY)
     {
         int month, day, year;
-        if (sscanf(input_date, "%d/%d/%d", &month, &day, &year) != 3)
+        if (sscanf(input_date, "%d-%d-%d", &month, &day, &year) != 3)
             return false;
         if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900 || year > 2100)
             return false;

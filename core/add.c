@@ -61,15 +61,14 @@ int cmd_add(int argc, char *argv[])
         switch (date_format)
         {
         case DATE_DD_MM_YYYY:
-            date_format_str = "DD/MM/YYYY";
+            date_format_str = "DD-MM-YYYY";
             break;
         case DATE_MM_DD_YYYY:
-            date_format_str = "MM/DD/YYYY";
+            date_format_str = "MM-DD-YYYY";
             break;
         case DATE_YYYY_MM_DD:
             date_format_str = "YYYY-MM-DD";
             break;
-        // Add more cases as needed for additional formats
         default:
             date_format_str = "Unknown";
             break;
