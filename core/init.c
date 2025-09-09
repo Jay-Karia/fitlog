@@ -48,7 +48,9 @@ int cmd_init(int argc, char *argv[])
     fprintf(config_fp, "show_timestamps=true\n\n");
     fprintf(config_fp, "# Units and measurements\n");
     fprintf(config_fp, "weight_unit=lbs\n");
-    fprintf(config_fp, "decimal_places=1\n");
+    fprintf(config_fp, "decimal_places=1\n\n");
+    fprintf(config_fp, "# Behaviour\n");
+    fprintf(config_fp, "default_exercise_type=sets\n");
 
     fclose(config_fp);
 
@@ -86,8 +88,21 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    fprintf(exercises_fp, "Name,Shortcut,Description,Type\n");
+    fprintf(exercises_fp, "Id,Name,Shortcut,Description,Type\n");
     fclose(exercises_fp);
+
+    // Create the ID counter file
+    char id_path[256];
+    sprintf(id_path, "%s/%s", FITLOG_DIR, ID_COUNTER_FILE);
+    FILE *id_fp = fopen(id_path, "w");
+
+    if (id_fp == NULL) {
+        perror("Error creating ID counter file");
+        return 1;
+    }
+
+    fprintf(id_fp, "1\n");
+    fclose(id_fp);
 
     printf("Initialized fitlog in ./%s/\n", FITLOG_DIR);
 

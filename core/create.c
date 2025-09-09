@@ -25,7 +25,11 @@ int cmd_create(int argc, char *argv[])
     // Parse command-line options first to check for shortcuts later
     const char *description = NULL;
     const char *shortcut = NULL;
-    enum ExerciseType type = TYPE_SETS;
+
+    // Get the default exercise type from config (sets or time)
+    char type_str[32];
+    read_config_value("default_exercise_type", "time", type_str, sizeof(type_str));
+    enum ExerciseType type = (strcmp(type_str, "time") == 0) ? TYPE_TIME : TYPE_SETS;
 
     for (int i = 2; i < argc; i++)
     {
@@ -139,8 +143,11 @@ int cmd_create(int argc, char *argv[])
         return 1;
     }
 
+    int next_id = get_next_exercise_id();
+    increment_exercise_id();
+
     // Write the new exercise to the file as a new line in CSV format
-    fprintf(fp, "%s,%s,%s,%s\n", exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : "time");
+    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id,exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : "time");
     fclose(fp);
 
     // Print the final message

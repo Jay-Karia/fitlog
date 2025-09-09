@@ -12,6 +12,7 @@
 #define WORKOUTS_FILE "workouts.csv"
 #define SHORTCUTS_FILE "shortcuts.map"
 #define EXERCISES_FILE "exercises.csv"
+#define ID_COUNTER_FILE "id_counter.txt"
 
 // Default configuration values
 #define DEFAULT_DATE_FORMAT "YYYY-MM-DD"
