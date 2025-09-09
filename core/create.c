@@ -129,21 +129,8 @@ int cmd_create(int argc, char *argv[])
         }
         fclose(rfp);
     }
-    // Print the message
-    printf("Creating exercise: %s\n", exercise_name);
-    if (description)
-    {
-        printf("  Description: %s\n", description);
-    }
-    if (shortcut)
-    {
-        printf("  Shortcut: %s\n", shortcut);
-    }
-    printf("  Type: %s\n", type == TYPE_SETS ? "sets" : "time");
 
     // Access the database file - path already defined above
-    // Directory existence already checked at the beginning
-
     FILE *fp = fopen(db_path, "a");
     if (fp == NULL)
     {
@@ -158,8 +145,18 @@ int cmd_create(int argc, char *argv[])
     fprintf(fp, "%d,%s,%s,%s,%s\n", next_id,exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : "time");
     fclose(fp);
 
-    // Print the final message
+    // Print the success message
     printf(ANSI_COLOR_GREEN"Exercise '%s' created successfully.\n" ANSI_COLOR_RESET, exercise_name);
+
+    // Print the details in a box
+    printf("+------------------------------+\n");
+    printf(BOLD_TEXT "Exercise :\n" ANSI_COLOR_RESET);
+    printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
+    printf("  Name: %s\n", exercise_name);
+    printf(DARK_GRAY_TEXT "  Shortcut: %s\n" ANSI_COLOR_RESET, shortcut ? shortcut : "(none)");
+    printf("  Description: %s\n", description ? description : "(none)");
+    printf(DARK_GRAY_TEXT "  Type: %s\n" ANSI_COLOR_RESET, type == TYPE_SETS ? "sets" : "time");
+    printf("+------------------------------+\n");
 
     return 0;
 }
