@@ -13,8 +13,6 @@ int cmd_init(int argc, char *argv[])
         }
     }
 
-    printf("Initializing fitlog...\n");
-
     // Check for .fitlog directory
     if (access(FITLOG_DIR, F_OK) != -1)
     {
@@ -22,6 +20,8 @@ int cmd_init(int argc, char *argv[])
         fprintf(stderr, "Delete the %s directory and re-run this command to re-initialize.\nTHIS WILL REMOVE ALL THE WORKOUT DATA, EXPORT IT FIRST!\n", FITLOG_DIR);
         return 1;
     }
+
+    printf("Initializing fitlog...\n");
 
     // Create .fitlog directory
     if (mkdir(FITLOG_DIR) == -1)
@@ -59,7 +59,8 @@ int cmd_init(int argc, char *argv[])
     sprintf(workouts_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
 
     FILE *workouts_fp = fopen(workouts_path, "w");
-    if (workouts_fp == NULL) {
+    if (workouts_fp == NULL)
+    {
         perror("Error creating workouts data file");
         return 1;
     }
@@ -71,7 +72,8 @@ int cmd_init(int argc, char *argv[])
     char shortcuts_path[256];
     sprintf(shortcuts_path, "%s/%s", FITLOG_DIR, SHORTCUTS_FILE);
     FILE *shortcuts_fp = fopen(shortcuts_path, "w");
-    if (shortcuts_fp == NULL) {
+    if (shortcuts_fp == NULL)
+    {
         perror("Error creating shortcuts map file");
         return 1;
     }
@@ -83,7 +85,8 @@ int cmd_init(int argc, char *argv[])
     sprintf(exercises_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
     FILE *exercises_fp = fopen(exercises_path, "w");
 
-    if (exercises_fp == NULL) {
+    if (exercises_fp == NULL)
+    {
         perror("Error creating exercises database file");
         return 1;
     }
@@ -96,7 +99,8 @@ int cmd_init(int argc, char *argv[])
     sprintf(id_path, "%s/%s", FITLOG_DIR, ID_COUNTER_FILE);
     FILE *id_fp = fopen(id_path, "w");
 
-    if (id_fp == NULL) {
+    if (id_fp == NULL)
+    {
         perror("Error creating ID counter file");
         return 1;
     }

@@ -95,29 +95,30 @@ int cmd_create(int argc, char *argv[])
     }
     else
     {
-        // Check for existing exercise name or shortcut
+        // Check for existing exercise name (2nd column) or shortcut (3rd column)
         char line[1024];
         while (fgets(line, sizeof(line), rfp))
         {
-            // Make a copy of the line for strtok operations
+            if (line[0] == '\n' || line[0] == '\r' || line[0] == '#')
+                continue;
+
             char tmp[1024];
             strncpy(tmp, line, sizeof(tmp) - 1);
             tmp[sizeof(tmp) - 1] = '\0';
 
-            // Extract and check exercise name
-            char *name = strtok(tmp, ",\n\r");
-            if (name && strcmp(name, argv[1]) == 0)
+            // Column order: id, name, shortcut, description, type
+            strtok(tmp, ",\n\r");
+            char *name = strtok(NULL, ",\n\r");
+            char *shortcut_check = strtok(NULL, ",\n\r");
+
+            if (name && strcmp(name, exercise_name) == 0)
             {
-                fprintf(stderr, "Error: Exercise '%s' already exists.\n", argv[1]);
+                fprintf(stderr, "Error: Exercise '%s' already exists.\n", exercise_name);
                 fclose(rfp);
                 return 1;
             }
 
-            // Extract and check shortcut if one is provided in the command
-            char *shortcut_check = strtok(NULL, ",\n\r");
-
-            // Only check shortcuts if we're providing one in this command
-            if (shortcut != NULL && shortcut_check != NULL && shortcut_check[0] != '\0')
+            if (shortcut && shortcut[0] != '\0' && shortcut_check && shortcut_check[0] != '\0')
             {
                 if (strcmp(shortcut_check, shortcut) == 0)
                 {
