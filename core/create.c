@@ -26,6 +26,18 @@ int cmd_create(int argc, char *argv[])
     const char *description = NULL;
     const char *shortcut = NULL;
 
+    // Optional shortcut
+    if (argc >= 3 && argv[2][0] != '-')
+    {
+        shortcut = argv[2];
+        // Shift remaining args left so the options loop works unchanged
+        for (int j = 3; j < argc; j++)
+        {
+            argv[j - 1] = argv[j];
+        }
+        argc--;
+    }
+
     // Get the default exercise type from config (sets or time)
     char type_str[32];
     read_config_value("default_exercise_type", "time", type_str, sizeof(type_str));
@@ -36,10 +48,6 @@ int cmd_create(int argc, char *argv[])
         if (strcmp(argv[i], "--desc") == 0 && i + 1 < argc)
         {
             description = argv[++i];
-        }
-        else if (strcmp(argv[i], "--shortcut") == 0 && i + 1 < argc)
-        {
-            shortcut = argv[++i];
         }
         else if (strcmp(argv[i], "--type") == 0 && i + 1 < argc)
         {
