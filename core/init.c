@@ -16,7 +16,7 @@ int cmd_init(int argc, char *argv[])
     // Check for .fitlog directory
     if (access(FITLOG_DIR, F_OK) != -1)
     {
-        fprintf(stderr, ANSI_COLOR_RED "fitlog is already initialized.\n\n" ANSI_COLOR_RESET  "Delete the %s directory and re-run this command to re-initialize.\nTHIS WILL REMOVE ALL THE WORKOUT DATA, EXPORT IT FIRST!\n", FITLOG_DIR);
+        fprintf(stderr, ANSI_COLOR_RED "Error: fitlog is already initialized.\n\n" ANSI_COLOR_RESET  "Delete the %s directory and re-run this command to re-initialize.\nTHIS WILL REMOVE ALL THE WORKOUT DATA, EXPORT IT FIRST!\n", FITLOG_DIR);
         return 1;
     }
 

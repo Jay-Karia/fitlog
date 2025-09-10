@@ -27,6 +27,7 @@ bool exercise_exists(const char *name);
 ExerciseType check_exercise_type(const char *name);
 bool shortcut_exists(const char *shortcut);
 char *get_exercise_name_from_shortcut(const char *shortcut);
+void print_exercise_details_from_id(const char *id);
 
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);

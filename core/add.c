@@ -1,5 +1,6 @@
 #include "../include/fitlog.h"
 
+// TODO: the date format inside csv should be same
 // TODO: shortcuts can be used instead of full name
 
 int cmd_add(int argc, char *argv[])
@@ -27,20 +28,11 @@ int cmd_add(int argc, char *argv[])
         exercise_name[sizeof(exercise_name) - 1] = '\0';
     }
 
-    bool is_shortcut = false;
-
     // Check if exercise exists
     if (!exercise_exists(exercise_name))
     {
-        if (shortcut_exists(exercise_name))
-        {
-            is_shortcut = true;
-        }
-        else
-        {
-            fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please add it first using 'fitlog add-exercise'.\n" ANSI_COLOR_RESET, exercise_name);
-            return 1;
-        }
+        fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please create it first using 'fitlog create'.\n" ANSI_COLOR_RESET, exercise_name);
+        return 1;
     }
 
     // Get the date format
@@ -48,8 +40,6 @@ int cmd_add(int argc, char *argv[])
 
     // Get the date argument
     char date_str[20] = "";
-    char standard_date_str[20];
-
     for (int i = 2; i < argc; i++)
     {
         if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
@@ -91,10 +81,6 @@ int cmd_add(int argc, char *argv[])
             return 1;
         }
     }
-
-    // Update the date string to a standtard date format (YYYY-MM-DD)
-    strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
-
     // Check the earguments based on exercise type
     enum ExerciseType type = check_exercise_type(exercise_name);
 
@@ -109,15 +95,9 @@ int cmd_add(int argc, char *argv[])
         }
     }
 
-    // Get the name of exercise if shortcut was given
-    if (is_shortcut)
-    {
-        strcpy(exercise_name, get_exercise_name_from_shortcut(exercise_name));
-    }
-
     if (type == TYPE_SETS)
     {
-        // Check for sets, reps and weight options
+        // Check for reps and weight options
         int reps = -1;
         int sets = -1;
         float weight = -1.0;
@@ -181,14 +161,14 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Sets,Reps,Weight,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%s,%d,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets,
                 reps,
                 weight_str,
-                "",
-                standard_date_str,
+                0,
+                date_str,
                 notes);
 
         fclose(fp);
@@ -201,25 +181,20 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
         printf("  Reps: %d\n", reps);
         printf(DARK_GRAY_TEXT "  Weight: %.2f %s\n" ANSI_COLOR_RESET, weight, weight_unit_str);
-        printf("  Date: %s\n", standard_date_str);
+        printf("  Date: %s\n", date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
     else if (type == TYPE_TIME)
     {
-        // Check for time and sets option
+        // Check for time option
         int duration = -1;
-        int sets = -1;
 
         for (int i = 2; i < argc; i++)
         {
             if (strcmp(argv[i], "--time") == 0 && i + 1 < argc)
             {
                 duration = atoi(argv[++i]);
-            }
-            else if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
-            {
-                sets = atoi(argv[++i]);
             }
             else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
             {
@@ -238,16 +213,15 @@ int cmd_add(int argc, char *argv[])
             }
         }
 
-        if (duration == -1 || sets == -1)
+        if (duration == -1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "--time and --sets must be provided for time-based exercises.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "--time must be provided for time-based exercises.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
         // Get time unit
         char *time_unit_str;
-        switch (get_config_time_unit())
-        {
+        switch (get_config_time_unit()) {
         case TIME_S:
             time_unit_str = "s";
             break;
@@ -277,14 +251,14 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Duration,Date,Notes
-        fprintf(fp, "%d,%s,%d,%s,%s,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%d,%s,%s,%s\n",
                 next_id,
                 exercise_name,
-                sets,
-                "",
-                "",
+                0,
+                0,
+                0,
                 time_str,
-                standard_date_str,
+                date_str,
                 notes);
 
         fclose(fp);
@@ -295,88 +269,8 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
         printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
-        printf("  Date: %s\n", standard_date_str);
+        printf("  Date: %s\n", date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
-        printf("+------------------------------+\n");
-    }
-    else if (type == TYPE_BODY)
-    {
-
-        // Check for sets and reps options
-        int reps = -1;
-        int sets = -1;
-
-        for (int i = 2; i < argc; i++)
-        {
-            if (strcmp(argv[i], "--reps") == 0 && i + 1 < argc)
-            {
-                reps = atoi(argv[++i]);
-            }
-            else if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
-            {
-                sets = atof(argv[++i]);
-            }
-            else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
-            {
-                i++;
-                continue;
-            }
-            else if (strcmp(argv[i], "--notes") == 0 && i + 1 < argc)
-            {
-                i++;
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, ANSI_COLOR_RED "Unknown option: %s\n" ANSI_COLOR_RESET, argv[i]);
-                return 1;
-            }
-        }
-
-        // Check if both reps and weight are provided
-        if (reps == -1 || sets == -1)
-        {
-            fprintf(stderr, ANSI_COLOR_RED "--reps and --sets must be provided for body-based exercises.\n" ANSI_COLOR_RESET);
-            return 1;
-        }
-
-        // Get the id
-        int next_id = get_next_exercise_id();
-        increment_exercise_id();
-
-        // Update the database
-        char db_path[256];
-        sprintf(db_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
-
-        FILE *fp = fopen(db_path, "a");
-        if (fp == NULL)
-        {
-            perror(ANSI_COLOR_RED "Error: Could not open workouts database" ANSI_COLOR_RESET);
-            return 1;
-        }
-
-        // Format: ID,Name,Type,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
-                next_id,
-                exercise_name,
-                sets,
-                reps,
-                "",
-                "",
-                standard_date_str,
-                notes);
-
-        fclose(fp);
-
-        // Print the exercise details
-        printf("+------------------------------+\n");
-        printf(BOLD_TEXT "Exercise Logged :\n" ANSI_COLOR_RESET);
-        printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
-        printf("  Name: %s\n", exercise_name);
-        printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
-        printf("  Reps: %d\n", reps);
-        printf(DARK_GRAY_TEXT "  Date: %s\n" ANSI_COLOR_RESET, standard_date_str);
-        printf("  Notes: %s\n", strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
     else

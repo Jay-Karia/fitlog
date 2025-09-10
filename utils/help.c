@@ -113,7 +113,7 @@ void print_show_help(void)
 void print_remove_help(void)
 {
     printf("fitlog remove - Remove exercises or logs\n\n");
-    printf("Usage: fitlog remove [type] [identifier] [options]\n\n");
+    printf("Usage: fitlog remove [type] [options]\n\n");
     printf("Types:\n");
     printf("  exercise            Remove an exercise definition\n");
     printf("  log                 Remove a logged workout entry\n\n");

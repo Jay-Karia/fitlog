@@ -154,3 +154,51 @@ char *get_exercise_name_from_shortcut(const char *shortcut)
     fclose(fp);
     return NULL; // Shortcut not found
 }
+
+void print_exercise_details_from_id(const char *id)
+{
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        perror(ANSI_COLOR_RED "Error opening exercises file" ANSI_COLOR_RESET);
+        return;
+    }
+    
+    char line[256];
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+    bool found = false;
+    
+    while (fgets(line, sizeof(line), fp))
+    {
+        char exercise_id[20], exercise_name[100], shortcut[100], description[200], type[20];
+        sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s", 
+               exercise_id, exercise_name, shortcut, description, type);
+        
+        if (strcmp(exercise_id, id) == 0)
+        {
+            printf("+--------+----------------------+----------+----------------------+--------+\n");
+            printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n", 
+                   "ID", "Name", "Shortcut", "Description", "Type");
+            printf("+--------+----------------------+----------+----------------------+--------+\n");
+            printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n", 
+                   exercise_id, 
+                   exercise_name,
+                   (strcmp(shortcut, "(null)") == 0) ? "none" : shortcut,
+                   (strcmp(description, "(null)") == 0) ? "none" : description,
+                   type);
+            printf("+--------+----------------------+----------+----------------------+--------+\n");
+            found = true;
+            break;
+        }
+    }
+    
+    if (!found)
+    {
+        printf(ANSI_COLOR_RED "No exercise found with ID: %s\n" ANSI_COLOR_RESET, id);
+    }
+    
+    fclose(fp);
+}
