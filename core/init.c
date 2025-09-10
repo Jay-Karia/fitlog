@@ -41,13 +41,10 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    fprintf(config_fp, "# Date and time formatting\n");
-    fprintf(config_fp, "date_format=YYYY-MM-DD\n");
-    fprintf(config_fp, "time_format=24h\n");
-    fprintf(config_fp, "show_timestamps=true\n\n");
+    fprintf(config_fp, "# Date and time\n");
+    fprintf(config_fp, "date_format=YYYY-MM-DD\n\n");
     fprintf(config_fp, "# Units and measurements\n");
     fprintf(config_fp, "weight_unit=lbs\n");
-    fprintf(config_fp, "decimal_places=1\n");
     fprintf(config_fp, "time_unit=s\n\n");
     fprintf(config_fp, "# Behaviour\n");
     fprintf(config_fp, "default_exercise_type=sets\n");
@@ -108,7 +105,7 @@ int cmd_init(int argc, char *argv[])
     fprintf(id_fp, "1\n");
     fclose(id_fp);
 
-    printf(ANSI_COLOR_GREEN "\nInitialized fitlog\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_GREEN "Initialized fitlog\n" ANSI_COLOR_RESET);
 
     return 0;
 }

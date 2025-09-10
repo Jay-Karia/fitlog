@@ -207,14 +207,19 @@ int cmd_add(int argc, char *argv[])
     }
     else if (type == TYPE_TIME)
     {
-        // Check for time option
+        // Check for time and sets option
         int duration = -1;
+        int sets = -1;
 
         for (int i = 2; i < argc; i++)
         {
             if (strcmp(argv[i], "--time") == 0 && i + 1 < argc)
             {
                 duration = atoi(argv[++i]);
+            }
+            else if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
+            {
+                sets = atoi(argv[++i]);
             }
             else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
             {
@@ -233,9 +238,9 @@ int cmd_add(int argc, char *argv[])
             }
         }
 
-        if (duration == -1)
+        if (duration == -1 || sets == -1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "--time must be provided for time-based exercises.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "--time and --sets must be provided for time-based exercises.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -272,12 +277,12 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Duration,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%d,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%s,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
-                0,
-                0,
-                0,
+                sets,
+                "",
+                "",
                 time_str,
                 standard_date_str,
                 notes);

@@ -223,7 +223,7 @@ int cmd_create(int argc, char *argv[])
 
     // Print the details in a box
     printf("+------------------------------+\n");
-    printf(BOLD_TEXT "Exercise :\n" ANSI_COLOR_RESET);
+    printf(BOLD_TEXT "Exercise Created:\n" ANSI_COLOR_RESET);
     printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
     printf("  Name: %s\n", exercise_name);
     printf(DARK_GRAY_TEXT "  Shortcut: %s\n" ANSI_COLOR_RESET, shortcut);
