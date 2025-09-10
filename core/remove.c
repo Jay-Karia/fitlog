@@ -51,7 +51,11 @@ int cmd_remove(int argc, char* argv[]) {
     // Handle exercise removal
     if (strcmp(type, "exercise") == 0) {
         // Print the exercise details for confirmation
-        print_exercise_details_from_id(id);
+        bool found = print_exercise_details_from_id(id);
+        if (!found) {
+            return 1; // Exercise not found
+        }
+
         // Ask for confirmation
         char confirmation[10];
         printf(ANSI_COLOR_RED "Are you sure you want to remove this exercise? (y/N): " ANSI_COLOR_RESET);
@@ -60,6 +64,8 @@ int cmd_remove(int argc, char* argv[]) {
 
         // Check the response
         if (confirmation[0] == 'y' || confirmation[0] == 'Y') {
+            remove_exercise_by_id(id);
+
             printf(ANSI_COLOR_GREEN "Exercise successfully removed.\n" ANSI_COLOR_RESET);
         } else {
             printf(ANSI_COLOR_YELLOW "Exercise removal cancelled.\n" ANSI_COLOR_RESET);

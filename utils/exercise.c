@@ -155,7 +155,7 @@ char *get_exercise_name_from_shortcut(const char *shortcut)
     return NULL; // Shortcut not found
 }
 
-void print_exercise_details_from_id(const char *id)
+bool print_exercise_details_from_id(const char *id)
 {
     char full_path[256];
     sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
@@ -163,7 +163,7 @@ void print_exercise_details_from_id(const char *id)
     if (fp == NULL)
     {
         perror(ANSI_COLOR_RED "Error opening exercises file" ANSI_COLOR_RESET);
-        return;
+        return false;
     }
     
     char line[256];
@@ -183,12 +183,19 @@ void print_exercise_details_from_id(const char *id)
             printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n", 
                    "ID", "Name", "Shortcut", "Description", "Type");
             printf("+--------+----------------------+----------+----------------------+--------+\n");
-            printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n", 
+            
+            // Print with alternating gray colors for values
+            printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " 
+                   DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | "
+                   ANSI_COLOR_RESET "%-8s" ANSI_COLOR_RESET " | " 
+                   DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | "
+                   ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " |\n", 
                    exercise_id, 
                    exercise_name,
                    (strcmp(shortcut, "(null)") == 0) ? "none" : shortcut,
                    (strcmp(description, "(null)") == 0) ? "none" : description,
                    type);
+            
             printf("+--------+----------------------+----------+----------------------+--------+\n");
             found = true;
             break;
@@ -198,7 +205,86 @@ void print_exercise_details_from_id(const char *id)
     if (!found)
     {
         printf(ANSI_COLOR_RED "No exercise found with ID: %s\n" ANSI_COLOR_RESET, id);
+
+        return false;
     }
     
     fclose(fp);
+
+    return found;
+}
+
+void remove_exercise_by_id(const char *id)
+{
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    
+    // Check if exercises file exists
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Exercises file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return;
+    }
+    
+    // Create temporary file in the same directory as the original
+    char temp_path[256];
+    sprintf(temp_path, "%s/temp_exercises.csv", FITLOG_DIR);
+    FILE *temp_fp = fopen(temp_path, "w");
+    if (temp_fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Could not create temporary file for removal operation.\n" ANSI_COLOR_RESET);
+        fclose(fp);
+        return;
+    }
+    
+    char line[256];
+    bool found = false;
+    char exercise_name[100];
+    
+    // Copy header line
+    if (fgets(line, sizeof(line), fp))
+    {
+        fputs(line, temp_fp);
+    }
+    
+    // Process each line
+    while (fgets(line, sizeof(line), fp))
+    {
+        char exercise_id[20];
+        sscanf(line, "%19[^,],%99[^,]", exercise_id, exercise_name);
+        
+        if (strcmp(exercise_id, id) == 0)
+        {
+            found = true;
+            continue; // Skip this line to remove it
+        }
+        fputs(line, temp_fp);
+    }
+    
+    fclose(fp);
+    fclose(temp_fp);
+    
+    if (found)
+    {
+        // Replace original file with temp file
+        if (remove(full_path) != 0)
+        {
+            printf(ANSI_COLOR_RED "Error: Could not remove original exercises file.\n" ANSI_COLOR_RESET);
+            remove(temp_path); // Clean up temp file
+            return;
+        }
+        
+        if (rename(temp_path, full_path) != 0)
+        {
+            printf(ANSI_COLOR_RED "Error: Could not update exercises file.\n" ANSI_COLOR_RESET);
+            return;
+        }
+    }
+    else
+    {
+        // No exercise found, delete temp file and show error
+        remove(temp_path);
+        printf(ANSI_COLOR_RED "Error: No exercise found with ID '%s'.\n" ANSI_COLOR_RESET, id);
+    }
 }
