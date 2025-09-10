@@ -213,7 +213,7 @@ bool print_exercise_details_from_id(const char *id)
 void remove_exercise_by_id(const char *id)
 {
     char full_path[256];
-    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
 
     // Check if exercises file exists
     FILE *fp = fopen(full_path, "r");

@@ -102,7 +102,6 @@ int cmd_remove(int argc, char *argv[])
             if (confirmation[0] == 'y' || confirmation[0] == 'Y')
             {
                 remove_exercise_by_id(id);
-                printf(ANSI_COLOR_GREEN "Exercise successfully removed.\n" ANSI_COLOR_RESET);
             }
             else
             {
