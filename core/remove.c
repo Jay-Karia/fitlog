@@ -1,5 +1,7 @@
 #include "../include/fitlog.h"
 
+// TODO: update shortcuts file
+
 int cmd_remove(int argc, char *argv[])
 {
     // Check for help flag
@@ -74,6 +76,33 @@ int cmd_remove(int argc, char *argv[])
         return 1;
     }
 
+    // Get date format from config
+    enum DateFormat config_date_format = get_config_date_format();
+
+    char *date_format_str;
+    switch (config_date_format)
+    {
+    case DATE_DD_MM_YYYY:
+        date_format_str = "DD-MM-YYYY";
+        break;
+    case DATE_MM_DD_YYYY:
+        date_format_str = "MM-DD-YYYY";
+        break;
+    case DATE_YYYY_MM_DD:
+        date_format_str = "YYYY-MM-DD";
+        break;
+    default:
+        date_format_str = "Unknown";
+        break;
+    }
+
+    // Check the date format
+    if (!is_valid_date_format(date, config_date_format))
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
+        return 1;
+    }
+
     // Handle exercise removal
     if (strcmp(type, "exercise") == 0)
     {
@@ -128,8 +157,11 @@ int cmd_remove(int argc, char *argv[])
         else if (strlen(date) > 0)
         {
             // Remove by date
-            printf(ANSI_COLOR_YELLOW "Warning: Removing logs by date is not yet implemented.\n" ANSI_COLOR_RESET);
-            return 1;
+            bool found = print_workout_details_from_date(date);
+            if (!found && strlen(id) == 0)
+            {
+                return 1; // No logs found for date
+            }
         }
 
         // Ask for confirmation
@@ -142,12 +174,11 @@ int cmd_remove(int argc, char *argv[])
         {
             if (strlen(id) > 0)
             {
-                remove_exercise_by_id(id);
+                remove_workout_by_id(id);
             }
             else if (strlen(date) > 0)
             {
-                printf(ANSI_COLOR_YELLOW "Warning: Removing logs by date is not yet implemented.\n" ANSI_COLOR_RESET);
-                return 1;
+                remove_workouts_by_date(date);
             }
         }
         else

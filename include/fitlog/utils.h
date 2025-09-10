@@ -33,6 +33,8 @@ void remove_exercise_by_id(const char *id);
 // Workout utils
 bool print_workout_details_from_id(const char *id);
 void remove_workout_by_id(const char *id);
+bool print_workout_details_from_date(const char *date);
+void remove_workouts_by_date(const char *date);
 
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);
