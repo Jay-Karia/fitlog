@@ -1,6 +1,5 @@
 #include "../include/fitlog.h"
 
-// TODO: the date format inside csv should be same
 // TODO: shortcuts can be used instead of full name
 
 int cmd_add(int argc, char *argv[])
@@ -40,6 +39,8 @@ int cmd_add(int argc, char *argv[])
 
     // Get the date argument
     char date_str[20] = "";
+    char standard_date_str[20];
+
     for (int i = 2; i < argc; i++)
     {
         if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
@@ -79,6 +80,26 @@ int cmd_add(int argc, char *argv[])
         {
             fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
             return 1;
+        }
+
+        // Update the date string to a standtard date format (YYYY-MM-DD)
+        if (date_format == DATE_YYYY_MM_DD)
+        {
+            strcpy(standard_date_str, date_str);
+        }
+        else if (date_format == DATE_DD_MM_YYYY)
+        {
+            // Convert DD-MM-YYYY to YYYY-MM-DD
+            int day, month, year;
+            sscanf(date_str, "%d-%d-%d", &day, &month, &year);
+            sprintf(standard_date_str, "%04d-%02d-%02d", year, month, day);
+        }
+        else if (date_format == DATE_MM_DD_YYYY)
+        {
+            // Convert MM-DD-YYYY to YYYY-MM-DD
+            int day, month, year;
+            sscanf(date_str, "%d-%d-%d", &month, &day, &year);
+            sprintf(standard_date_str, "%04d-%02d-%02d", year, month, day);
         }
     }
     // Check the earguments based on exercise type
@@ -169,7 +190,7 @@ int cmd_add(int argc, char *argv[])
                 reps,
                 weight_str,
                 0,
-                date_str,
+                standard_date_str,
                 notes);
 
         fclose(fp);
@@ -182,7 +203,7 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
         printf("  Reps: %d\n", reps);
         printf(DARK_GRAY_TEXT "  Weight: %.2f %s\n" ANSI_COLOR_RESET, weight, weight_unit_str);
-        printf("  Date: %s\n", date_str);
+        printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
@@ -260,7 +281,7 @@ int cmd_add(int argc, char *argv[])
                 0,
                 0,
                 time_str,
-                date_str,
+                standard_date_str,
                 notes);
 
         fclose(fp);
@@ -271,7 +292,7 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
         printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
-        printf("  Date: %s\n", date_str);
+        printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
@@ -339,7 +360,7 @@ int cmd_add(int argc, char *argv[])
                 reps,
                 "",
                 "",
-                date_str,
+                standard_date_str,
                 notes);
 
         fclose(fp);
@@ -351,7 +372,7 @@ int cmd_add(int argc, char *argv[])
         printf("  Name: %s\n", exercise_name);
         printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
         printf("  Reps: %d\n", reps);
-        printf(DARK_GRAY_TEXT "  Date: %s\n"  ANSI_COLOR_RESET, date_str);
+        printf(DARK_GRAY_TEXT "  Date: %s\n"  ANSI_COLOR_RESET, standard_date_str);
         printf( "  Notes: %s\n", strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
