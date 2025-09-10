@@ -42,31 +42,41 @@ int cmd_create(int argc, char *argv[])
     char default_type_str[32];
     read_config_value("default_exercise_type", "time", default_type_str, sizeof(default_type_str));
     enum ExerciseType type;
-    switch (default_type_str[0]) {
-        case 't':
-            if (strcmp(default_type_str, "time") == 0) {
-                type = TYPE_TIME;
-            } else {
-                type = TYPE_TIME; // default
-            }
-            break;
-        case 's':
-            if (strcmp(default_type_str, "sets") == 0) {
-                type = TYPE_SETS;
-            } else {
-                type = TYPE_TIME; // default
-            }
-            break;
-        case 'b':
-            if (strcmp(default_type_str, "body") == 0) {
-                type = TYPE_BODY;
-            } else {
-                type = TYPE_TIME; // default
-            }
-            break;
-        default:
+    switch (default_type_str[0])
+    {
+    case 't':
+        if (strcmp(default_type_str, "time") == 0)
+        {
+            type = TYPE_TIME;
+        }
+        else
+        {
             type = TYPE_TIME; // default
-            break;
+        }
+        break;
+    case 's':
+        if (strcmp(default_type_str, "sets") == 0)
+        {
+            type = TYPE_SETS;
+        }
+        else
+        {
+            type = TYPE_TIME; // default
+        }
+        break;
+    case 'b':
+        if (strcmp(default_type_str, "body") == 0)
+        {
+            type = TYPE_BODY;
+        }
+        else
+        {
+            type = TYPE_TIME; // default
+        }
+        break;
+    default:
+        type = TYPE_TIME; // default
+        break;
     }
 
     for (int i = 2; i < argc; i++)
@@ -172,11 +182,44 @@ int cmd_create(int argc, char *argv[])
     increment_exercise_id();
 
     // Write the new exercise to the file as a new line in CSV format
-    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id,exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : (type == TYPE_TIME ? "time" : "body"));
+    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id, exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : (type == TYPE_TIME ? "time" : "body"));
     fclose(fp);
 
+    // Update the shortcuts map file if a shortcut is provided
+    if (shortcut && shortcut[0] != '\0')
+    {
+        char shortcuts_path[256];
+        sprintf(shortcuts_path, "%s/shortcuts.ini", FITLOG_DIR);
+
+        // Read the existing shortcuts file
+        FILE *sfp = fopen(shortcuts_path, "r");
+        if (sfp == NULL)
+        {
+            // If file doesn't exist, create it
+            sfp = fopen(shortcuts_path, "w");
+            if (sfp == NULL)
+            {
+                perror(ANSI_COLOR_RED "Could not create shortcuts file" ANSI_COLOR_RESET);
+                return 1;
+            }
+            fprintf(sfp, "%s=%s\n", shortcut, exercise_name);
+            fclose(sfp);
+            return 0;
+        }
+        
+        // Append the new shortcut
+        sfp = fopen(shortcuts_path, "a");
+        if (sfp == NULL)
+        {
+            perror(ANSI_COLOR_RED "Could not open shortcuts file for append" ANSI_COLOR_RESET);
+            return 1;
+        }
+        fprintf(sfp, "%s=%s\n", shortcut, exercise_name);
+        fclose(sfp);
+    }
+
     // Print the success message
-    printf(ANSI_COLOR_GREEN"Exercise '%s' created successfully.\n" ANSI_COLOR_RESET, exercise_name);
+    printf(ANSI_COLOR_GREEN "Exercise '%s' created successfully.\n" ANSI_COLOR_RESET, exercise_name);
 
     // Print the details in a box
     printf("+------------------------------+\n");

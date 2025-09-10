@@ -78,9 +78,6 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    // Write empty JSON object
-    fprintf(shortcuts_fp, "{}\n");
-
     fclose(shortcuts_fp);
 
     // Create the exercises database file

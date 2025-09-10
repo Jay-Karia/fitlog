@@ -12,7 +12,7 @@
 #define FITLOG_DIR ".fitlog"
 #define CONFIG_FILE "config.ini"
 #define WORKOUTS_FILE "workouts.csv"
-#define SHORTCUTS_FILE "shortcuts.json"
+#define SHORTCUTS_FILE "shortcuts.ini"
 #define EXERCISES_FILE "exercises.csv"
 #define ID_COUNTER_FILE "id_counter.txt"
 

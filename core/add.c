@@ -27,11 +27,20 @@ int cmd_add(int argc, char *argv[])
         exercise_name[sizeof(exercise_name) - 1] = '\0';
     }
 
+    bool is_shortcut = false;
+
     // Check if exercise exists
     if (!exercise_exists(exercise_name))
     {
-        fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please create it first using 'fitlog create'.\n" ANSI_COLOR_RESET, exercise_name);
-        return 1;
+        if (shortcut_exists(exercise_name))
+        {
+            is_shortcut = true;
+        }
+        else
+        {
+            fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please add it first using 'fitlog add-exercise'.\n" ANSI_COLOR_RESET, exercise_name);
+            return 1;
+        }
     }
 
     // Get the date format
@@ -81,30 +90,13 @@ int cmd_add(int argc, char *argv[])
             fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
             return 1;
         }
-
-        // Update the date string to a standtard date format (YYYY-MM-DD)
-        if (date_format == DATE_YYYY_MM_DD)
-        {
-            strcpy(standard_date_str, date_str);
-        }
-        else if (date_format == DATE_DD_MM_YYYY)
-        {
-            // Convert DD-MM-YYYY to YYYY-MM-DD
-            int day, month, year;
-            sscanf(date_str, "%d-%d-%d", &day, &month, &year);
-            sprintf(standard_date_str, "%04d-%02d-%02d", year, month, day);
-        }
-        else if (date_format == DATE_MM_DD_YYYY)
-        {
-            // Convert MM-DD-YYYY to YYYY-MM-DD
-            int day, month, year;
-            sscanf(date_str, "%d-%d-%d", &month, &day, &year);
-            sprintf(standard_date_str, "%04d-%02d-%02d", year, month, day);
-        }
     }
+
+    // Update the date string to a standtard date format (YYYY-MM-DD)
+    strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
+
     // Check the earguments based on exercise type
     enum ExerciseType type = check_exercise_type(exercise_name);
-    printf("Exercise type: %d\n", type);
 
     // Get notes
     char notes[256] = "";
@@ -115,6 +107,12 @@ int cmd_add(int argc, char *argv[])
             strncpy(notes, argv[++i], sizeof(notes) - 1);
             notes[sizeof(notes) - 1] = '\0';
         }
+    }
+
+    // Get the name of exercise if shortcut was given
+    if (is_shortcut)
+    {
+        strcpy(exercise_name, get_exercise_name_from_shortcut(exercise_name));
     }
 
     if (type == TYPE_SETS)
@@ -183,13 +181,13 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Sets,Reps,Weight,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%s,%d,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets,
                 reps,
                 weight_str,
-                0,
+                "",
                 standard_date_str,
                 notes);
 
@@ -372,8 +370,8 @@ int cmd_add(int argc, char *argv[])
         printf("  Name: %s\n", exercise_name);
         printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
         printf("  Reps: %d\n", reps);
-        printf(DARK_GRAY_TEXT "  Date: %s\n"  ANSI_COLOR_RESET, standard_date_str);
-        printf( "  Notes: %s\n", strlen(notes) == 0 ? "(null)" : notes);
+        printf(DARK_GRAY_TEXT "  Date: %s\n" ANSI_COLOR_RESET, standard_date_str);
+        printf("  Notes: %s\n", strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
     else
