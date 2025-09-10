@@ -30,6 +30,10 @@ char *get_exercise_name_from_shortcut(const char *shortcut);
 bool print_exercise_details_from_id(const char *id);
 void remove_exercise_by_id(const char *id);
 
+// Workout utils
+bool print_workout_details_from_id(const char *id);
+void remove_workout_by_id(const char *id);
+
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);
 char *get_today_date(const enum DateFormat required_format);

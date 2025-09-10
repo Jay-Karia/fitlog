@@ -165,50 +165,46 @@ bool print_exercise_details_from_id(const char *id)
         perror(ANSI_COLOR_RED "Error opening exercises file" ANSI_COLOR_RESET);
         return false;
     }
-    
+
     char line[256];
     // Skip header line
     fgets(line, sizeof(line), fp);
     bool found = false;
-    
+
     while (fgets(line, sizeof(line), fp))
     {
         char exercise_id[20], exercise_name[100], shortcut[100], description[200], type[20];
-        sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s", 
+        sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s",
                exercise_id, exercise_name, shortcut, description, type);
-        
+
         if (strcmp(exercise_id, id) == 0)
         {
             printf("+--------+----------------------+----------+----------------------+--------+\n");
-            printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n", 
+            printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n",
                    "ID", "Name", "Shortcut", "Description", "Type");
             printf("+--------+----------------------+----------+----------------------+--------+\n");
-            
+
             // Print with alternating gray colors for values
-            printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " 
-                   DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | "
-                   ANSI_COLOR_RESET "%-8s" ANSI_COLOR_RESET " | " 
-                   DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | "
-                   ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " |\n", 
-                   exercise_id, 
+            printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-8s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " |\n",
+                   exercise_id,
                    exercise_name,
                    (strcmp(shortcut, "(null)") == 0) ? "none" : shortcut,
                    (strcmp(description, "(null)") == 0) ? "none" : description,
                    type);
-            
+
             printf("+--------+----------------------+----------+----------------------+--------+\n");
             found = true;
             break;
         }
     }
-    
+
     if (!found)
     {
         printf(ANSI_COLOR_RED "No exercise found with ID: %s\n" ANSI_COLOR_RESET, id);
 
         return false;
     }
-    
+
     fclose(fp);
 
     return found;
@@ -217,8 +213,8 @@ bool print_exercise_details_from_id(const char *id)
 void remove_exercise_by_id(const char *id)
 {
     char full_path[256];
-    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
-    
+    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+
     // Check if exercises file exists
     FILE *fp = fopen(full_path, "r");
     if (fp == NULL)
@@ -226,7 +222,7 @@ void remove_exercise_by_id(const char *id)
         printf(ANSI_COLOR_RED "Error: Exercises file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
         return;
     }
-    
+
     // Create temporary file in the same directory as the original
     char temp_path[256];
     sprintf(temp_path, "%s/temp_exercises.csv", FITLOG_DIR);
@@ -237,34 +233,63 @@ void remove_exercise_by_id(const char *id)
         fclose(fp);
         return;
     }
-    
-    char line[256];
+
+    char line[512];
     bool found = false;
     char exercise_name[100];
-    
+
     // Copy header line
     if (fgets(line, sizeof(line), fp))
     {
         fputs(line, temp_fp);
     }
-    
+
     // Process each line
     while (fgets(line, sizeof(line), fp))
     {
+        // Create a copy of the line for parsing (since strtok modifies the original)
+        char line_copy[512];
+        strcpy(line_copy, line);
+
+        // Remove newline character if present
+        line_copy[strcspn(line_copy, "\n")] = 0;
+
         char exercise_id[20];
-        sscanf(line, "%19[^,],%99[^,]", exercise_id, exercise_name);
-        
+        strcpy(exercise_id, "");
+        strcpy(exercise_name, "");
+
+        // Parse using strtok for better CSV handling
+        char *token = strtok(line_copy, ",");
+        int field = 0;
+
+        while (token != NULL && field < 5)
+        {
+            switch (field)
+            {
+            case 0:
+                strncpy(exercise_id, token, sizeof(exercise_id) - 1);
+                break;
+            case 1:
+                strncpy(exercise_name, token, sizeof(exercise_name) - 1);
+                break;
+            }
+            token = strtok(NULL, ",");
+            field++;
+        }
+
         if (strcmp(exercise_id, id) == 0)
         {
             found = true;
+            printf(ANSI_COLOR_GREEN "Exercise '%s' (ID: %s) has been removed successfully.\n" ANSI_COLOR_RESET,
+                   exercise_name, id);
             continue; // Skip this line to remove it
         }
         fputs(line, temp_fp);
     }
-    
+
     fclose(fp);
     fclose(temp_fp);
-    
+
     if (found)
     {
         // Replace original file with temp file
@@ -274,7 +299,7 @@ void remove_exercise_by_id(const char *id)
             remove(temp_path); // Clean up temp file
             return;
         }
-        
+
         if (rename(temp_path, full_path) != 0)
         {
             printf(ANSI_COLOR_RED "Error: Could not update exercises file.\n" ANSI_COLOR_RESET);

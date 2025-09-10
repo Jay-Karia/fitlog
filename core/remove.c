@@ -112,5 +112,51 @@ int cmd_remove(int argc, char *argv[])
         }
     }
 
+    // Handle log removal
+    if (strcmp(type, "log") == 0)
+    {
+        // Remove by id
+        if (strlen(id) > 0)
+        {
+            // Print the exercise details for confirmation
+            bool found = print_workout_details_from_id(id);
+            if (!found && strlen(date) == 0)
+            {
+                return 1; // Log not found
+            }
+        }
+        // Remove by date
+        else if (strlen(date) > 0)
+        {
+            // Remove by date
+            printf(ANSI_COLOR_YELLOW "Warning: Removing logs by date is not yet implemented.\n" ANSI_COLOR_RESET);
+            return 1;
+        }
+
+        // Ask for confirmation
+        char confirmation[10];
+        printf(ANSI_COLOR_RED "Are you sure you want to remove logs? (y/N): " ANSI_COLOR_RESET);
+        fgets(confirmation, sizeof(confirmation), stdin);
+
+        // Check the response
+        if (confirmation[0] == 'y' || confirmation[0] == 'Y')
+        {
+            if (strlen(id) > 0)
+            {
+                remove_exercise_by_id(id);
+            }
+            else if (strlen(date) > 0)
+            {
+                printf(ANSI_COLOR_YELLOW "Warning: Removing logs by date is not yet implemented.\n" ANSI_COLOR_RESET);
+                return 1;
+            }
+        }
+        else
+        {
+            printf(ANSI_COLOR_YELLOW "Workout removal cancelled.\n" ANSI_COLOR_RESET);
+            return 0;
+        }
+    }
+
     return 0;
 }
