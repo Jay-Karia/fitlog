@@ -286,6 +286,8 @@ bool print_workout_details_from_date(const char *date)
             field++;
         }
 
+        printf("Log date: %s, Search date: %s\n", log_date, date); // Debug line to check dates
+
         if (strcmp(log_date, date) == 0)
         {
             // Print header for one time only

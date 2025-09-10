@@ -44,6 +44,7 @@ int cmd_remove(int argc, char *argv[])
     // Get the remove criteria
     char id[20] = "";
     char date[20] = "";
+    char standard_date_str[20] = "";
 
     for (int i = 2; i < argc; i++)
     {
@@ -103,6 +104,9 @@ int cmd_remove(int argc, char *argv[])
         return 1;
     }
 
+    // Conver the date to standard format
+    strcpy(standard_date_str, convert_date_to_standard(date, config_date_format));
+
     // Handle exercise removal
     if (strcmp(type, "exercise") == 0)
     {
@@ -148,16 +152,16 @@ int cmd_remove(int argc, char *argv[])
         {
             // Print the exercise details for confirmation
             bool found = print_workout_details_from_id(id);
-            if (!found && strlen(date) == 0)
+            if (!found && strlen(standard_date_str) == 0)
             {
                 return 1; // Log not found
             }
         }
         // Remove by date
-        else if (strlen(date) > 0)
+        else if (strlen(standard_date_str) > 0)
         {
             // Remove by date
-            bool found = print_workout_details_from_date(date);
+            bool found = print_workout_details_from_date(standard_date_str);
             if (!found && strlen(id) == 0)
             {
                 return 1; // No logs found for date

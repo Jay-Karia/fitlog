@@ -1,8 +1,5 @@
 #include "../include/fitlog.h"
 
-// TODO: the date format inside csv should be same
-// TODO: shortcuts can be used instead of full name
-
 int cmd_add(int argc, char *argv[])
 {
     // Check for help flag
@@ -28,11 +25,20 @@ int cmd_add(int argc, char *argv[])
         exercise_name[sizeof(exercise_name) - 1] = '\0';
     }
 
+    bool is_shortcut = false;
+
     // Check if exercise exists
     if (!exercise_exists(exercise_name))
     {
-        fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please create it first using 'fitlog create'.\n" ANSI_COLOR_RESET, exercise_name);
-        return 1;
+        if (shortcut_exists(exercise_name))
+        {
+            is_shortcut = true;
+        }
+        else
+        {
+            fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please add it first using 'fitlog add-exercise'.\n" ANSI_COLOR_RESET, exercise_name);
+            return 1;
+        }
     }
 
     // Get the date format
@@ -40,6 +46,8 @@ int cmd_add(int argc, char *argv[])
 
     // Get the date argument
     char date_str[20] = "";
+    char standard_date_str[20];
+
     for (int i = 2; i < argc; i++)
     {
         if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
@@ -80,9 +88,13 @@ int cmd_add(int argc, char *argv[])
             fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
             return 1;
         }
+
     }
     // Check the earguments based on exercise type
     enum ExerciseType type = check_exercise_type(exercise_name);
+    
+    // Update the date string to standard format (YYYY-MM-DD)
+    strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
 
     // Get notes
     char notes[256] = "";
@@ -93,6 +105,12 @@ int cmd_add(int argc, char *argv[])
             strncpy(notes, argv[++i], sizeof(notes) - 1);
             notes[sizeof(notes) - 1] = '\0';
         }
+    }
+
+    // Get the name of exercise if shortcut was given
+    if (is_shortcut)
+    {
+        strcpy(exercise_name, get_exercise_name_from_shortcut(exercise_name));
     }
 
     if (type == TYPE_SETS)
@@ -161,14 +179,14 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Sets,Reps,Weight,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%s,%d,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets,
                 reps,
                 weight_str,
-                0,
-                date_str,
+                "",
+                standard_date_str,
                 notes);
 
         fclose(fp);
@@ -181,7 +199,7 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
         printf("  Reps: %d\n", reps);
         printf(DARK_GRAY_TEXT "  Weight: %.2f %s\n" ANSI_COLOR_RESET, weight, weight_unit_str);
-        printf("  Date: %s\n", date_str);
+        printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
@@ -221,7 +239,8 @@ int cmd_add(int argc, char *argv[])
 
         // Get time unit
         char *time_unit_str;
-        switch (get_config_time_unit()) {
+        switch (get_config_time_unit())
+        {
         case TIME_S:
             time_unit_str = "s";
             break;
@@ -251,14 +270,14 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Format: ID,Name,Type,Duration,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%d,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%s,%s,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
-                0,
-                0,
-                0,
+                "",
+                "",
+                "",
                 time_str,
-                date_str,
+                standard_date_str,
                 notes);
 
         fclose(fp);
@@ -269,7 +288,7 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
         printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
-        printf("  Date: %s\n", date_str);
+        printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");
     }
