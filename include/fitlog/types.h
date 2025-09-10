@@ -61,6 +61,7 @@ enum ExerciseType
 {
     TYPE_SETS,
     TYPE_TIME,
+    TYPE_BODY,
 };
 
 #endif

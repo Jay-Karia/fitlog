@@ -67,7 +67,7 @@ void print_create_help(void)
     printf("  [shortcut]               Optional short alias for exercise\n\n");
     printf("Options:\n");
     printf("  --desc <text>            Description for the exercise\n");
-    printf("  --type <sets|time>       Exercise type (default: sets)\n");
+    printf("  --type <sets|time|body>       Exercise type (default: sets)\n");
     printf("  --help                   Show this help message\n");
     printf("\nDescription:\n");
     printf("  Creates a new exercise definition that can be referenced when\n");

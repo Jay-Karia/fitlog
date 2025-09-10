@@ -61,6 +61,10 @@ ExerciseType check_exercise_type(const char *name)
             {
                 return TYPE_TIME;
             }
+            else if (strcmp(type_str, "body") == 0)
+            {
+                return TYPE_BODY;
+            }
             else
             {
                 return -1; // Unknown type

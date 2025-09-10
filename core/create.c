@@ -39,9 +39,35 @@ int cmd_create(int argc, char *argv[])
     }
 
     // Get the default exercise type from config (sets or time)
-    char type_str[32];
-    read_config_value("default_exercise_type", "time", type_str, sizeof(type_str));
-    enum ExerciseType type = (strcmp(type_str, "time") == 0) ? TYPE_TIME : TYPE_SETS;
+    char default_type_str[32];
+    read_config_value("default_exercise_type", "time", default_type_str, sizeof(default_type_str));
+    enum ExerciseType type;
+    switch (default_type_str[0]) {
+        case 't':
+            if (strcmp(default_type_str, "time") == 0) {
+                type = TYPE_TIME;
+            } else {
+                type = TYPE_TIME; // default
+            }
+            break;
+        case 's':
+            if (strcmp(default_type_str, "sets") == 0) {
+                type = TYPE_SETS;
+            } else {
+                type = TYPE_TIME; // default
+            }
+            break;
+        case 'b':
+            if (strcmp(default_type_str, "body") == 0) {
+                type = TYPE_BODY;
+            } else {
+                type = TYPE_TIME; // default
+            }
+            break;
+        default:
+            type = TYPE_TIME; // default
+            break;
+    }
 
     for (int i = 2; i < argc; i++)
     {
@@ -60,9 +86,13 @@ int cmd_create(int argc, char *argv[])
             {
                 type = TYPE_TIME;
             }
+            else if (strcmp(argv[i], "body") == 0)
+            {
+                type = TYPE_BODY;
+            }
             else
             {
-                fprintf(stderr, ANSI_COLOR_RED "Invalid exercise type. Use 'sets' or 'time'.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_RED "Invalid exercise type. Use 'sets' or 'time' or 'body'.\n" ANSI_COLOR_RESET);
                 return 1;
             }
         }
@@ -142,7 +172,7 @@ int cmd_create(int argc, char *argv[])
     increment_exercise_id();
 
     // Write the new exercise to the file as a new line in CSV format
-    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id,exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : "time");
+    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id,exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : (type == TYPE_TIME ? "time" : "body"));
     fclose(fp);
 
     // Print the success message
@@ -153,9 +183,9 @@ int cmd_create(int argc, char *argv[])
     printf(BOLD_TEXT "Exercise :\n" ANSI_COLOR_RESET);
     printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
     printf("  Name: %s\n", exercise_name);
-    printf(DARK_GRAY_TEXT "  Shortcut: %s\n" ANSI_COLOR_RESET, shortcut ? shortcut : "(none)");
-    printf("  Description: %s\n", description ? description : "(none)");
-    printf(DARK_GRAY_TEXT "  Type: %s\n" ANSI_COLOR_RESET, type == TYPE_SETS ? "sets" : "time");
+    printf(DARK_GRAY_TEXT "  Shortcut: %s\n" ANSI_COLOR_RESET, shortcut);
+    printf("  Description: %s\n", description);
+    printf(DARK_GRAY_TEXT "  Type: %s\n" ANSI_COLOR_RESET, type == TYPE_SETS ? "sets" : (type == TYPE_TIME ? "time" : "body"));
     printf("+------------------------------+\n");
 
     return 0;
