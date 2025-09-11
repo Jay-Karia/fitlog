@@ -106,6 +106,7 @@ void print_show_help(void)
     printf("  --from <date>       Show entries from this date\n");
     printf("  --to <date>         Show entries until this date\n");
     printf("  --last <number>     Show only the last N entries\n");
+    printf("  --all               Show all the entries in the database\n");
     printf("  --help              Show this help message\n");
     printf("\nDescription:\n");
     printf("  This command displays workout entries from your log,\n");

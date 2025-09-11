@@ -400,3 +400,49 @@ int show_last_n_exercises(int n)
     fclose(fp);
     return 0;
 }
+
+int show_all_exercises() {
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Exercises file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    char line[256];
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+
+    // Print header for display
+    printf("+--------+----------------------+----------+----------------------+--------+\n");
+    printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n",
+           "ID", "Name", "Shortcut", "Description", "Type");
+    printf("+--------+----------------------+----------+----------------------+--------+\n");
+
+    bool found = false;
+    while (fgets(line, sizeof(line), fp))
+    {
+        found = true;
+        char exercise_id[20], exercise_name[100], shortcut[100], description[200], type[20];
+        sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s",
+               exercise_id, exercise_name, shortcut, description, type);
+        // Print with alternating gray colors for values
+        printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-8s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " |\n",
+               exercise_id,
+               exercise_name,
+               (strcmp(shortcut, "(null)") == 0) ? "none" : shortcut,
+               (strcmp(description, "(null)") == 0) ? "none" : description,
+               type);
+        printf("+--------+----------------------+----------+----------------------+--------+\n");
+    }
+
+    if (!found)
+    {
+        printf(ANSI_COLOR_YELLOW "No exercises found to display.\n" ANSI_COLOR_RESET);
+    }
+
+    fclose(fp);
+    return 0;
+}

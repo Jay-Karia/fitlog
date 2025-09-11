@@ -33,6 +33,7 @@ int cmd_show(int argc, char *argv[])
     char from_date[20] = "";
     char to_date[20] = "";
     int last_n = -1;
+    bool all = false;
 
     for (int i = 2; i < argc; i++)
     {
@@ -52,6 +53,15 @@ int cmd_show(int argc, char *argv[])
         {
             last_n = atoi(argv[++i]);
         }
+        else if (strcmp(argv[i], "--all") == 0)
+        {
+            all = true;
+        }
+        else
+        {
+            fprintf(stderr, ANSI_COLOR_RED "Error: Unknown or incomplete argument '%s'.\n" ANSI_COLOR_RESET, argv[i]);
+            return 1;
+        }
     }
 
     // Check if criteria is provided
@@ -65,17 +75,24 @@ int cmd_show(int argc, char *argv[])
             return 1;
         }
 
-        // Check for alteast one of --id or --last
-        if (strlen(id) == 0 && last_n == -1)
+        // Check for alteast one of --id or --last or --all
+        if (strlen(id) == 0 && last_n == -1 && !all)
         {
             fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last for exercise display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
-        // Check if both --id and --last are given
-        if (strlen(id) > 0 && last_n != -1)
+        // Check if multiple arguments are given
+        int criteria_count = 0;
+        if (strlen(id) > 0)
+            criteria_count++;
+        if (last_n != -1)
+            criteria_count++;
+        if (all)
+            criteria_count++;
+        if (criteria_count > 1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --id and --last cannot be used together.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --all for exercise display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -88,20 +105,24 @@ int cmd_show(int argc, char *argv[])
         {
             return show_last_n_exercises(last_n);
         }
+        else if (all)
+        {
+            return show_all_exercises();
+        }
     }
     if (strcmp(type, "log") == 0)
     {
-        // If --from or --to is given, --last and --id is not allowed
-        if ((strlen(from_date) > 0 || strlen(to_date) > 0) && (last_n != -1 || strlen(id) > 0))
+        // If --from or --to is given, --last, --id and --all is not allowed
+        if ((strlen(from_date) > 0 || strlen(to_date) > 0) && (last_n != -1 || strlen(id) > 0 || all))
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to cannot be used with --last or --id.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to cannot be used with --last or --id or --all.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
-        // Check for alteast one of --id or --last or --from or --to
-        if (strlen(id) == 0 && last_n == -1 && strlen(from_date) == 0 && strlen(to_date) == 0)
+        // Check for alteast one of --id or --last or --from or --to or --add
+        if (strlen(id) == 0 && last_n == -1 && strlen(from_date) == 0 && strlen(to_date) == 0 && !all)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --from or --to for log display.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --from or --to or --all for log display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -113,9 +134,10 @@ int cmd_show(int argc, char *argv[])
             criteria_count++;
         if (strlen(from_date) > 0 || strlen(to_date) > 0)
             criteria_count++;
+        if (all)
         if (criteria_count > 1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to for log display.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all for log display.\n" ANSI_COLOR_RESET);
             return 1;
         }
     }
