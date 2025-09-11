@@ -5,6 +5,19 @@
 
 // TODO: fix table dynamic border spacing
 
+// Returns the number of valid entries in a WorkoutLog array
+int get_workout_array_length(const WorkoutLog *workouts, int max_workouts)
+{
+    int count = 0;
+    for (int i = 0; i < max_workouts; i++)
+    {
+        if (workouts[i].id[0] == '\0')
+            break;
+        count++;
+    }
+    return count;
+}
+
 void safe_strncpy(char *dest, const char *src, size_t dest_size)
 {
     if (dest_size == 0)
@@ -27,7 +40,18 @@ const char *parse_csv_field(char *dest, size_t dest_size, const char *line)
     }
     else
     {
-        safe_strncpy(dest, line, dest_size);
+        size_t len = strlen(line);
+        // Trim trailing newline if present
+        if (len > 0 && (line[len - 1] == '\n' || line[len - 1] == '\r'))
+            len--;
+        if (len > 0 && (line[len - 1] == '\n' || line[len - 1] == '\r'))
+            len--;
+        
+        if (len >= dest_size)
+            len = dest_size - 1;
+        
+        strncpy(dest, line, len);
+        dest[len] = '\0';
         return NULL;
     }
 }
@@ -140,21 +164,31 @@ void remove_workouts(const WorkoutLog *workouts)
 
 void print_workouts(const WorkoutLog *workouts)
 {
+    // Get the length of the array
+    int length = get_workout_array_length(workouts, 100);
+    if (length == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No workouts found.\n" ANSI_COLOR_RESET);
+        return;
+    }
+
     printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
     printf("| %-2s | %-20s | %-3s | %-3s | %-6s | %-6s | %-10s | %-20s |\n",
            "ID", "Exercise", "Set", "Rep", "Weight", "Time", "Date", "Notes");
     printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
 
-    for (int i = 0; workouts[i].id[0] != '\0'; i++) {
-        printf("| %-2s | %-20s | %-3s | %-3s | %-6s | %-6s | %-10s | %-20s |\n",
-               workouts[i].id,
-               workouts[i].exercise,
-               workouts[i].sets,
-               workouts[i].reps,
-               workouts[i].weight,
-               workouts[i].time,
-               workouts[i].date,
-               workouts[i].notes);
+    for (int i = 0; i < length; i++)
+    {
+        printf("| %-2s | %-20s | %-3s | %-3s | %-6s | %-6s | %-10s | %-20s |",
+            workouts[i].id,
+            workouts[i].exercise,
+            workouts[i].sets,
+            workouts[i].reps,
+            workouts[i].weight,
+            workouts[i].time,
+            workouts[i].date,
+            workouts[i].notes);
+        printf("\n");
     }
     printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
 }
