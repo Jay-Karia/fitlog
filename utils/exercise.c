@@ -344,10 +344,6 @@ void remove_exercise_by_id(const char *id)
                         {
                             fputs(sline, temp_sfp);
                         }
-                        else
-                        {
-                            printf(ANSI_COLOR_GREEN "Removed shortcut for exercise '%s'\n" ANSI_COLOR_RESET, exercise_name);
-                        }
                     }
                     else
                     {
