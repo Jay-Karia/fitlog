@@ -96,14 +96,16 @@ void print_add_help(void)
 
 void print_show_help(void)
 {
-    printf("fitlog show - Display workouts\n\n");
-    printf("Usage: fitlog show [options]\n\n");
+    printf("fitlog show - Display workouts and exercise\n\n");
+    printf("Usage: fitlog show [type] [options]\n\n");
+    printf("Types:\n");
+    printf("  exercise            Show all the exercises created\n");
+    printf("  log                 Show all workout logs\n\n");
     printf("Options:\n");
-    printf("  --exercise <name>   Filter by exercise name or shortcut\n");
+    printf("  --id <number>       Show entry for this id\n");
     printf("  --from <date>       Show entries from this date\n");
     printf("  --to <date>         Show entries until this date\n");
     printf("  --last <number>     Show only the last N entries\n");
-    printf("  --summary           Show summary statistics instead of raw data\n");
     printf("  --help              Show this help message\n");
     printf("\nDescription:\n");
     printf("  This command displays workout entries from your log,\n");

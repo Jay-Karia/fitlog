@@ -41,4 +41,6 @@ bool is_valid_date_format(const char *input_date, const enum DateFormat required
 char *get_today_date(const enum DateFormat required_format);
 char *convert_date_to_standard(const char *input_date, const enum DateFormat input_format);
 
+// Display utils
+
 #endif
