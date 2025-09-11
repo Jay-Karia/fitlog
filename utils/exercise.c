@@ -280,9 +280,7 @@ void remove_exercise_by_id(const char *id)
         if (strcmp(exercise_id, id) == 0)
         {
             found = true;
-            printf(ANSI_COLOR_GREEN "Exercise '%s' (ID: %s) has been removed successfully.\n" ANSI_COLOR_RESET,
-                   exercise_name, id);
-            continue; // Skip this line to remove it
+            continue;
         }
         fputs(line, temp_fp);
     }

@@ -81,6 +81,7 @@ int cmd_remove(int argc, char *argv[])
     {
         if (force)
         {
+            print_exercise_details_from_id(id);
             printf(ANSI_COLOR_YELLOW "Warning: --force flag is used. No confirmation will be asked.\n" ANSI_COLOR_RESET);
             remove_exercise_by_id(id);
             printf(ANSI_COLOR_GREEN "Exercise successfully removed.\n" ANSI_COLOR_RESET);
@@ -118,7 +119,6 @@ int cmd_remove(int argc, char *argv[])
     {
 
         WorkoutLog workouts[100];
-        int workout_count = 0;
 
         // Get workouts by id
         if (strlen(id) > 0)
@@ -180,6 +180,14 @@ int cmd_remove(int argc, char *argv[])
         }
 
         print_workouts(workouts);
+
+        // Remove without confirmation if --force is used
+        if (force)
+        {
+            printf(ANSI_COLOR_YELLOW "Warning: --force flag is used. No confirmation will be asked.\n" ANSI_COLOR_RESET);
+            remove_workouts(workouts);
+            return 0;
+        }
 
         // Ask for confirmation
         char confirmation[10];
