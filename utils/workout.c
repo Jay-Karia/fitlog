@@ -46,10 +46,10 @@ const char *parse_csv_field(char *dest, size_t dest_size, const char *line)
             len--;
         if (len > 0 && (line[len - 1] == '\n' || line[len - 1] == '\r'))
             len--;
-        
+
         if (len >= dest_size)
             len = dest_size - 1;
-        
+
         strncpy(dest, line, len);
         dest[len] = '\0';
         return NULL;
@@ -160,6 +160,127 @@ void get_workouts_by_date(const char *date, WorkoutLog *workouts)
 
 void remove_workouts(const WorkoutLog *workouts)
 {
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+
+    // Create a temporary file path
+    char temp_path[270];
+    sprintf(temp_path, "%s.tmp", full_path);
+
+    // Open the original file for reading
+    FILE *original_file = fopen(full_path, "r");
+    if (!original_file)
+    {
+        printf(ANSI_COLOR_RED "Error: Could not open workouts file.\n" ANSI_COLOR_RESET);
+        return;
+    }
+
+    // Open a temporary file for writing
+    FILE *temp_file = fopen(temp_path, "w");
+    if (!temp_file)
+    {
+        printf(ANSI_COLOR_RED "Error: Could not create temporary file.\n" ANSI_COLOR_RESET);
+        fclose(original_file);
+        return;
+    }
+
+    // Get the number of workouts to remove
+    int workouts_to_remove_count = get_workout_array_length(workouts, 100);
+    if (workouts_to_remove_count == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No workouts to remove.\n" ANSI_COLOR_RESET);
+        fclose(original_file);
+        fclose(temp_file);
+        remove(temp_path);
+        return;
+    }
+
+    // Read line by line from the original file
+    char line[1024];
+    int row = 0;
+    int removed_count = 0;
+
+    while (fgets(line, sizeof(line), original_file))
+    {
+        // Copy the header as-is
+        if (row == 0)
+        {
+            fputs(line, temp_file);
+            row++;
+            continue;
+        }
+
+        // Parse this workout's data
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "",
+             weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+
+        const char *p = line;
+        p = parse_csv_field(workout_id, sizeof(workout_id), p);
+        if (p)
+            p = parse_csv_field(exercise, sizeof(exercise), p);
+        if (p)
+            p = parse_csv_field(sets, sizeof(sets), p);
+        if (p)
+            p = parse_csv_field(reps, sizeof(reps), p);
+        if (p)
+            p = parse_csv_field(weight, sizeof(weight), p);
+        if (p)
+            p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(date, sizeof(date), p);
+        if (p)
+            parse_csv_field(notes, sizeof(notes), p);
+
+        // Check if this workout should be removed
+        bool should_remove = false;
+        for (int i = 0; i < workouts_to_remove_count; i++)
+        {
+            // If both ID and date match, mark for removal
+            if (strcmp(workout_id, workouts[i].id) == 0 &&
+                strcmp(date, workouts[i].date) == 0)
+            {
+                should_remove = true;
+                removed_count++;
+                break;
+            }
+        }
+
+        // If not marked for removal, copy to the new file
+        if (!should_remove)
+        {
+            fputs(line, temp_file);
+        }
+
+        row++;
+    }
+
+    // Close both files
+    fclose(original_file);
+    fclose(temp_file);
+
+    // Replace the original file with the temporary one
+    if (removed_count > 0)
+    {
+        if (remove(full_path) != 0)
+        {
+            printf(ANSI_COLOR_RED "Error: Could not remove the original file.\n" ANSI_COLOR_RESET);
+            remove(temp_path);
+            return;
+        }
+
+        if (rename(temp_path, full_path) != 0)
+        {
+            printf(ANSI_COLOR_RED "Error: Could not rename the temporary file.\n" ANSI_COLOR_RESET);
+            return;
+        }
+
+        printf(ANSI_COLOR_GREEN "Successfully removed %d workout(s).\n" ANSI_COLOR_RESET, removed_count);
+    }
+    else
+    {
+        printf(ANSI_COLOR_YELLOW "No matching workouts found to remove.\n" ANSI_COLOR_RESET);
+        remove(temp_path);
+    }
 }
 
 void print_workouts(const WorkoutLog *workouts)
@@ -180,14 +301,14 @@ void print_workouts(const WorkoutLog *workouts)
     for (int i = 0; i < length; i++)
     {
         printf("| %-2s | %-20s | %-3s | %-3s | %-6s | %-6s | %-10s | %-20s |",
-            workouts[i].id,
-            workouts[i].exercise,
-            workouts[i].sets,
-            workouts[i].reps,
-            workouts[i].weight,
-            workouts[i].time,
-            workouts[i].date,
-            workouts[i].notes);
+               workouts[i].id,
+               workouts[i].exercise,
+               workouts[i].sets,
+               workouts[i].reps,
+               workouts[i].weight,
+               workouts[i].time,
+               workouts[i].date,
+               workouts[i].notes);
         printf("\n");
     }
     printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
