@@ -6,11 +6,25 @@
 
 typedef struct Exercise Exercise;
 typedef struct Config Config;
+typedef struct WorkoutLog WorkoutLog;
+
 typedef enum WeightUnit WeightUnit;
 typedef enum TimeFormat TimeFormat;
 typedef enum DateFormat DateFormat;
 typedef enum ExerciseType ExerciseType;
 typedef enum TimeUnit TimeUnit;
+
+struct WorkoutLog
+{
+    char id[20];
+    char exercise[100];
+    char sets[20];
+    char reps[20];
+    char weight[50];
+    char time[20];
+    char date[20];
+    char notes[200];
+};
 
 struct Exercise
 {

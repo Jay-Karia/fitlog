@@ -226,7 +226,6 @@ void safe_strncpy(char *dest, const char *src, size_t dest_size)
     dest[dest_size - 1] = '\0';
 }
 
-// Another helper for parsing a single field
 const char *parse_csv_field(char *dest, size_t dest_size, const char *line)
 {
     const char *comma = strchr(line, ',');
@@ -248,36 +247,33 @@ const char *parse_csv_field(char *dest, size_t dest_size, const char *line)
     }
 }
 
-// This is the updated version of your function
-bool print_workout_details_from_date(const char *input_date)
+WorkoutLog *get_workouts_by_date(const char *input_date)
 {
+    WorkoutLog *workouts = malloc(100 * sizeof(WorkoutLog));
+    
     char full_path[256];
     sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
     FILE *fp = fopen(full_path, "r");
     if (fp == NULL)
     {
         printf(ANSI_COLOR_RED "Error: Workouts file not found. Please log some workouts first.\n" ANSI_COLOR_RESET);
-        return false;
+        return NULL;
     }
 
-    char line[1024]; // Increased buffer size for safety
+    char line[1024];
     // Skip header line
     fgets(line, sizeof(line), fp);
 
     bool found = false;
     int count = 0;
 
-    // --- Loop through each workout entry in the file ---
     while (fgets(line, sizeof(line), fp))
     {
-        // Your variables for storing the parsed data
         char workout_id[20] = "", exercise_name[100] = "";
         char sets[20] = "", reps[20] = "", weight[50] = "", date[20] = "", notes[200] = "", time[20] = "";
 
-        // A more robust way to remove trailing newline characters (\n or \r\n)
         line[strcspn(line, "\r\n")] = 0;
 
-        // --- Start of NEW, safer parsing logic ---
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -294,9 +290,7 @@ bool print_workout_details_from_date(const char *input_date)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
-        // --- End of parsing logic ---
-
-        // Your existing logic for checking the date and printing remains the same
+            
         if (strcmp(input_date, date) == 0)
         {
             // Print header for one time only
@@ -307,6 +301,16 @@ bool print_workout_details_from_date(const char *input_date)
                        "ID", "Exercise", "Sets", "Reps", "Weight", "Time", "Date", "Notes");
                 printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
             }
+
+            // Update the array
+            safe_strncpy(workouts[count].id, workout_id, sizeof(workouts[count].id));
+            safe_strncpy(workouts[count].exercise, exercise_name, sizeof(workouts[count].exercise));
+            safe_strncpy(workouts[count].sets, sets, sizeof(workouts[count].sets));
+            safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
+            safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
+            safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+            safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
+            safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
 
             // Print with alternating gray colors for values
             printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-5s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-15s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-10s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-10s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " |\n",
@@ -334,10 +338,10 @@ bool print_workout_details_from_date(const char *input_date)
     }
 
     fclose(fp);
-    return found;
+    return workouts;
 }
 
-void remove_workouts_by_date(const char *date)
+void remove_workouts_by_date(const WorkoutLog *workouts)
 {
-    printf(date);
+    printf("Removing workouts by date...\n");
 }

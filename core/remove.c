@@ -147,6 +147,7 @@ int cmd_remove(int argc, char *argv[])
     // Handle log removal
     if (strcmp(type, "log") == 0)
     {
+        WorkoutLog *workouts = NULL;
         // Remove by id
         if (strlen(id) > 0)
         {
@@ -161,8 +162,9 @@ int cmd_remove(int argc, char *argv[])
         else if (strlen(standard_date_str) > 0)
         {
             // Remove by date
-            bool found = print_workout_details_from_date(standard_date_str);
-            if (!found && strlen(id) == 0)
+            workouts = get_workouts_by_date(standard_date_str);
+
+            if (workouts == NULL && strlen(id) == 0)
             {
                 return 1; // No logs found for date
             }
@@ -182,7 +184,7 @@ int cmd_remove(int argc, char *argv[])
             }
             else if (strlen(date) > 0)
             {
-                remove_workouts_by_date(date);
+                remove_workouts_by_date(workouts);
             }
         }
         else
