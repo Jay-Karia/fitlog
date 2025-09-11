@@ -85,6 +85,53 @@ void get_workouts_by_id(const char *id, WorkoutLog *workouts)
 
 void get_workouts_by_date(const char *date, WorkoutLog *workouts)
 {
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (!fp)
+        return;
+    char line[1024];
+    int count = 0;
+    int row = 0;
+    while (fgets(line, sizeof(line), fp))
+    {
+        if (row == 0)
+        {
+            row++;
+            continue;
+        } // skip header
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date_field[20] = "", notes[200] = "";
+        const char *p = line;
+        p = parse_csv_field(workout_id, sizeof(workout_id), p);
+        if (p)
+            p = parse_csv_field(exercise, sizeof(exercise), p);
+        if (p)
+            p = parse_csv_field(sets, sizeof(sets), p);
+        if (p)
+            p = parse_csv_field(reps, sizeof(reps), p);
+        if (p)
+            p = parse_csv_field(weight, sizeof(weight), p);
+        if (p)
+            p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(date_field, sizeof(date_field), p);
+        if (p)
+            parse_csv_field(notes, sizeof(notes), p);
+        if (strcmp(date_field, date) == 0)
+        {
+            safe_strncpy(workouts[count].id, workout_id, sizeof(workouts[count].id));
+            safe_strncpy(workouts[count].exercise, exercise, sizeof(workouts[count].exercise));
+            safe_strncpy(workouts[count].sets, sets, sizeof(workouts[count].sets));
+            safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
+            safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
+            safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+            safe_strncpy(workouts[count].date, date_field, sizeof(workouts[count].date));
+            safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
+            count++;
+        }
+        row++;
+    }
+    fclose(fp);
 }
 
 void remove_workouts(const WorkoutLog *workouts)
@@ -109,5 +156,5 @@ void print_workouts(const WorkoutLog *workouts)
                workouts[i].date,
                workouts[i].notes);
     }
-    printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+");
+    printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
 }
