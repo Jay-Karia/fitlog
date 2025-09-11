@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "fitlog.h"
 
+// TODO: add config command
+// TODO: add import/export functionality
+// TODO: expand config options
+// TODO: print .fitlog directory from command
+
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
