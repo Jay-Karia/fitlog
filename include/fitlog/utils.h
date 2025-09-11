@@ -31,10 +31,10 @@ bool print_exercise_details_from_id(const char *id);
 void remove_exercise_by_id(const char *id);
 
 // Workout utils
-bool print_workout_details_from_id(const char *id);
-void remove_workout_by_id(const char *id);
-WorkoutLog* get_workouts_by_date(const char *date);
-void remove_workouts_by_date(const WorkoutLog *workouts);
+void get_workouts_by_id(const char *id, WorkoutLog *workouts);
+void get_workouts_by_date(const char *date, WorkoutLog *workouts);
+void remove_workouts(const WorkoutLog *workouts);
+void print_workouts(const WorkoutLog *workouts);
 
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);

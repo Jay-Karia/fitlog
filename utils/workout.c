@@ -1,222 +1,9 @@
+#include <stddef.h>
+#include <string.h>
 #include <stdio.h>
 #include "fitlog.h"
 
 // TODO: fix table dynamic border spacing
-
-bool print_workout_details_from_id(const char *id)
-{
-    char full_path[256];
-    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
-    FILE *fp = fopen(full_path, "r");
-    if (fp == NULL)
-    {
-        printf(ANSI_COLOR_RED "Error: Workouts file not found. Please log some workouts first.\n" ANSI_COLOR_RESET);
-        return false;
-    }
-
-    char line[512];
-    // Skip header line
-    fgets(line, sizeof(line), fp);
-    bool found = false;
-
-    while (fgets(line, sizeof(line), fp))
-    {
-        // Remove newline character if present
-        line[strcspn(line, "\n")] = 0;
-
-        char workout_id[20], exercise_name[100], exercise_type[20], sets[20], reps[20], weight[50], date[20], notes[200];
-
-        // Initialize all fields to empty strings
-        strcpy(workout_id, "");
-        strcpy(exercise_name, "");
-        strcpy(exercise_type, "");
-        strcpy(sets, "");
-        strcpy(reps, "");
-        strcpy(weight, "");
-        strcpy(date, "");
-        strcpy(notes, "");
-
-        // Parse workout CSV: ID,Name,Type,Sets,Reps,Weight,Date,Notes
-        // Use a more robust parsing approach
-        char *token = strtok(line, ",");
-        int field = 0;
-
-        while (token != NULL && field < 8)
-        {
-            switch (field)
-            {
-            case 0:
-                strncpy(workout_id, token, sizeof(workout_id) - 1);
-                break;
-            case 1:
-                strncpy(exercise_name, token, sizeof(exercise_name) - 1);
-                break;
-            case 2:
-                strncpy(exercise_type, token, sizeof(exercise_type) - 1);
-                break;
-            case 3:
-                strncpy(sets, token, sizeof(sets) - 1);
-                break;
-            case 4:
-                strncpy(reps, token, sizeof(reps) - 1);
-                break;
-            case 5:
-                strncpy(weight, token, sizeof(weight) - 1);
-                break;
-            case 6:
-                strncpy(date, token, sizeof(date) - 1);
-                break;
-            case 7:
-                strncpy(notes, token, sizeof(notes) - 1);
-                break;
-            }
-            token = strtok(NULL, ",");
-            field++;
-        }
-
-        if (strcmp(workout_id, id) == 0)
-        {
-            printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
-            printf("| %-6s | %-20s | %-6s | %-5s | %-15s | %-10s | %-10s | %-20s |\n",
-                   "ID", "Exercise", "Sets", "Reps", "Weight", "Time", "Date", "Notes");
-            printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
-
-            // Print with alternating gray colors for values
-            printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-5s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-15s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-10s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-10s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " |\n",
-                   workout_id,
-                   exercise_name,
-                   exercise_type,
-                   (strlen(sets) == 0) ? "none" : sets,
-                   (strlen(reps) == 0) ? "none" : reps,
-                   (strlen(weight) == 0) ? "none" : weight,
-                   (strlen(date) == 0) ? "none" : date,
-                   (strlen(notes) == 0) ? "none" : notes);
-
-            printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
-            found = true;
-            break;
-        }
-    }
-
-    fclose(fp);
-
-    if (!found)
-    {
-        printf(ANSI_COLOR_RED "No workout found with ID: %s\n" ANSI_COLOR_RESET, id);
-        return false;
-    }
-
-    return true;
-}
-
-void remove_workout_by_id(const char *id)
-{
-    char full_path[256];
-    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
-
-    // Check if workouts file exists
-    FILE *fp = fopen(full_path, "r");
-    if (fp == NULL)
-    {
-        printf(ANSI_COLOR_RED "Error: Workouts file not found. Please log some workouts first.\n" ANSI_COLOR_RESET);
-        return;
-    }
-
-    // Create temporary file in the same directory as the original
-    char temp_path[256];
-    sprintf(temp_path, "%s/temp_workouts.csv", FITLOG_DIR);
-    FILE *temp_fp = fopen(temp_path, "w");
-    if (temp_fp == NULL)
-    {
-        printf(ANSI_COLOR_RED "Error: Could not create temporary file for removal operation.\n" ANSI_COLOR_RESET);
-        fclose(fp);
-        return;
-    }
-
-    char line[512];
-    bool found = false;
-    char exercise_name[100];
-    char date[20];
-
-    // Copy header line
-    if (fgets(line, sizeof(line), fp))
-    {
-        fputs(line, temp_fp);
-    }
-
-    // Process each line
-    while (fgets(line, sizeof(line), fp))
-    {
-        // Create a copy of the line for parsing (since strtok modifies the original)
-        char line_copy[512];
-        strcpy(line_copy, line);
-
-        // Remove newline character if present
-        line_copy[strcspn(line_copy, "\n")] = 0;
-
-        char workout_id[20];
-        strcpy(workout_id, "");
-        strcpy(exercise_name, "");
-        strcpy(date, "");
-
-        // Parse to get workout ID, exercise name, and date for the success message
-        char *token = strtok(line_copy, ",");
-        int field = 0;
-
-        while (token != NULL && field < 8)
-        {
-            switch (field)
-            {
-            case 0:
-                strncpy(workout_id, token, sizeof(workout_id) - 1);
-                break;
-            case 1:
-                strncpy(exercise_name, token, sizeof(exercise_name) - 1);
-                break;
-            case 6:
-                strncpy(date, token, sizeof(date) - 1);
-                break;
-            }
-            token = strtok(NULL, ",");
-            field++;
-        }
-
-        if (strcmp(workout_id, id) == 0)
-        {
-            found = true;
-            printf(ANSI_COLOR_GREEN "Workout log for '%s' on %s (ID: %s) has been removed successfully.\n" ANSI_COLOR_RESET,
-                   exercise_name, date, id);
-            continue; // Skip this line to remove it
-        }
-        fputs(line, temp_fp);
-    }
-
-    fclose(fp);
-    fclose(temp_fp);
-
-    if (found)
-    {
-        // Replace original file with temp file
-        if (remove(full_path) != 0)
-        {
-            printf(ANSI_COLOR_RED "Error: Could not remove original workouts file.\n" ANSI_COLOR_RESET);
-            remove(temp_path); // Clean up temp file
-            return;
-        }
-
-        if (rename(temp_path, full_path) != 0)
-        {
-            printf(ANSI_COLOR_RED "Error: Could not update workouts file.\n" ANSI_COLOR_RESET);
-            return;
-        }
-    }
-    else
-    {
-        // No workout found, delete temp file and show error
-        remove(temp_path);
-        printf(ANSI_COLOR_RED "Error: No workout log found with ID '%s'.\n" ANSI_COLOR_RESET, id);
-    }
-}
 
 void safe_strncpy(char *dest, const char *src, size_t dest_size)
 {
@@ -233,51 +20,40 @@ const char *parse_csv_field(char *dest, size_t dest_size, const char *line)
     {
         size_t len = comma - line;
         if (len >= dest_size)
-        {
             len = dest_size - 1;
-        }
         strncpy(dest, line, len);
         dest[len] = '\0';
         return comma + 1;
     }
     else
-    { // Last field
+    {
         safe_strncpy(dest, line, dest_size);
         return NULL;
     }
 }
 
-WorkoutLog *get_workouts_by_date(const char *input_date)
+void get_workouts_by_id(const char *id, WorkoutLog *workouts)
 {
-    WorkoutLog *workouts = malloc(100 * sizeof(WorkoutLog));
-    
     char full_path[256];
     sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
     FILE *fp = fopen(full_path, "r");
-    if (fp == NULL)
-    {
-        printf(ANSI_COLOR_RED "Error: Workouts file not found. Please log some workouts first.\n" ANSI_COLOR_RESET);
-        return NULL;
-    }
-
+    if (!fp)
+        return;
     char line[1024];
-    // Skip header line
-    fgets(line, sizeof(line), fp);
-
-    bool found = false;
     int count = 0;
-
+    int row = 0;
     while (fgets(line, sizeof(line), fp))
     {
-        char workout_id[20] = "", exercise_name[100] = "";
-        char sets[20] = "", reps[20] = "", weight[50] = "", date[20] = "", notes[200] = "", time[20] = "";
-
-        line[strcspn(line, "\r\n")] = 0;
-
+        if (row == 0)
+        {
+            row++;
+            continue;
+        } // skip header
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
-            p = parse_csv_field(exercise_name, sizeof(exercise_name), p);
+            p = parse_csv_field(exercise, sizeof(exercise), p);
         if (p)
             p = parse_csv_field(sets, sizeof(sets), p);
         if (p)
@@ -290,58 +66,48 @@ WorkoutLog *get_workouts_by_date(const char *input_date)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
-            
-        if (strcmp(input_date, date) == 0)
+        if (strcmp(workout_id, id) == 0)
         {
-            // Print header for one time only
-            if (count == 0)
-            {
-                printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
-                printf("| %-6s | %-20s | %-6s | %-5s | %-15s | %-10s | %-10s | %-20s |\n",
-                       "ID", "Exercise", "Sets", "Reps", "Weight", "Time", "Date", "Notes");
-                printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
-            }
-
-            // Update the array
             safe_strncpy(workouts[count].id, workout_id, sizeof(workouts[count].id));
-            safe_strncpy(workouts[count].exercise, exercise_name, sizeof(workouts[count].exercise));
+            safe_strncpy(workouts[count].exercise, exercise, sizeof(workouts[count].exercise));
             safe_strncpy(workouts[count].sets, sets, sizeof(workouts[count].sets));
             safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
             safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
             safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
             safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
             safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
-
-            // Print with alternating gray colors for values
-            printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-5s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-15s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-10s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-10s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " |\n",
-                   workout_id,
-                   exercise_name,
-                   sets,
-                   reps,
-                   weight,
-                   time,
-                   date,
-                   notes);
-            found = true;
             count++;
         }
+        row++;
     }
-
-    if (found)
-    {
-        printf("+--------+----------------------+--------+-------+-----------------+------------+------------+----------------------+\n");
-        printf(ANSI_COLOR_GREEN "Total logs found for date %s: %d\n" ANSI_COLOR_RESET, input_date, count);
-    }
-    else
-    {
-        printf(ANSI_COLOR_RED "No workout logs found for date: %s\n" ANSI_COLOR_RESET, input_date);
-    }
-
     fclose(fp);
-    return workouts;
 }
 
-void remove_workouts_by_date(const WorkoutLog *workouts)
+void get_workouts_by_date(const char *date, WorkoutLog *workouts)
 {
-    printf("Removing workouts by date...\n");
+}
+
+void remove_workouts(const WorkoutLog *workouts)
+{
+}
+
+void print_workouts(const WorkoutLog *workouts)
+{
+    printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
+    printf("| %-2s | %-20s | %-3s | %-3s | %-6s | %-6s | %-10s | %-20s |\n",
+           "ID", "Exercise", "Set", "Rep", "Weight", "Time", "Date", "Notes");
+    printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
+
+    for (int i = 0; workouts[i].id[0] != '\0'; i++) {
+        printf("| %-2s | %-20s | %-3s | %-3s | %-6s | %-6s | %-10s | %-20s |\n",
+               workouts[i].id,
+               workouts[i].exercise,
+               workouts[i].sets,
+               workouts[i].reps,
+               workouts[i].weight,
+               workouts[i].time,
+               workouts[i].date,
+               workouts[i].notes);
+    }
+    printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+");
 }

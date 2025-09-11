@@ -44,7 +44,6 @@ int cmd_remove(int argc, char *argv[])
     // Get the remove criteria
     char id[20] = "";
     char date[20] = "";
-    char standard_date_str[20] = "";
 
     for (int i = 2; i < argc; i++)
     {
@@ -76,36 +75,6 @@ int cmd_remove(int argc, char *argv[])
         fprintf(stderr, ANSI_COLOR_RED "Error: Provide only one of --id or --date, not both.\n" ANSI_COLOR_RESET);
         return 1;
     }
-
-    // Get date format from config
-    enum DateFormat config_date_format = get_config_date_format();
-
-    char *date_format_str;
-    switch (config_date_format)
-    {
-    case DATE_DD_MM_YYYY:
-        date_format_str = "DD-MM-YYYY";
-        break;
-    case DATE_MM_DD_YYYY:
-        date_format_str = "MM-DD-YYYY";
-        break;
-    case DATE_YYYY_MM_DD:
-        date_format_str = "YYYY-MM-DD";
-        break;
-    default:
-        date_format_str = "Unknown";
-        break;
-    }
-
-    // Check the date format
-    if (!is_valid_date_format(date, config_date_format))
-    {
-        fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
-        return 1;
-    }
-
-    // Conver the date to standard format
-    strcpy(standard_date_str, convert_date_to_standard(date, config_date_format));
 
     // Handle exercise removal
     if (strcmp(type, "exercise") == 0)
@@ -147,45 +116,33 @@ int cmd_remove(int argc, char *argv[])
     // Handle log removal
     if (strcmp(type, "log") == 0)
     {
-        WorkoutLog *workouts = NULL;
-        // Remove by id
+
+        WorkoutLog workouts[100];
+        int workout_count = 0;
+
+        // Get workouts by id
         if (strlen(id) > 0)
         {
-            // Print the exercise details for confirmation
-            bool found = print_workout_details_from_id(id);
-            if (!found && strlen(standard_date_str) == 0)
-            {
-                return 1; // Log not found
-            }
+            get_workouts_by_id(id, workouts);
         }
-        // Remove by date
-        else if (strlen(standard_date_str) > 0)
-        {
-            // Remove by date
-            workouts = get_workouts_by_date(standard_date_str);
 
-            if (workouts == NULL && strlen(id) == 0)
-            {
-                return 1; // No logs found for date
-            }
+        // Get workouts by date
+        if (strlen(date) > 0)
+        {
+            get_workouts_by_date(date, workouts);
         }
+
+        print_workouts(workouts);
 
         // Ask for confirmation
         char confirmation[10];
         printf(ANSI_COLOR_RED "Are you sure you want to remove logs? (y/N): " ANSI_COLOR_RESET);
         fgets(confirmation, sizeof(confirmation), stdin);
 
-        // Check the response
+        // Remove workouts
         if (confirmation[0] == 'y' || confirmation[0] == 'Y')
         {
-            if (strlen(id) > 0)
-            {
-                remove_workout_by_id(id);
-            }
-            else if (strlen(date) > 0)
-            {
-                remove_workouts_by_date(workouts);
-            }
+            remove_workouts(workouts);
         }
         else
         {
