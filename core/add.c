@@ -40,14 +40,14 @@ int cmd_add(int argc, char *argv[])
             return 1;
         }
     }
-    
+
     // Get the date format
     enum DateFormat date_format = get_config_date_format();
-    
+
     // Get the date argument
     char date_str[20] = "";
     char standard_date_str[20];
-    
+
     for (int i = 2; i < argc; i++)
     {
         if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
@@ -64,20 +64,20 @@ int cmd_add(int argc, char *argv[])
     }
     else
     {
-        
+
         char *date_format_str;
         switch (date_format)
         {
-            case DATE_DD_MM_YYYY:
+        case DATE_DD_MM_YYYY:
             date_format_str = "DD-MM-YYYY";
             break;
-            case DATE_MM_DD_YYYY:
+        case DATE_MM_DD_YYYY:
             date_format_str = "MM-DD-YYYY";
             break;
-            case DATE_YYYY_MM_DD:
+        case DATE_YYYY_MM_DD:
             date_format_str = "YYYY-MM-DD";
             break;
-            default:
+        default:
             date_format_str = "Unknown";
             break;
         }
@@ -88,11 +88,10 @@ int cmd_add(int argc, char *argv[])
             fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
             return 1;
         }
-        
     }
     // Check the earguments based on exercise type
     enum ExerciseType type = check_exercise_type(exercise_name);
-    
+
     // Update the date string to standard format (YYYY-MM-DD)
     strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
 
@@ -106,20 +105,20 @@ int cmd_add(int argc, char *argv[])
             notes[sizeof(notes) - 1] = '\0';
         }
     }
-    
+
     // Get the name of exercise if shortcut was given
     if (is_shortcut)
     {
         strcpy(exercise_name, get_exercise_name_from_shortcut(exercise_name));
     }
-    
+
     if (type == TYPE_SETS)
     {
         // Check for reps and weight options
         int reps = -1;
         int sets = -1;
         float weight = -1.0;
-        
+
         for (int i = 2; i < argc; i++)
         {
             if (strcmp(argv[i], "--reps") == 0 && i + 1 < argc)
@@ -150,7 +149,7 @@ int cmd_add(int argc, char *argv[])
                 return 1;
             }
         }
-        
+
         // Check if both reps and weight are provided
         if (reps == -1 || weight == -1.0 || sets == -1)
         {
@@ -162,15 +161,15 @@ int cmd_add(int argc, char *argv[])
         char *weight_unit_str = get_config_weight_unit() == UNIT_KG ? "kg" : "lbs";
         char weight_str[50];
         snprintf(weight_str, sizeof(weight_str), "%.2f %s", weight, weight_unit_str);
-        
+
         // Get the id
         int next_id = get_next_exercise_id();
         increment_exercise_id();
-        
+
         // Update the database
         char db_path[256];
         sprintf(db_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
-        
+
         FILE *fp = fopen(db_path, "a");
         if (fp == NULL)
         {

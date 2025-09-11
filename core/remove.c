@@ -129,7 +129,54 @@ int cmd_remove(int argc, char *argv[])
         // Get workouts by date
         if (strlen(date) > 0)
         {
-            get_workouts_by_date(date, workouts);
+            // Get the date format from config
+            enum DateFormat date_format = get_config_date_format();
+            char standard_date_str[20];
+
+            // Use today date if not given date
+            if (strlen(date) == 0)
+            {
+                strcpy(date, get_today_date(date_format));
+            }
+            else
+            {
+
+                char *date_format_str;
+                switch (date_format)
+                {
+                case DATE_DD_MM_YYYY:
+                    date_format_str = "DD-MM-YYYY";
+                    break;
+                case DATE_MM_DD_YYYY:
+                    date_format_str = "MM-DD-YYYY";
+                    break;
+                case DATE_YYYY_MM_DD:
+                    date_format_str = "YYYY-MM-DD";
+                    break;
+                default:
+                    date_format_str = "Unknown";
+                    break;
+                }
+
+                // Check the date format
+                if (!is_valid_date_format(date, date_format))
+                {
+                    fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
+                    return 1;
+                }
+            }
+
+            // Update the date string to standard format (YYYY-MM-DD)
+            strcpy(standard_date_str, convert_date_to_standard(date, date_format));
+
+            get_workouts_by_date(standard_date_str, workouts);
+        }
+
+        // Throw an error if no workouts found
+        if (strlen(workouts[0].id) == 0)
+        {
+            fprintf(stderr, ANSI_COLOR_RED "No workouts found matching the given criteria.\n" ANSI_COLOR_RESET);
+            return 1;
         }
 
         print_workouts(workouts);
