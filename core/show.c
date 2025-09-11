@@ -78,6 +78,16 @@ int cmd_show(int argc, char *argv[])
             fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --id and --last cannot be used together.\n" ANSI_COLOR_RESET);
             return 1;
         }
+
+        // Get exercise details
+        if (strlen(id) > 0)
+        {
+            return show_exercise_by_id(id);
+        }
+        else if (last_n != -1)
+        {
+            return show_last_n_exercises(last_n);
+        }
     }
     if (strcmp(type, "log") == 0)
     {

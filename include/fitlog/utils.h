@@ -29,6 +29,8 @@ bool shortcut_exists(const char *shortcut);
 char *get_exercise_name_from_shortcut(const char *shortcut);
 bool print_exercise_details_from_id(const char *id);
 void remove_exercise_by_id(const char *id);
+int show_exercise_by_id(const char *id);
+int show_last_n_exercises(int n);
 
 // Workout utils
 void get_workouts_by_id(const char *id, WorkoutLog *workouts);

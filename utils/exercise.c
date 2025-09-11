@@ -313,3 +313,90 @@ void remove_exercise_by_id(const char *id)
         printf(ANSI_COLOR_RED "Error: No exercise found with ID '%s'.\n" ANSI_COLOR_RESET, id);
     }
 }
+
+int show_exercise_by_id(const char *id)
+{
+    if (print_exercise_details_from_id(id))
+    {
+        return 0; // Success
+    }
+    else
+    {
+        return 1; // Failure
+    }
+}
+
+int show_last_n_exercises(int n)
+{
+    if (n <= 0)
+    {
+        printf(ANSI_COLOR_RED "Error: Please provide a positive integer for --last.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Exercises file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    // First, count the total number of exercises
+    int total_exercises = 0;
+    char line[256];
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+    while (fgets(line, sizeof(line), fp))
+    {
+        total_exercises++;
+    }
+
+    if (total_exercises == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No exercises found to display.\n" ANSI_COLOR_RESET);
+        fclose(fp);
+        return 0;
+    }
+
+    // Calculate how many exercises to skip
+    int to_skip = total_exercises - n;
+    if (to_skip < 0)
+    {
+        to_skip = 0; // If n is greater than total, show all
+    }
+
+    // Reset file pointer to beginning and skip the required lines
+    fseek(fp, 0, SEEK_SET);
+    fgets(line, sizeof(line), fp); // Skip header
+
+    for (int i = 0; i < to_skip; i++)
+    {
+        fgets(line, sizeof(line), fp);
+    }
+
+    // Print header for display
+    printf("+--------+----------------------+----------+----------------------+--------+\n");
+    printf("| %-6s | %-20s | %-8s | %-20s | %-6s |\n",
+           "ID", "Name", "Shortcut", "Description", "Type");
+    printf("+--------+----------------------+----------+----------------------+--------+\n");
+
+    // Now print the remaining exercises
+    while (fgets(line, sizeof(line), fp))
+    {
+        char exercise_id[20], exercise_name[100], shortcut[100], description[200], type[20];
+        sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s",
+               exercise_id, exercise_name, shortcut, description, type);
+        // Print with alternating gray colors for values
+        printf("| " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-8s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-20s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-6s" ANSI_COLOR_RESET " |\n",
+               exercise_id,
+               exercise_name,
+               (strcmp(shortcut, "(null)") == 0) ? "none" : shortcut,
+               (strcmp(description, "(null)") == 0) ? "none" : description,
+               type);
+        printf("+--------+----------------------+----------+----------------------+--------+\n");
+    }
+    fclose(fp);
+    return 0;
+}
