@@ -1,0 +1,21 @@
+{
+  "tasks": [
+    {
+      "label": "build fitlog",
+      "type": "shell",
+      "command": "make",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ],
+  "version": "2.0.0"
+}

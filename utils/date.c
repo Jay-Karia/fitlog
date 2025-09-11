@@ -78,25 +78,78 @@ char *convert_date_to_standard(const char *input_date, const enum DateFormat inp
 {
     static char standard_date[11];
     int day, month, year;
+
+    // Check for null input
+    if (input_date == NULL)
+    {
+        return NULL;
+    }
+
+    // Initialize variables to avoid garbage values
+    day = month = year = 0;
+
     if (input_format == DATE_DD_MM_YYYY)
     {
-        if (sscanf(input_date, "%d-%d-%d", &day, &month, &year) != 3)
+        // Try both '-' and '/' separators for DD-MM-YYYY or DD/MM/YYYY
+        if (sscanf(input_date, "%d-%d-%d", &day, &month, &year) != 3 &&
+            sscanf(input_date, "%d/%d/%d", &day, &month, &year) != 3)
+        {
             return NULL;
+        }
     }
     else if (input_format == DATE_MM_DD_YYYY)
     {
-        if (sscanf(input_date, "%d-%d-%d", &month, &day, &year) != 3)
+        // Try both '-' and '/' separators for MM-DD-YYYY or MM/DD/YYYY
+        if (sscanf(input_date, "%d-%d-%d", &month, &day, &year) != 3 &&
+            sscanf(input_date, "%d/%d/%d", &month, &day, &year) != 3)
+        {
             return NULL;
+        }
     }
     else if (input_format == DATE_YYYY_MM_DD)
     {
-        if (sscanf(input_date, "%d-%d-%d", &year, &month, &day) != 3)
+        // Try both '-' and '/' separators for YYYY-MM-DD or YYYY/MM/DD
+        if (sscanf(input_date, "%d-%d-%d", &year, &month, &day) != 3 &&
+            sscanf(input_date, "%d/%d/%d", &year, &month, &day) != 3)
+        {
             return NULL;
+        }
     }
     else
     {
         return NULL;
     }
-    snprintf(standard_date, sizeof(standard_date), "%04d-%02d-%02d", year, month, day);
+
+    // Validate parsed values
+    if (year < 1900 || year > 2100 ||
+        month < 1 || month > 12 ||
+        day < 1 || day > 31)
+    {
+        return NULL;
+    }
+
+    // Additional validation for days in month
+    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // Check for leap year
+    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+    {
+        days_in_month[1] = 29;
+    }
+
+    if (day > days_in_month[month - 1])
+    {
+        return NULL;
+    }
+
+    // Use snprintf with proper bounds checking
+    int result = snprintf(standard_date, sizeof(standard_date), "%04d-%02d-%02d", year, month, day);
+
+    // Check if snprintf succeeded
+    if (result < 0 || result >= (int)sizeof(standard_date))
+    {
+        return NULL;
+    }
+
     return standard_date;
 }
