@@ -38,12 +38,15 @@ void get_workouts_by_id(const char *id, WorkoutLog *workouts);
 void get_workouts_by_date(const char *date, WorkoutLog *workouts);
 void remove_workouts(const WorkoutLog *workouts);
 void print_workouts(const WorkoutLog *workouts);
+int show_workout_by_id(const char *id);
+int show_last_n_workouts(int n);
+int show_workouts_in_date_range(const char *from_date, const char *to_date);
+int show_all_workouts(void);
 
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);
 char *get_today_date(const enum DateFormat required_format);
 char *convert_date_to_standard(const char *input_date, const enum DateFormat input_format);
-
-// Display utils
+char *get_date_in_format(const char *standard_date, const enum DateFormat required_format);
 
 #endif

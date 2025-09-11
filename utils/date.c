@@ -57,11 +57,11 @@ char *get_today_date(const enum DateFormat required_format)
     struct tm *t = localtime(&now);
     if (required_format == DATE_DD_MM_YYYY)
     {
-        strftime(date_str, sizeof(date_str), "%d/%m/%Y", t);
+        strftime(date_str, sizeof(date_str), "%d-%m-%Y", t);
     }
     else if (required_format == DATE_MM_DD_YYYY)
     {
-        strftime(date_str, sizeof(date_str), "%m/%d/%Y", t);
+        strftime(date_str, sizeof(date_str), "%m-%d-%Y", t);
     }
     else if (required_format == DATE_YYYY_MM_DD)
     {
@@ -152,4 +152,64 @@ char *convert_date_to_standard(const char *input_date, const enum DateFormat inp
     }
 
     return standard_date;
+}
+
+char *get_date_in_format(const char *standard_date, const enum DateFormat required_format)
+{
+    static char date_str[11];
+    int day, month, year;
+
+    // Check for null input
+    if (standard_date == NULL)
+    {
+        return NULL;
+    }
+
+    // Parse the standard date (YYYY-MM-DD)
+    if (sscanf(standard_date, "%d-%d-%d", &year, &month, &day) != 3)
+    {
+        return NULL;
+    }
+
+    // Validate parsed values
+    if (year < 1900 || year > 2100 ||
+        month < 1 || month > 12 ||
+        day < 1 || day > 31)
+    {
+        return NULL;
+    }
+
+    // Additional validation for days in month
+    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // Check for leap year
+    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+    {
+        days_in_month[1] = 29;
+    }
+
+    if (day > days_in_month[month - 1])
+    {
+        return NULL;
+    }
+
+    // Format the date based on the required format
+    if (required_format == DATE_DD_MM_YYYY)
+    {
+        snprintf(date_str, sizeof(date_str), "%02d-%02d-%04d", day, month, year);
+    }
+    else if (required_format == DATE_MM_DD_YYYY)
+    {
+        snprintf(date_str, sizeof(date_str), "%02d-%02d-%04d", month, day, year);
+    }
+    else if (required_format == DATE_YYYY_MM_DD)
+    {
+        snprintf(date_str, sizeof(date_str), "%04d-%02d-%02d", year, month, day);
+    }
+    else
+    {
+        return NULL;
+    }
+
+    return date_str;
 }

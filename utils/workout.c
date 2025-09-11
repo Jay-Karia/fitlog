@@ -313,3 +313,235 @@ void print_workouts(const WorkoutLog *workouts)
     }
     printf("+----+----------------------+-----+-----+--------+--------+------------+----------------------+\n");
 }
+
+int show_workout_by_id(const char *id)
+{
+    WorkoutLog workouts[100] = {0};
+    get_workouts_by_id(id, workouts);
+    int length = get_workout_array_length(workouts, 100);
+    if (length == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No workouts found with ID '%s'.\n" ANSI_COLOR_RESET, id);
+        return 0;
+    }
+    print_workouts(workouts);
+    return 0;
+}
+
+int show_last_n_workouts(int n)
+{
+    if (n <= 0)
+    {
+        printf(ANSI_COLOR_RED "Error: Please provide a positive integer for --last.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Workouts file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    // First, count the total number of workouts
+    int total_workouts = 0;
+    char line[1024];
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+    while (fgets(line, sizeof(line), fp))
+    {
+        total_workouts++;
+    }
+
+    if (total_workouts == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No workouts found to display.\n" ANSI_COLOR_RESET);
+        fclose(fp);
+        return 0;
+    }
+
+    // Calculate how many workouts to skip
+    int to_skip = total_workouts - n;
+    if (to_skip < 0)
+    {
+        to_skip = 0; // If n is greater than total, show all
+    }
+
+    // Reset file pointer to beginning and skip the required lines
+    fseek(fp, 0, SEEK_SET);
+    fgets(line, sizeof(line), fp); // Skip header
+
+    for (int i = 0; i < to_skip; i++)
+    {
+        fgets(line, sizeof(line), fp);
+    }
+
+    // Prepare an array to hold the workouts
+    WorkoutLog workouts[100] = {0};
+    int count = 0;
+
+    // Now read the remaining workouts into the array
+    while (fgets(line, sizeof(line), fp) && count < 100)
+    {
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        const char *p = line;
+        p = parse_csv_field(workout_id, sizeof(workout_id), p);
+        if (p)
+            p = parse_csv_field(exercise, sizeof(exercise), p);
+        if (p)
+            p = parse_csv_field(sets, sizeof(sets), p);
+        if (p)
+            p = parse_csv_field(reps, sizeof(reps), p);
+        if (p)
+            p = parse_csv_field(weight, sizeof(weight), p);
+        if (p)
+            p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(date, sizeof(date), p);
+        if (p)
+            parse_csv_field(notes, sizeof(notes), p);
+        safe_strncpy(workouts[count].id, workout_id, sizeof(workouts[count].id));
+        safe_strncpy(workouts[count].exercise, exercise, sizeof(workouts[count].exercise));
+        safe_strncpy(workouts[count].sets, sets, sizeof(workouts[count].sets));
+        safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
+        safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
+        safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+        safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
+        safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
+        count++;
+    }
+    fclose(fp);
+    print_workouts(workouts);
+    return 0;
+}
+
+int show_all_workouts()
+{
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Workouts file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    // Prepare an array to hold the workouts
+    WorkoutLog workouts[100] = {0};
+    int count = 0;
+    char line[1024];
+
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+
+    // Read all workouts into the array
+    while (fgets(line, sizeof(line), fp) && count < 100)
+    {
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        const char *p = line;
+        p = parse_csv_field(workout_id, sizeof(workout_id), p);
+        if (p)
+            p = parse_csv_field(exercise, sizeof(exercise), p);
+        if (p)
+            p = parse_csv_field(sets, sizeof(sets), p);
+        if (p)
+            p = parse_csv_field(reps, sizeof(reps), p);
+        if (p)
+            p = parse_csv_field(weight, sizeof(weight), p);
+        if (p)
+            p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(date, sizeof(date), p);
+        if (p)
+            parse_csv_field(notes, sizeof(notes), p);
+        safe_strncpy(workouts[count].id, workout_id, sizeof(workouts[count].id));
+        safe_strncpy(workouts[count].exercise, exercise, sizeof(workouts[count].exercise));
+        safe_strncpy(workouts[count].sets, sets, sizeof(workouts[count].sets));
+        safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
+        safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
+        safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+        safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
+        safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
+        count++;
+    }
+    fclose(fp);
+    print_workouts(workouts);
+    return 0;
+}
+
+int show_workouts_in_date_range(const char *from_date, const char *to_date)
+{
+    if (!is_valid_date_format(from_date, DATE_YYYY_MM_DD) || !is_valid_date_format(to_date, DATE_YYYY_MM_DD))
+    {
+        printf(ANSI_COLOR_RED "Error: Dates must be in YYYY-MM-DD format.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    if (strcmp(from_date, to_date) > 0)
+    {
+        printf(ANSI_COLOR_RED "Error: 'from' date cannot be later than 'to' date.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Workouts file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    // Prepare an array to hold the workouts
+    WorkoutLog workouts[100] = {0};
+    int count = 0;
+    char line[1024];
+
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+
+    // Read all workouts into the array
+    while (fgets(line, sizeof(line), fp) && count < 100)
+    {
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        const char *p = line;
+        p = parse_csv_field(workout_id, sizeof(workout_id), p);
+        if (p)
+            p = parse_csv_field(exercise, sizeof(exercise), p);
+        if (p)
+            p = parse_csv_field(sets, sizeof(sets), p);
+        if (p)
+            p = parse_csv_field(reps, sizeof(reps), p);
+        if (p)
+            p = parse_csv_field(weight, sizeof(weight), p);
+        if (p)
+            p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(date, sizeof(date), p);
+        if (p)
+            parse_csv_field(notes, sizeof(notes), p);
+        // Check if the workout date is within the range
+        if (strcmp(date, from_date) >= 0 && strcmp(date, to_date) <= 0)
+        {
+            safe_strncpy(workouts[count].id, workout_id, sizeof(workouts[count].id));
+            safe_strncpy(workouts[count].exercise, exercise, sizeof(workouts[count].exercise));
+            safe_strncpy(workouts[count].sets, sets, sizeof(workouts[count].sets));
+            safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
+            safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
+            safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+            safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
+            safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
+            count++;
+        }
+    }
+    fclose(fp);
+    if (count == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No workouts found in the date range %s to %s.\n" ANSI_COLOR_RESET, from_date, to_date);
+        return 0;
+    }
+    print_workouts(workouts);
+    return 0;
+}

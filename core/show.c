@@ -135,10 +135,68 @@ int cmd_show(int argc, char *argv[])
         if (strlen(from_date) > 0 || strlen(to_date) > 0)
             criteria_count++;
         if (all)
-        if (criteria_count > 1)
+            if (criteria_count > 1)
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all for log display.\n" ANSI_COLOR_RESET);
+                return 1;
+            }
+
+        // Display from id
+        if (strlen(id) > 0)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all for log display.\n" ANSI_COLOR_RESET);
-            return 1;
+            return show_workout_by_id(id);
+        }
+        // Display last n workouts
+        else if (last_n != -1)
+        {
+            return show_last_n_workouts(last_n);
+        }
+        // Display all workouts
+        else if (all)
+        {
+            return show_all_workouts();
+        }
+        // Display workouts --from and --to
+        if (strlen(from_date) > 0 || strlen(to_date) > 0)
+        {
+            // If only --from is given, set --to as today
+            if (strlen(from_date) > 0 && strlen(to_date) == 0)
+            {
+                DateFormat config_date_format = get_config_date_format();
+                char *today = get_today_date(config_date_format);
+                strcpy(to_date, today);
+            }
+            // If only --to is given, set --from as a very old date
+            else if (strlen(from_date) == 0 && strlen(to_date) > 0)
+            {
+                DateFormat config_date_format = get_config_date_format();
+                char *old_date = get_date_in_format("1900-01-01", config_date_format);
+                strcpy(from_date, old_date);
+            }
+
+            printf("Showing workouts from " ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET " to " ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET ":\n", from_date, to_date);
+
+            // Validate date formats
+            DateFormat config_date_format = get_config_date_format();
+
+            if (strlen(from_date) > 0 && !is_valid_date_format(from_date, config_date_format))
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format for --from. Please use the configured date format.\n" ANSI_COLOR_RESET);
+                return 1;
+            }
+            if (strlen(to_date) > 0 && !is_valid_date_format(to_date, config_date_format))
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format for --to. Please use the configured date format.\n" ANSI_COLOR_RESET);
+                return 1;
+            }
+
+            // Convert dates to standard format for comparison
+            char *std_from_date = convert_date_to_standard(from_date, config_date_format);
+            char *std_to_date = convert_date_to_standard(to_date, config_date_format);
+
+            printf("Converted dates to standard format: " ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET " to " ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "\n", std_from_date, std_to_date);
+
+            return show_workouts_in_date_range(std_from_date, std_to_date);
         }
     }
 
