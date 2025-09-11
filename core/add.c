@@ -25,14 +25,12 @@ int cmd_add(int argc, char *argv[])
         exercise_name[sizeof(exercise_name) - 1] = '\0';
     }
 
-    bool is_shortcut = false;
-
     // Check if exercise exists
     if (!exercise_exists(exercise_name))
     {
         if (shortcut_exists(exercise_name))
         {
-            is_shortcut = true;
+            strcpy(exercise_name, get_exercise_name_from_shortcut(exercise_name));
         }
         else
         {
@@ -104,12 +102,6 @@ int cmd_add(int argc, char *argv[])
             strncpy(notes, argv[++i], sizeof(notes) - 1);
             notes[sizeof(notes) - 1] = '\0';
         }
-    }
-
-    // Get the name of exercise if shortcut was given
-    if (is_shortcut)
-    {
-        strcpy(exercise_name, get_exercise_name_from_shortcut(exercise_name));
     }
 
     if (type == TYPE_SETS)
@@ -287,6 +279,84 @@ int cmd_add(int argc, char *argv[])
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
         printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
+        printf("  Date: %s\n", standard_date_str);
+        printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
+        printf("+------------------------------+\n");
+    }
+    else if (type == TYPE_BODY)
+    {
+        int sets = -1;
+        int reps = -1;
+        
+        // Check for --sets and --reps required options
+        for (int i = 2; i < argc; i++)
+        {
+            if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
+            {
+                sets = atoi(argv[++i]);
+            }
+            else if (strcmp(argv[i], "--reps") == 0 && i + 1 < argc)
+            {
+                reps = atoi(argv[++i]);
+            }
+            else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
+            {
+                i++;
+                continue;
+            }
+            else if (strcmp(argv[i], "--notes") == 0 && i + 1 < argc)
+            {
+                i++;
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Unknown option: %s\n" ANSI_COLOR_RESET, argv[i]);
+                return 1;
+            }
+        }
+
+        if (sets == -1 || reps == -1)
+        {
+            fprintf(stderr, ANSI_COLOR_RED "--sets and --reps must be provided for bodyweight exercises.\n" ANSI_COLOR_RESET);
+            return 1;
+        }
+        
+        // Get the id
+        int next_id = get_next_exercise_id();
+        increment_exercise_id();
+
+        // Update the database
+        char db_path[256];
+        sprintf(db_path, "%s/%s", FITLOG_DIR, WORKOUTS_FILE);
+
+        FILE *fp = fopen(db_path, "a");
+        if (fp == NULL)
+        {
+            perror(ANSI_COLOR_RED "Error: Could not open workouts database" ANSI_COLOR_RESET);
+            return 1;
+        }
+
+        // Format: ID,Name,Sets,Reps,Date,Notes
+        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
+            next_id,
+            exercise_name,
+            sets,
+            reps,
+            "",
+            "",
+            standard_date_str,
+            notes);
+
+        fclose(fp);
+
+        // Print the exercise details
+        printf("+------------------------------+\n");
+        printf(BOLD_TEXT "Exercise Logged :\n" ANSI_COLOR_RESET);
+        printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
+        printf("  Name: %s\n", exercise_name);
+        printf(DARK_GRAY_TEXT "  Sets: %d\n" ANSI_COLOR_RESET, sets);
+        printf("  Reps: %d\n", reps);
         printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
         printf("+------------------------------+\n");

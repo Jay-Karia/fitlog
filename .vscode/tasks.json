@@ -3,7 +3,8 @@
     {
       "label": "build fitlog",
       "type": "shell",
-      "command": "make",
+      "command": "bash",
+      "args": ["-c", "make"],
       "group": {
         "kind": "build",
         "isDefault": true

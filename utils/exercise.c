@@ -95,29 +95,6 @@ ExerciseType check_exercise_type(const char *name)
                 return TYPE_BODY;
             }
         }
-        // Check for shortcut match as well
-        char exercise_shortcut[100];
-        sscanf(line, "%*[^,],%*[^,],%99[^,],%*[^,],%19s", exercise_shortcut, type_str);
-        if (strcmp(exercise_shortcut, name) == 0 && strcmp(exercise_shortcut, "(null)") != 0)
-        {
-            fclose(fp);
-            if (strcmp(type_str, "sets") == 0)
-            {
-                return TYPE_SETS;
-            }
-            else if (strcmp(type_str, "time") == 0)
-            {
-                return TYPE_TIME;
-            }
-            else if (strcmp(type_str, "body") == 0)
-            {
-                return TYPE_BODY;
-            }
-            else
-            {
-                return -1; // Unknown type
-            }
-        }
     }
     fclose(fp);
     return -1; // Exercise not found

@@ -1,19 +1,14 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "(gdb) Launch fitlog",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/dist/fitlog.exe",
-            "args": ["show", "--from", "2025-09-11"],
+            "program": "${workspaceFolder}/dist/fitlog",
+            "args": ["show", "exercise", "--from", "2025-09-11"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            // --- THE FIX IS HERE ---
-            // This tells the debugger where to find its necessary DLL files.
             "environment": [
                 {
                     "name": "Path",
