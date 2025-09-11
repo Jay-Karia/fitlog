@@ -473,12 +473,8 @@ int show_all_workouts()
 
 int show_workouts_in_date_range(const char *from_date, const char *to_date)
 {
-    if (!is_valid_date_format(from_date, DATE_YYYY_MM_DD) || !is_valid_date_format(to_date, DATE_YYYY_MM_DD))
-    {
-        printf(ANSI_COLOR_RED "Error: Dates must be in YYYY-MM-DD format.\n" ANSI_COLOR_RESET);
-        return 1;
-    }
-
+    // The dates are already in YYYY-MM-DD format from the calling function
+    
     if (strcmp(from_date, to_date) > 0)
     {
         printf(ANSI_COLOR_RED "Error: 'from' date cannot be later than 'to' date.\n" ANSI_COLOR_RESET);
@@ -522,6 +518,12 @@ int show_workouts_in_date_range(const char *from_date, const char *to_date)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
+            
+        // Skip entries with invalid dates
+        if (strlen(date) == 0) {
+            continue;
+        }
+        
         // Check if the workout date is within the range
         if (strcmp(date, from_date) >= 0 && strcmp(date, to_date) <= 0)
         {

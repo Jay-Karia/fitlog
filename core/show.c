@@ -179,22 +179,36 @@ int cmd_show(int argc, char *argv[])
             // Validate date formats
             DateFormat config_date_format = get_config_date_format();
 
-            if (strlen(from_date) > 0 && !is_valid_date_format(from_date, config_date_format))
+            if (!is_valid_date_format(from_date, config_date_format))
             {
-                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format for --from. Please use the configured date format.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format for --from. Please use the configured date format: %s\n" ANSI_COLOR_RESET, config_date_format == DATE_DD_MM_YYYY ? "DD-MM-YYYY" : config_date_format == DATE_MM_DD_YYYY ? "MM-DD-YYYY"
+                                                                                                                                                                                                                                                   : "YYYY-MM-DD");
                 return 1;
             }
-            if (strlen(to_date) > 0 && !is_valid_date_format(to_date, config_date_format))
+            if (!is_valid_date_format(to_date, config_date_format))
             {
-                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format for --to. Please use the configured date format.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format for --to. Please use the configured date format: %s\n" ANSI_COLOR_RESET, config_date_format == DATE_DD_MM_YYYY ? "DD-MM-YYYY" : config_date_format == DATE_MM_DD_YYYY ? "MM-DD-YYYY"
+                                                                                                                                                                                                                                                 : "YYYY-MM-DD");
                 return 1;
             }
 
             // Convert dates to standard format for comparison
-            char *std_from_date = convert_date_to_standard(from_date, config_date_format);
-            char *std_to_date = convert_date_to_standard(to_date, config_date_format);
+            char std_from_date[11];
+            char std_to_date[11];
 
-            printf("Converted dates to standard format: " ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET " to " ANSI_COLOR_BLUE "%s" ANSI_COLOR_RESET "\n", std_from_date, std_to_date);
+            // Get standardized dates and store them in local variables
+            char *temp_from_date = convert_date_to_standard(from_date, config_date_format);
+            char *temp_to_date = convert_date_to_standard(to_date, config_date_format);
+
+            if (temp_from_date == NULL || temp_to_date == NULL)
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Error: Failed to convert date formats.\n" ANSI_COLOR_RESET);
+                return 1;
+            }
+
+            // Copy the results to our local buffers to ensure we have our own copies
+            strcpy(std_from_date, temp_from_date);
+            strcpy(std_to_date, temp_to_date);
 
             return show_workouts_in_date_range(std_from_date, std_to_date);
         }

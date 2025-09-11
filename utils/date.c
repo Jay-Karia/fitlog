@@ -76,7 +76,14 @@ char *get_today_date(const enum DateFormat required_format)
 
 char *convert_date_to_standard(const char *input_date, const enum DateFormat input_format)
 {
-    static char standard_date[11];
+    // Use thread-local storage with two buffers to allow for two calls without conflict
+    static __thread int buffer_index = 0;
+    static __thread char standard_date_buffers[2][11];
+    
+    // Alternate between the two buffers
+    buffer_index = (buffer_index + 1) % 2;
+    char *standard_date = standard_date_buffers[buffer_index];
+    
     int day, month, year;
 
     // Check for null input
@@ -143,10 +150,10 @@ char *convert_date_to_standard(const char *input_date, const enum DateFormat inp
     }
 
     // Use snprintf with proper bounds checking
-    int result = snprintf(standard_date, sizeof(standard_date), "%04d-%02d-%02d", year, month, day);
+    int result = snprintf(standard_date, 11, "%04d-%02d-%02d", year, month, day);
 
     // Check if snprintf succeeded
-    if (result < 0 || result >= (int)sizeof(standard_date))
+    if (result < 0 || result >= 11)
     {
         return NULL;
     }

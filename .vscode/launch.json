@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/dist/fitlog.exe",
-            "args": ["show", "--date", "2025-09-11"],
+            "args": ["show", "--from", "2025-09-11"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             // --- THE FIX IS HERE ---
@@ -22,7 +22,7 @@
             ],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "C:/msys64/mingw64/ucrt64/bin/gdb.exe",
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
