@@ -303,6 +303,81 @@ void remove_exercise_by_id(const char *id)
             printf(ANSI_COLOR_RED "Error: Could not update exercises file.\n" ANSI_COLOR_RESET);
             return;
         }
+
+        // Update shortcuts file
+        char shortcuts_path[256];
+        sprintf(shortcuts_path, "%s/%s", FITLOG_DIR, SHORTCUTS_FILE);
+        FILE *sfp = fopen(shortcuts_path, "r");
+        if (sfp != NULL)
+        {
+            char temp_shortcuts_path[256];
+            sprintf(temp_shortcuts_path, "%s/temp_shortcuts.ini", FITLOG_DIR);
+            FILE *temp_sfp = fopen(temp_shortcuts_path, "w");
+            if (temp_sfp != NULL)
+            {
+                char sline[256];
+                while (fgets(sline, sizeof(sline), sfp))
+                {
+                    char sline_copy[256];
+                    strcpy(sline_copy, sline);
+                    sline_copy[strcspn(sline_copy, "\n")] = 0;
+
+                    // Skip lines that have the exercise name as the value (shortcut=exercise_name format)
+                    char *equals_pos = strchr(sline_copy, '=');
+                    if (equals_pos != NULL)
+                    {
+                        // Get the value part (after the equals sign)
+                        char *value = equals_pos + 1;
+
+                        // Trim whitespace from value
+                        while (*value == ' ' || *value == '\t')
+                            value++;
+                        char *value_end = value + strlen(value) - 1;
+                        while (value_end > value && (*value_end == ' ' || *value_end == '\t'))
+                        {
+                            *value_end = '\0';
+                            value_end--;
+                        }
+
+                        // If the value matches the exercise name, skip this line
+                        if (strcmp(value, exercise_name) != 0)
+                        {
+                            fputs(sline, temp_sfp);
+                        }
+                        else
+                        {
+                            printf(ANSI_COLOR_GREEN "Removed shortcut for exercise '%s'\n" ANSI_COLOR_RESET, exercise_name);
+                        }
+                    }
+                    else
+                    {
+                        // Keep non-key=value lines (comments, empty lines, etc.)
+                        fputs(sline, temp_sfp);
+                    }
+                }
+                fclose(temp_sfp);
+                fclose(sfp);
+
+                // Replace original shortcuts file
+                if (remove(shortcuts_path) != 0)
+                {
+                    printf(ANSI_COLOR_RED "Error: Could not remove original shortcuts file.\n" ANSI_COLOR_RESET);
+                    remove(temp_shortcuts_path); // Clean up temp file
+                    return;
+                }
+
+                if (rename(temp_shortcuts_path, shortcuts_path) != 0)
+                {
+                    printf(ANSI_COLOR_RED "Error: Could not update shortcuts file.\n" ANSI_COLOR_RESET);
+                    return;
+                }
+            }
+            else
+            {
+                fclose(sfp);
+                printf(ANSI_COLOR_RED "Error: Could not create temporary shortcuts file.\n" ANSI_COLOR_RESET);
+            }
+        }
     }
     else
     {
@@ -399,7 +474,8 @@ int show_last_n_exercises(int n)
     return 0;
 }
 
-int show_all_exercises() {
+int show_all_exercises()
+{
     char full_path[256];
     sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
     FILE *fp = fopen(full_path, "r");

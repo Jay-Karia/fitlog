@@ -1,7 +1,5 @@
 #include "../include/fitlog.h"
 
-// TODO: update shortcuts file
-
 int cmd_remove(int argc, char *argv[])
 {
     // Check for help flag
