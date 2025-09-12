@@ -2,3 +2,4 @@ dist
 obj
 .fitlog
 scripts/Output
+fitlog_export.json

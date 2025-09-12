@@ -46,6 +46,10 @@ void print_command_help(const char *command)
     {
         print_config_help();
     }
+    else if (strcmp(command, "export") == 0)
+    {
+        print_export_help();
+    }
     else
     {
         printf("Unknown command: %s\n", command);
@@ -150,4 +154,16 @@ void print_config_help(void)
     printf("\nDescription:\n");
     printf("  This command allows you to view and modify configuration\n");
     printf("  settings for the fitlog CLI application.\n");
+}
+
+void print_export_help(void)
+{
+    printf("fitlog export - Export fitlog data to JSON\n\n");
+    printf("Usage: fitlog export [options]\n\n");
+    printf("Options:\n");
+    printf("  --file <file name>         Specify output JSON file (default: fitlog_export.json)\n");
+    printf("  --help                     Show this help message\n");
+    printf("\nDescription:\n");
+    printf("  This command exports all your fitlog data, including exercises\n");
+    printf("  and workout logs, to a JSON file for easy sharing or backup.\n");
 }
