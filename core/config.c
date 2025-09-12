@@ -137,6 +137,7 @@ int cmd_config(int argc, char *argv[])
         }
     }
 
-    printf("Config command is not yet implemented.\n");
+    // If no valid options were provided, throw an error
+    fprintf(stderr, ANSI_COLOR_RED "Error: No valid options provided. Use --help for usage information.\n" ANSI_COLOR_RESET);
     return 0;
 }
