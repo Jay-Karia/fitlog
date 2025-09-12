@@ -159,11 +159,11 @@ bool print_exercise_details_from_id(const char *id)
     const char *headers[] = {"ID", "Name", "Shortcut", "Description", "Type"};
 
     // Update with header lengths
-    id_width = id_width < strlen(headers[0]) ? strlen(headers[0]) : id_width;
-    name_width = name_width < strlen(headers[1]) ? strlen(headers[1]) : name_width;
-    shortcut_width = shortcut_width < strlen(headers[2]) ? strlen(headers[2]) : shortcut_width;
-    description_width = description_width < strlen(headers[3]) ? strlen(headers[3]) : description_width;
-    type_width = type_width < strlen(headers[4]) ? strlen(headers[4]) : type_width;
+    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
+    name_width = name_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : name_width;
+    shortcut_width = shortcut_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : shortcut_width;
+    description_width = description_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : description_width;
+    type_width = type_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : type_width;
 
     // Variables to store the found exercise data
     char exercise_id[20] = "", exercise_name[100] = "", shortcut[100] = "", description[200] = "", type[20] = "";
@@ -189,8 +189,8 @@ bool print_exercise_details_from_id(const char *id)
     }
 
     // Calculate widths based on content
-    id_width = id_width < strlen(exercise_id) ? strlen(exercise_id) : id_width;
-    name_width = name_width < strlen(exercise_name) ? strlen(exercise_name) : name_width;
+    id_width = id_width < (int) strlen(exercise_id) ? (int) strlen(exercise_id) : id_width;
+    name_width = name_width < (int) strlen(exercise_name) ? (int) strlen(exercise_name) : name_width;
     
     // Handle shortcut display
     char display_shortcut[100];
@@ -199,7 +199,7 @@ bool print_exercise_details_from_id(const char *id)
     } else {
         strcpy(display_shortcut, shortcut);
     }
-    shortcut_width = shortcut_width < strlen(display_shortcut) ? strlen(display_shortcut) : shortcut_width;
+    shortcut_width = shortcut_width < (int) strlen(display_shortcut) ? (int) strlen(display_shortcut) : shortcut_width;
     
     // Handle description display
     char display_desc[200];
@@ -208,9 +208,9 @@ bool print_exercise_details_from_id(const char *id)
     } else {
         strcpy(display_desc, description);
     }
-    description_width = description_width < strlen(display_desc) ? strlen(display_desc) : description_width;
+    description_width = description_width < (int) strlen(display_desc) ? (int) strlen(display_desc) : description_width;
     
-    type_width = type_width < strlen(type) ? strlen(type) : type_width;
+    type_width = type_width < (int) strlen(type) ? (int) strlen(type) : type_width;
 
     // Add padding for better readability
     id_width += 2;
@@ -226,7 +226,7 @@ bool print_exercise_details_from_id(const char *id)
     // Truncate if needed
     char truncated_name[31] = {0};
     strncpy(truncated_name, exercise_name, 30);
-    if (strlen(exercise_name) > 30) {
+    if ((int) strlen(exercise_name) > 30) {
         truncated_name[27] = '.';
         truncated_name[28] = '.';
         truncated_name[29] = '.';
@@ -234,7 +234,7 @@ bool print_exercise_details_from_id(const char *id)
     
     char truncated_desc[41] = {0};
     strncpy(truncated_desc, display_desc, 40);
-    if (strlen(display_desc) > 40) {
+    if ((int) strlen(display_desc) > 40) {
         truncated_desc[37] = '.';
         truncated_desc[38] = '.';
         truncated_desc[39] = '.';
@@ -557,11 +557,11 @@ int show_last_n_exercises(int n)
     const char *headers[] = {"ID", "Name", "Shortcut", "Description", "Type"};
 
     // Update with header lengths
-    id_width = id_width < strlen(headers[0]) ? strlen(headers[0]) : id_width;
-    name_width = name_width < strlen(headers[1]) ? strlen(headers[1]) : name_width;
-    shortcut_width = shortcut_width < strlen(headers[2]) ? strlen(headers[2]) : shortcut_width;
-    description_width = description_width < strlen(headers[3]) ? strlen(headers[3]) : description_width;
-    type_width = type_width < strlen(headers[4]) ? strlen(headers[4]) : type_width;
+    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
+    name_width = name_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : name_width;
+    shortcut_width = shortcut_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : shortcut_width;
+    description_width = description_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : description_width;
+    type_width = type_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : type_width;
 
     // Read and store the remaining exercises
     while (fgets(line, sizeof(line), fp) && count < n)
@@ -571,25 +571,25 @@ int show_last_n_exercises(int n)
                exercises[count].description, exercises[count].type);
                
         // Update max column widths
-        id_width = id_width < strlen(exercises[count].id) ? strlen(exercises[count].id) : id_width;
-        name_width = name_width < strlen(exercises[count].name) ? strlen(exercises[count].name) : name_width;
+        id_width = id_width < (int) strlen(exercises[count].id) ? (int) strlen(exercises[count].id) : id_width;
+        name_width = name_width < (int) strlen(exercises[count].name) ? (int) strlen(exercises[count].name) : name_width;
         
         // Handle shortcut display
         if (strcmp(exercises[count].shortcut, "(null)") == 0) {
             strcpy(exercises[count].shortcut, "none");
         }
-        shortcut_width = shortcut_width < strlen(exercises[count].shortcut) ? 
-                         strlen(exercises[count].shortcut) : shortcut_width;
+        shortcut_width = shortcut_width < (int) strlen(exercises[count].shortcut) ? 
+                         (int) strlen(exercises[count].shortcut) : shortcut_width;
         
         // Handle description display
         if (strcmp(exercises[count].description, "(null)") == 0) {
             strcpy(exercises[count].description, "none");
         }
-        description_width = description_width < strlen(exercises[count].description) ? 
-                            strlen(exercises[count].description) : description_width;
+        description_width = description_width < (int) strlen(exercises[count].description) ? 
+                            (int) strlen(exercises[count].description) : description_width;
         
-        type_width = type_width < strlen(exercises[count].type) ? 
-                     strlen(exercises[count].type) : type_width;
+        type_width = type_width < (int) strlen(exercises[count].type) ? 
+                     (int) strlen(exercises[count].type) : type_width;
         
         count++;
     }
@@ -647,7 +647,7 @@ int show_last_n_exercises(int n)
         // Truncate if needed
         char truncated_name[31] = {0};
         strncpy(truncated_name, exercises[i].name, 30);
-        if (strlen(exercises[i].name) > 30) {
+        if ((int) strlen(exercises[i].name) > 30) {
             truncated_name[27] = '.';
             truncated_name[28] = '.';
             truncated_name[29] = '.';
@@ -655,7 +655,7 @@ int show_last_n_exercises(int n)
         
         char truncated_desc[41] = {0};
         strncpy(truncated_desc, exercises[i].description, 40);
-        if (strlen(exercises[i].description) > 40) {
+        if ((int) strlen(exercises[i].description) > 40) {
             truncated_desc[37] = '.';
             truncated_desc[38] = '.';
             truncated_desc[39] = '.';
@@ -724,11 +724,11 @@ int show_all_exercises()
     const char *headers[] = {"ID", "Name", "Shortcut", "Description", "Type"};
 
     // Update with header lengths
-    id_width = id_width < strlen(headers[0]) ? strlen(headers[0]) : id_width;
-    name_width = name_width < strlen(headers[1]) ? strlen(headers[1]) : name_width;
-    shortcut_width = shortcut_width < strlen(headers[2]) ? strlen(headers[2]) : shortcut_width;
-    description_width = description_width < strlen(headers[3]) ? strlen(headers[3]) : description_width;
-    type_width = type_width < strlen(headers[4]) ? strlen(headers[4]) : type_width;
+    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
+    name_width = name_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : name_width;
+    shortcut_width = shortcut_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : shortcut_width;
+    description_width = description_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : description_width;
+    type_width = type_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : type_width;
 
     // Read and store all exercises
     bool found = false;
@@ -740,25 +740,25 @@ int show_all_exercises()
                exercises[count].description, exercises[count].type);
                
         // Update max column widths
-        id_width = id_width < strlen(exercises[count].id) ? strlen(exercises[count].id) : id_width;
-        name_width = name_width < strlen(exercises[count].name) ? strlen(exercises[count].name) : name_width;
+        id_width = id_width < (int) strlen(exercises[count].id) ? (int) strlen(exercises[count].id) : id_width;
+        name_width = name_width < (int) strlen(exercises[count].name) ? (int) strlen(exercises[count].name) : name_width;
         
         // Handle shortcut display
         if (strcmp(exercises[count].shortcut, "(null)") == 0) {
             strcpy(exercises[count].shortcut, "none");
         }
-        shortcut_width = shortcut_width < strlen(exercises[count].shortcut) ? 
-                         strlen(exercises[count].shortcut) : shortcut_width;
+        shortcut_width = shortcut_width < (int) strlen(exercises[count].shortcut) ? 
+                         (int) strlen(exercises[count].shortcut) : shortcut_width;
         
         // Handle description display
         if (strcmp(exercises[count].description, "(null)") == 0) {
             strcpy(exercises[count].description, "none");
         }
-        description_width = description_width < strlen(exercises[count].description) ? 
-                            strlen(exercises[count].description) : description_width;
+        description_width = description_width < (int) strlen(exercises[count].description) ? 
+                            (int) strlen(exercises[count].description) : description_width;
         
-        type_width = type_width < strlen(exercises[count].type) ? 
-                     strlen(exercises[count].type) : type_width;
+        type_width = type_width < (int) strlen(exercises[count].type) ? 
+                     (int) strlen(exercises[count].type) : type_width;
         
         count++;
     }
@@ -822,7 +822,7 @@ int show_all_exercises()
         // Truncate if needed
         char truncated_name[31] = {0};
         strncpy(truncated_name, exercises[i].name, 30);
-        if (strlen(exercises[i].name) > 30) {
+        if ((int) strlen(exercises[i].name) > 30) {
             truncated_name[27] = '.';
             truncated_name[28] = '.';
             truncated_name[29] = '.';
@@ -830,7 +830,7 @@ int show_all_exercises()
         
         char truncated_desc[41] = {0};
         strncpy(truncated_desc, exercises[i].description, 40);
-        if (strlen(exercises[i].description) > 40) {
+        if ((int) strlen(exercises[i].description) > 40) {
             truncated_desc[37] = '.';
             truncated_desc[38] = '.';
             truncated_desc[39] = '.';

@@ -307,26 +307,26 @@ void print_workouts(const WorkoutLog *workouts)
     const char *headers[] = {"ID", "Exercise", "Set", "Rep", "Weight", "Time", "Date", "Notes"};
 
     // Update widths based on header lengths
-    id_width = id_width < strlen(headers[0]) ? strlen(headers[0]) : id_width;
-    exercise_width = exercise_width < strlen(headers[1]) ? strlen(headers[1]) : exercise_width;
-    sets_width = sets_width < strlen(headers[2]) ? strlen(headers[2]) : sets_width;
-    reps_width = reps_width < strlen(headers[3]) ? strlen(headers[3]) : reps_width;
-    weight_width = weight_width < strlen(headers[4]) ? strlen(headers[4]) : weight_width;
-    time_width = time_width < strlen(headers[5]) ? strlen(headers[5]) : time_width;
-    date_width = date_width < strlen(headers[6]) ? strlen(headers[6]) : date_width;
-    notes_width = notes_width < strlen(headers[7]) ? strlen(headers[7]) : notes_width;
+    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
+    exercise_width = exercise_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : exercise_width;
+    sets_width = sets_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : sets_width;
+    reps_width = reps_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : reps_width;
+    weight_width = weight_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : weight_width;
+    time_width = time_width < (int) strlen(headers[5]) ? (int) strlen(headers[5]) : time_width;
+    date_width = date_width < (int) strlen(headers[6]) ? (int) strlen(headers[6]) : date_width;
+    notes_width = notes_width < (int) strlen(headers[7]) ? (int) strlen(headers[7]) : notes_width;
 
     // Calculate max widths based on actual data
     for (int i = 0; i < length; i++)
     {
-        id_width = id_width < strlen(workouts[i].id) ? strlen(workouts[i].id) : id_width;
-        exercise_width = exercise_width < strlen(workouts[i].exercise) ? strlen(workouts[i].exercise) : exercise_width;
-        sets_width = sets_width < strlen(workouts[i].sets) ? strlen(workouts[i].sets) : sets_width;
-        reps_width = reps_width < strlen(workouts[i].reps) ? strlen(workouts[i].reps) : reps_width;
-        weight_width = weight_width < strlen(workouts[i].weight) ? strlen(workouts[i].weight) : weight_width;
-        time_width = time_width < strlen(workouts[i].time) ? strlen(workouts[i].time) : time_width;
-        date_width = date_width < strlen(workouts[i].date) ? strlen(workouts[i].date) : date_width;
-        notes_width = notes_width < strlen(workouts[i].notes) ? strlen(workouts[i].notes) : notes_width;
+        id_width = id_width < (int) strlen(workouts[i].id) ? (int) strlen(workouts[i].id) : id_width;
+        exercise_width = exercise_width < (int) strlen(workouts[i].exercise) ? (int) strlen(workouts[i].exercise) : exercise_width;
+        sets_width = sets_width < (int) strlen(workouts[i].sets) ? (int) strlen(workouts[i].sets) : sets_width;
+        reps_width = reps_width < (int) strlen(workouts[i].reps) ? (int) strlen(workouts[i].reps) : reps_width;
+        weight_width = weight_width < (int) strlen(workouts[i].weight) ? (int) strlen(workouts[i].weight) : weight_width;
+        time_width = time_width < (int) strlen(workouts[i].time) ? (int) strlen(workouts[i].time) : time_width;
+        date_width = date_width < (int) strlen(workouts[i].date) ? (int) strlen(workouts[i].date) : date_width;
+        notes_width = notes_width < (int) strlen(workouts[i].notes) ? (int) strlen(workouts[i].notes) : notes_width;
     }
 
     // Add padding for better readability (2 spaces on each side)
