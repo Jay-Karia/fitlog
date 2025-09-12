@@ -14,6 +14,7 @@ void print_usage(void)
     printf("  help        Show this help message\n\n");
     printf("Options:\n");
     printf("  --version     Show version information\n");
+    printf("  --dir         Print the .fitlog directory path\n");
     printf("\nFor command-specific help: fitlog <command> --help\n");
 }
 
