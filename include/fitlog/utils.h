@@ -50,4 +50,7 @@ char *get_today_date(const enum DateFormat required_format);
 char *convert_date_to_standard(const char *input_date, const enum DateFormat input_format);
 char *get_date_in_format(const char *standard_date, const enum DateFormat required_format);
 
+// Config utils
+bool is_valid_config_value(const char *config_key, const char *value);
+
 #endif
