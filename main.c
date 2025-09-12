@@ -5,7 +5,6 @@
 // TODO: add import/export functionality
 // TODO: expand config options
 // TODO: print .fitlog directory from command
-// TODO: fix table border spacing
 
 int main(int argc, char *argv[])
 {
@@ -32,7 +31,7 @@ int main(int argc, char *argv[])
     if (strcmp(command, "--dir") == 0) {
         char *home = getenv("HOME");
         if (home) {
-            printf("%s/%s\n", home, FITLOG_DIR);
+            printf("%s\\%s\n", home, FITLOG_DIR);
         } else {
             printf("%s\n", FITLOG_DIR);
         }
