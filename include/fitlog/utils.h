@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#include <stddef.h>
+
 #ifndef FITLOG_UTILS_H
 #define FITLOG_UTILS_H
 

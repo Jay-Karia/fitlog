@@ -12,6 +12,7 @@ void print_usage(void)
     printf("  show        Display workouts\n");
     printf("  remove      Remove exercises or logs\n");
     printf("  config      Manage configuration values\n");
+    printf("  export      Export fitlog data to JSON\n");
     printf("  help        Show this help message\n\n");
     printf("Options:\n");
     printf("  --version     Show version information\n");
