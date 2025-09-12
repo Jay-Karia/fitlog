@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include "fitlog.h"
 
-// TODO: add config command
-// TODO: add import/export functionality
 // TODO: expand config options
-// TODO: print .fitlog directory from command
+// TODO: add import/export functionality
 
 int main(int argc, char *argv[])
 {
@@ -48,6 +46,9 @@ int main(int argc, char *argv[])
         return cmd_show(argc - 1, argv + 1);
     } else if (strcmp(command, "remove") == 0) {
         return cmd_remove(argc - 1, argv + 1);
+    }
+    else if (strcmp(command, "config") == 0) {
+        return cmd_config(argc - 1, argv + 1);
     } else if (strcmp(command, "help") == 0 || strcmp(command, "--help") == 0) {
         // If help command has an argument, show that command's help
         if (argc > 2) {

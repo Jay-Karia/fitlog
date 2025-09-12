@@ -11,6 +11,7 @@ void print_usage(void)
     printf("  add         Log a new exercise\n");
     printf("  show        Display workouts\n");
     printf("  remove      Remove exercises or logs\n");
+    printf("  config      Manage configuration values\n");
     printf("  help        Show this help message\n\n");
     printf("Options:\n");
     printf("  --version     Show version information\n");
@@ -39,6 +40,10 @@ void print_command_help(const char *command)
     else if (strcmp(command, "remove") == 0)
     {
         print_remove_help();
+    }
+    else if (strcmp(command, "config") == 0)
+    {
+        print_config_help();
     }
     else
     {
@@ -129,4 +134,19 @@ void print_remove_help(void)
     printf("\nDescription:\n");
     printf("  This command removes exercises or workout log entries\n");
     printf("  from your fitlog database.\n");
+}
+
+void print_config_help(void)
+{
+    printf("fitlog config - Manage configuration values\n\n");
+    printf("Usage: fitlog config [options]\n\n");
+    printf("Options:\n");
+    printf("  --get <key>            Get the value of a configuration key\n");
+    printf("  --set <key> <value>    Set the value of a configuration key\n");
+    printf("  --list                 Print all configuration key-value pairs\n");
+    printf("  --reset                Reset configuration to default values\n");
+    printf("  --help                 Show this help message\n");
+    printf("\nDescription:\n");
+    printf("  This command allows you to view and modify configuration\n");
+    printf("  settings for the fitlog CLI application.\n");
 }

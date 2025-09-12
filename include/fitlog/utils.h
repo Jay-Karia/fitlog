@@ -11,6 +11,7 @@ void print_create_help(void);
 void print_add_help(void);
 void print_show_help(void);
 void print_remove_help(void);
+void print_config_help(void);
 
 // Configuration handling
 int read_config_value(const char *key, const char *default_value, char *buffer, size_t buffer_size);

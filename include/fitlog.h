@@ -18,6 +18,7 @@ int cmd_create(int argc, char *argv[]);
 int cmd_add(int argc, char *argv[]);
 int cmd_show(int argc, char *argv[]);
 int cmd_remove(int argc, char *argv[]);
+int cmd_config(int argc, char *argv[]);
 
 // Utility functions
 void print_usage(void);
