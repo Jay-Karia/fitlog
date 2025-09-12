@@ -58,4 +58,11 @@ char *get_date_in_format(const char *standard_date, const enum DateFormat requir
 bool is_valid_config_value(const char *config_key, const char *value);
 int reset_config_to_defaults(void);
 
+// Export Utils
+char *get_exercise_array();
+char *get_workout_array();
+char *get_config_object();
+char *get_shortcuts_object();
+int get_id_counter_value();
+
 #endif

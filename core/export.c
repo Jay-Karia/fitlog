@@ -41,13 +41,77 @@ int cmd_export(int argc, char *argv[])
     fprintf(fp, "}\n");
 
     // Get the exercises array
+    char *exercises_json = get_exercise_array();
+    if (exercises_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve exercises data\n" ANSI_COLOR_RESET);
+        fclose(fp);
+        return 1;
+    }
+
     // Get the workouts array
+    char *workouts_json = get_workout_array();
+    if (workouts_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve workouts data\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        fclose(fp);
+        return 1;
+    }
+    
     // Get the config object
+    char *config_json = get_config_object();
+    if (config_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve config data\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        free(workouts_json);
+        fclose(fp);
+        return 1;
+    }
+    
     // Get the shortcuts object
+    char *shortcuts_json = get_shortcuts_object();
+    if (shortcuts_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve shortcuts data\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        free(workouts_json);
+        free(config_json);
+        fclose(fp);
+        return 1;
+    }
+    
     // Get the id_counter value
+    int id_counter = get_id_counter_value();
+    if (id_counter < 0)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve ID counter value\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        free(workouts_json);
+        free(config_json);
+        free(shortcuts_json);
+        fclose(fp);
+        return 1;
+    }
+
+    // Write the final JSON structure
+    fseek(fp, 0, SEEK_SET);
+    fprintf(fp, "{\n");
+    fprintf(fp, "  \"exercises\": %s,\n", exercises_json);
+    fprintf(fp, "  \"workouts\": %s,\n", workouts_json);
+    fprintf(fp, "  \"config\": %s,\n", config_json);
+    fprintf(fp, "  \"shortcuts\": %s,\n", shortcuts_json);
+    fprintf(fp, "  \"id_counter\": %d\n", id_counter);
+    fprintf(fp, "}\n");
+
+    free(exercises_json);
+    free(workouts_json);
+    free(config_json);
+    free(shortcuts_json);
 
     fclose(fp);
-    printf(ANSI_COLOR_GREEN "Exported data to %s\n" ANSI_COLOR_RESET, output_path);
+    printf(ANSI_COLOR_GREEN "Data successfully exported to %s\n" ANSI_COLOR_RESET, output_path);
 
     return 0;
 }
