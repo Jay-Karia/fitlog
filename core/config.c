@@ -100,6 +100,34 @@ int cmd_config(int argc, char *argv[])
         }
     }
 
+    // Check for --list option
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--list") == 0)
+        {
+            char config_path[256];
+            sprintf(config_path, "%s/%s", FITLOG_DIR, CONFIG_FILE);
+            FILE *fp = fopen(config_path, "r");
+            if (fp == NULL)
+            {
+                perror(ANSI_COLOR_RED "Error: Could not open config file" ANSI_COLOR_RESET);
+                return 1;
+            }
+
+            char line[256];
+            printf(ANSI_COLOR_BLUE "Current Configuration:\n" ANSI_COLOR_RESET);
+            while (fgets(line, sizeof(line), fp) != NULL)
+            {
+                if (line[0] != '#' && line[0] != '\n')
+                {
+                    printf("%s", line);
+                }
+            }
+            fclose(fp);
+            return 0;
+        }
+    }
+
     printf("Config command is not yet implemented.\n");
     return 0;
 }
