@@ -128,6 +128,15 @@ int cmd_config(int argc, char *argv[])
         }
     }
 
+    // Check for --reset option
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--reset") == 0)
+        {
+            return reset_config_to_defaults();
+        }
+    }
+
     printf("Config command is not yet implemented.\n");
     return 0;
 }

@@ -52,5 +52,6 @@ char *get_date_in_format(const char *standard_date, const enum DateFormat requir
 
 // Config utils
 bool is_valid_config_value(const char *config_key, const char *value);
+int reset_config_to_defaults(void);
 
 #endif

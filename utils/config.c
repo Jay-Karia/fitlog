@@ -166,3 +166,31 @@ bool is_valid_config_value(const char *config_key, const char *value)
     }
     return false; // Unknown key
 }
+
+int reset_config_to_defaults(void)
+{
+    // Build path to config file
+    char config_path[256];
+    sprintf(config_path, "%s/%s", FITLOG_DIR, CONFIG_FILE);
+
+    FILE *fp = fopen(config_path, "w");
+    if (fp == NULL)
+    {
+        perror(ANSI_COLOR_RED "Error resetting config to defaults" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    fprintf(fp, "# Date and time\n");
+    fprintf(fp, "date_format=YYYY-MM-DD\n\n");
+    fprintf(fp, "# Units and measurements\n");
+    fprintf(fp, "weight_unit=lbs\n");
+    fprintf(fp, "time_unit=s\n\n");
+    fprintf(fp, "# Behaviour\n");
+    fprintf(fp, "default_exercise_type=sets\n");
+
+    fclose(fp);
+
+    printf(ANSI_COLOR_GREEN "Configuration reset to default values.\n" ANSI_COLOR_RESET);
+
+    return 0;
+}
