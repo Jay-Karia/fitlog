@@ -5,7 +5,7 @@
 #define MyAppVersion "0.0.1"
 #define MyAppPublisher "Jay Karia"
 #define MyAppURL "https://github.com/Jay-Karia/fitlog"
-#define MyAppExeName "fitlog"
+#define MyAppExeName "fitlog.exe"
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".exe"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt

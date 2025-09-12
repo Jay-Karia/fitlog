@@ -4,7 +4,7 @@ DIST_DIR = dist
 OBJ_DIR = obj
 CORE_DIR = core
 UTILS_DIR = utils
-TARGET = $(DIST_DIR)/$(TARGET_NAME)
+TARGET = $(DIST_DIR)/$(TARGET_NAME).exe
 
 CC = gcc
 CFLAGS = -Wall -Wextra -g -Iinclude
@@ -34,4 +34,3 @@ clean:
 	@sh -c "rm -rf $(DIST_DIR) $(OBJ_DIR)"
 
 .PHONY: all clean run
-
