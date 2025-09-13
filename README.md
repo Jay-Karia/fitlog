@@ -16,6 +16,8 @@ CLI Workout Logger
 - Use shortcuts for quick and efficient workout logging
 - Remove or update exercise and workout entries
 - Display workout data in clean, tabular format
+- Configuration management
+- Import and export your fitlog data
 
 ## Documentation
 
