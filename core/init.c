@@ -20,15 +20,12 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    printf("Initializing fitlog...\n");
-
     // Create .fitlog directory
     if (mkdir(FITLOG_DIR) == -1)
     {
         perror(ANSI_COLOR_RED "Error creating .fitlog directory" ANSI_COLOR_RESET);
         return 1;
     }
-    printf("Created .fitlog directory.\n");
 
     // Create config file (.ini)
     char config_path[256];

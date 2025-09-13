@@ -280,7 +280,7 @@ char *get_config_object(void)
                 }
 
                 // Create key-value pair in JSON format
-                char json_pair[512];
+                char json_pair[1044];
                 snprintf(json_pair, sizeof(json_pair), "\"%s\":\"%s\"", key, value);
 
                 size_t pair_length = strlen(json_pair);
@@ -364,7 +364,7 @@ char *get_shortcuts_object(void)
                 }
 
                 // Create key-value pair in JSON format
-                char json_pair[512];
+                char json_pair[1044];
                 snprintf(json_pair, sizeof(json_pair), "\"%s\":\"%s\"", key, value);
 
                 size_t pair_length = strlen(json_pair);
