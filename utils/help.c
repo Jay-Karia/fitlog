@@ -176,9 +176,10 @@ void print_export_help(void)
 void print_import_help(void)
 {
     printf("fitlog import - Import fitlog data from JSON\n\n");
-    printf("Usage: fitlog import [options]\n\n");
+    printf("Usage: fitlog import <file> [options]\n\n");
+    printf("Arguments:\n");
+    printf("  <file>                     Path to the JSON file to import\n\n");
     printf("Options:\n");
-    printf("  --file <file name>         Specify input JSON file to import\n");
     printf("  --help                     Show this help message\n");
     printf("\nDescription:\n");
     printf("  This command imports fitlog data from a specified JSON file,\n");

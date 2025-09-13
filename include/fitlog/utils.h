@@ -66,4 +66,12 @@ char *get_config_object();
 char *get_shortcuts_object();
 int get_id_counter_value();
 
+// Import utils
+int write_csv_from_array(const char *array_data, const char *output_path);
+char *object_to_ini(const char *object_data);
+char *read_exercise_array(const char *json_data);
+char *read_workout_array(const char *json_data);
+char *read_config_object(const char *json_data);
+char *read_shortcuts_object(const char *json_data);
+
 #endif
