@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include "fitlog.h"
 
-// TODO: fix table dynamic border spacing
-
 // Returns the number of valid entries in a WorkoutLog array
 int get_workout_array_length(const WorkoutLog *workouts, int max_workouts)
 {

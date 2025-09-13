@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "fitlog.h"
 
-// TODO: modify directory while exporting and importing data
-
 int main(int argc, char *argv[])
 {
     if (argc < 2)
