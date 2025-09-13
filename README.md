@@ -21,7 +21,7 @@ CLI Workout Logger
 
 ## Documentation
 
-**⚠️ Docs pages coming soon!**
+Visit the [fitlog wiki](https://github.com/Jay-Karia/fitlog/wiki) for detailed guides and references.
 
 ## Installation
 
