@@ -93,9 +93,10 @@ char *get_workout_array(void)
         // Skip empty lines
         if (strlen(buffer) == 0)
             continue;
-            
+
         // Skip header row
-        if (is_header) {
+        if (is_header)
+        {
             is_header = false;
             continue;
         }
@@ -109,40 +110,67 @@ char *get_workout_array(void)
         // Format: Id,Exercise,Sets,Reps,Weight,Time,Date,Notes
         char id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "";
         char weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
-        
+
         // Manual CSV parsing to handle empty fields correctly
         char *ptr = buffer_copy;
         int field = 0;
         char *start = ptr;
-        
-        while (*ptr != '\0' && field < 8) {
-            if (*ptr == ',') {
+
+        while (*ptr != '\0' && field < 8)
+        {
+            if (*ptr == ',')
+            {
                 // End of field
-                *ptr = '\0';  // Terminate the field
-                
+                *ptr = '\0'; // Terminate the field
+
                 // Copy to appropriate field
-                switch (field) {
-                    case 0: strncpy(id, start, sizeof(id)-1); id[sizeof(id)-1] = '\0'; break;
-                    case 1: strncpy(exercise, start, sizeof(exercise)-1); exercise[sizeof(exercise)-1] = '\0'; break;
-                    case 2: strncpy(sets, start, sizeof(sets)-1); sets[sizeof(sets)-1] = '\0'; break;
-                    case 3: strncpy(reps, start, sizeof(reps)-1); reps[sizeof(reps)-1] = '\0'; break;
-                    case 4: strncpy(weight, start, sizeof(weight)-1); weight[sizeof(weight)-1] = '\0'; break;
-                    case 5: strncpy(time, start, sizeof(time)-1); time[sizeof(time)-1] = '\0'; break;
-                    case 6: strncpy(date, start, sizeof(date)-1); date[sizeof(date)-1] = '\0'; break;
+                switch (field)
+                {
+                case 0:
+                    strncpy(id, start, sizeof(id) - 1);
+                    id[sizeof(id) - 1] = '\0';
+                    break;
+                case 1:
+                    strncpy(exercise, start, sizeof(exercise) - 1);
+                    exercise[sizeof(exercise) - 1] = '\0';
+                    break;
+                case 2:
+                    strncpy(sets, start, sizeof(sets) - 1);
+                    sets[sizeof(sets) - 1] = '\0';
+                    break;
+                case 3:
+                    strncpy(reps, start, sizeof(reps) - 1);
+                    reps[sizeof(reps) - 1] = '\0';
+                    break;
+                case 4:
+                    strncpy(weight, start, sizeof(weight) - 1);
+                    weight[sizeof(weight) - 1] = '\0';
+                    break;
+                case 5:
+                    strncpy(time, start, sizeof(time) - 1);
+                    time[sizeof(time) - 1] = '\0';
+                    break;
+                case 6:
+                    strncpy(date, start, sizeof(date) - 1);
+                    date[sizeof(date) - 1] = '\0';
+                    break;
                 }
-                
+
                 field++;
-                ptr++;  // Move past the comma
+                ptr++; // Move past the comma
                 start = ptr;
-            } else {
+            }
+            else
+            {
                 ptr++;
             }
         }
-        
+
         // Handle the last field (notes) or any remaining text
-        if (field == 7) {
-            strncpy(notes, start, sizeof(notes)-1);
-            notes[sizeof(notes)-1] = '\0';
+        if (field == 7)
+        {
+            strncpy(notes, start, sizeof(notes) - 1);
+            notes[sizeof(notes) - 1] = '\0';
         }
 
         // Only require id and exercise to be valid
@@ -160,8 +188,8 @@ char *get_workout_array(void)
             // Increase buffer size to safely accommodate all fields (especially notes which can be up to 200 chars)
             char json_obj[1024];
             snprintf(json_obj, sizeof(json_obj),
-                 "{\"id\":\"%s\",\"exercise\":\"%s\",\"sets\":\"%s\",\"reps\":\"%s\",\"weight\":\"%s\",\"time\":\"%s\",\"date\":\"%s\",\"notes\":\"%s\"}",
-                 id, exercise, sets, reps, weight, time, date, notes);
+                     "{\"id\":\"%s\",\"exercise\":\"%s\",\"sets\":\"%s\",\"reps\":\"%s\",\"weight\":\"%s\",\"time\":\"%s\",\"date\":\"%s\",\"notes\":\"%s\"}",
+                     id, exercise, sets, reps, weight, time, date, notes);
 
             size_t obj_length = strlen(json_obj);
             result = realloc(result, total_length + obj_length + 1);
@@ -181,7 +209,86 @@ char *get_workout_array(void)
 
 char *get_config_object(void)
 {
-    return NULL;
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, CONFIG_FILE);
+    FILE *file = fopen(full_path, "r");
+    if (file == NULL)
+    {
+        return NULL;
+    }
+
+    char *result = malloc(2); // Start with "{"
+    strcpy(result, "{");
+    size_t total_length = 1;
+    char buffer[1024];
+    bool first_entry = true;
+
+    while (fgets(buffer, sizeof(buffer), file))
+    {
+        // Remove newline if present
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        // Skip empty lines and comments
+        if (strlen(buffer) == 0 || buffer[0] == '#' || buffer[0] == ';')
+            continue;
+
+        // Look for key=value pairs
+        char *equals = strchr(buffer, '=');
+        if (equals != NULL)
+        {
+            *equals = '\0'; // Split at equals sign
+            char *key = buffer;
+            char *value = equals + 1;
+
+            // Trim whitespace from key and value
+            while (*key == ' ' || *key == '\t')
+                key++;
+            while (*value == ' ' || *value == '\t')
+                value++;
+
+            char *key_end = key + strlen(key) - 1;
+            while (key_end > key && (*key_end == ' ' || *key_end == '\t'))
+            {
+                *key_end = '\0';
+                key_end--;
+            }
+
+            char *value_end = value + strlen(value) - 1;
+            while (value_end > value && (*value_end == ' ' || *value_end == '\t'))
+            {
+                *value_end = '\0';
+                value_end--;
+            }
+
+            if (strlen(key) > 0)
+            {
+                // Add comma if not first entry
+                if (!first_entry)
+                {
+                    result = realloc(result, total_length + 2);
+                    strcat(result, ",");
+                    total_length += 1;
+                }
+
+                // Create key-value pair in JSON format
+                char json_pair[512];
+                snprintf(json_pair, sizeof(json_pair), "\"%s\":\"%s\"", key, value);
+
+                size_t pair_length = strlen(json_pair);
+                result = realloc(result, total_length + pair_length + 1);
+                strcat(result, json_pair);
+                total_length += pair_length;
+                first_entry = false;
+            }
+        }
+    }
+
+    // Close the object
+    result = realloc(result, total_length + 2);
+    strcat(result, "}");
+
+    fclose(file);
+    return result;
 }
 
 char *get_shortcuts_object(void)

@@ -51,24 +51,24 @@ int cmd_export(int argc, char *argv[])
 
     // Get the workouts array
     char *workouts_json = get_workout_array();
-    // if (workouts_json == NULL)
-    // {
-    //     fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve workouts data\n" ANSI_COLOR_RESET);
-    //     free(exercises_json);
-    //     fclose(fp);
-    //     return 1;
-    // }
+    if (workouts_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve workouts data\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        fclose(fp);
+        return 1;
+    }
     
     // Get the config object
     char *config_json = get_config_object();
-    // if (config_json == NULL)
-    // {
-    //     fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve config data\n" ANSI_COLOR_RESET);
-    //     free(exercises_json);
-    //     free(workouts_json);
-    //     fclose(fp);
-    //     return 1;
-    // }
+    if (config_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve config data\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        free(workouts_json);
+        fclose(fp);
+        return 1;
+    }
     
     // Get the shortcuts object
     char *shortcuts_json = get_shortcuts_object();
