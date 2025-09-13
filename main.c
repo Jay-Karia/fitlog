@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "fitlog.h"
 
+// TODO: fix --dir command to print full directory
+// TODO: print the directory where the export json is created
+// TODO: feat import command
+
+
 int main(int argc, char *argv[])
 {
     if (argc < 2)

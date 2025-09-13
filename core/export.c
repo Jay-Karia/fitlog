@@ -21,6 +21,9 @@ int cmd_export(int argc, char *argv[])
         {
             strncpy(output_path, argv[++i], sizeof(output_path) - 1);
             output_path[sizeof(output_path) - 1] = '\0';
+        } else {
+            fprintf(stderr, ANSI_COLOR_RED "Unknown option: %s\n" ANSI_COLOR_RESET, argv[i]);
+            return 1;
         }
     }
 
@@ -72,28 +75,28 @@ int cmd_export(int argc, char *argv[])
     
     // Get the shortcuts object
     char *shortcuts_json = get_shortcuts_object();
-    // if (shortcuts_json == NULL)
-    // {
-    //     fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve shortcuts data\n" ANSI_COLOR_RESET);
-    //     free(exercises_json);
-    //     free(workouts_json);
-    //     free(config_json);
-    //     fclose(fp);
-    //     return 1;
-    // }
+    if (shortcuts_json == NULL)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve shortcuts data\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        free(workouts_json);
+        free(config_json);
+        fclose(fp);
+        return 1;
+    }
     
     // Get the id_counter value
     int id_counter = get_id_counter_value();
-    // if (id_counter < 0)
-    // {
-    //     fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve ID counter value\n" ANSI_COLOR_RESET);
-    //     free(exercises_json);
-    //     free(workouts_json);
-    //     free(config_json);
-    //     free(shortcuts_json);
-    //     fclose(fp);
-    //     return 1;
-    // }
+    if (id_counter < 0)
+    {
+        fprintf(stderr, ANSI_COLOR_RED "Error: Could not retrieve ID counter value\n" ANSI_COLOR_RESET);
+        free(exercises_json);
+        free(workouts_json);
+        free(config_json);
+        free(shortcuts_json);
+        fclose(fp);
+        return 1;
+    }
 
     // Write the final JSON structure
     fseek(fp, 0, SEEK_SET);
