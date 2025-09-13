@@ -13,6 +13,7 @@ void print_usage(void)
     printf("  remove      Remove exercises or logs\n");
     printf("  config      Manage configuration values\n");
     printf("  export      Export fitlog data to JSON\n");
+    printf("  import      Import fitlog data from JSON\n");
     printf("  help        Show this help message\n\n");
     printf("Options:\n");
     printf("  --version     Show version information\n");
@@ -49,6 +50,10 @@ void print_command_help(const char *command)
     else if (strcmp(command, "export") == 0)
     {
         print_export_help();
+    }
+    else if (strcmp(command, "import") == 0)
+    {
+        print_import_help();
     }
     else
     {
@@ -166,4 +171,16 @@ void print_export_help(void)
     printf("\nDescription:\n");
     printf("  This command exports all your fitlog data, including exercises\n");
     printf("  and workout logs, to a JSON file for easy sharing or backup.\n");
+}
+
+void print_import_help(void)
+{
+    printf("fitlog import - Import fitlog data from JSON\n\n");
+    printf("Usage: fitlog import [options]\n\n");
+    printf("Options:\n");
+    printf("  --file <file name>         Specify input JSON file to import\n");
+    printf("  --help                     Show this help message\n");
+    printf("\nDescription:\n");
+    printf("  This command imports fitlog data from a specified JSON file,\n");
+    printf("  allowing you to restore or merge workout logs and exercises.\n");
 }

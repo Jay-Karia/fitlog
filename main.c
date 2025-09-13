@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "fitlog.h"
 
-// TODO: feat import command
+// TODO: modify directory while exporting and importing data
 
 int main(int argc, char *argv[])
 {
@@ -69,6 +69,10 @@ int main(int argc, char *argv[])
     else if (strcmp(command, "export") == 0)
     {
         return cmd_export(argc - 1, argv + 1);
+    }
+    else if (strcmp(command, "import") == 0)
+    {
+        return cmd_import(argc - 1, argv + 1);
     }
     else if (strcmp(command, "help") == 0 || strcmp(command, "--help") == 0)
     {
