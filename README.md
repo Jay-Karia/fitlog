@@ -19,37 +19,6 @@ CLI Workout Logger
 - Configuration management
 - Import and export your fitlog data
 
-## Documentation
-
-Visit the [fitlog wiki](https://github.com/Jay-Karia/fitlog/wiki) for detailed guides and references.
-
-## Installation
-
-### Prerequisites
-
-- C compiler (GCC 9.0+ or Clang 10.0+)
-- Make utility
-- Git (for source installation)
-
-### Install from executable
-
-Download and run the latest `fitlog - Setup {version}.exe` from the [releases page](https://github.com/Jay-Karia/fitlog/releases).
-
-### Install from source
-
-```bash
-git clone https://github.com/Jay-Karia/fitlog.git
-cd fitlog
-make
-```
-
-### Build locally
-
-```bash
-make
-./dist/fitlog
-```
-
 ## Quick Start
 
 ```bash
@@ -65,6 +34,35 @@ fitlog show workout --all
 # Get help for any command
 fitlog --help
 ```
+
+## Documentation
+
+Visit the [fitlog wiki](https://github.com/Jay-Karia/fitlog/wiki) for detailed guides and references.
+
+## Manual Installation
+
+### Prerequisites
+
+- C compiler (GCC 9.0+ or Clang 10.0+)
+- Make utility
+- Git (for source installation)
+
+```bash
+git clone https://github.com/Jay-Karia/fitlog.git
+cd fitlog
+make
+```
+
+### Build locally
+
+```bash
+make
+./dist/fitlog
+```
+
+### Install from executable
+
+Download and run the latest `fitlog - Setup {version}.exe` from the [releases page](https://github.com/Jay-Karia/fitlog/releases).
 
 ## Support
 
