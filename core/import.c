@@ -163,6 +163,27 @@ int cmd_import(int argc, char *argv[])
     }
 
     // Get the id counter value
+    int id_counter_value = read_id_counter_value(json_data);
+    if (id_counter_value > 0)
+    {
+        // Write the id counter value to the id counter file
+        char id_path[256];
+        sprintf(id_path, "%s/%s", FITLOG_DIR, ID_COUNTER_FILE);
+        FILE *id_fp = fopen(id_path, "w");
+        if (id_fp != NULL)
+        {
+            fprintf(id_fp, "%d\n", id_counter_value);
+            fclose(id_fp);
+        }
+        else
+        {
+            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write ID counter data to file.\n" ANSI_COLOR_RESET);
+        }
+    }
+    else
+    {
+        printf(ANSI_COLOR_YELLOW "No valid ID counter data found in the import file.\n" ANSI_COLOR_RESET);
+    }
 
     free(json_data);
 

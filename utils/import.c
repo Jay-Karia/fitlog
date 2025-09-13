@@ -237,7 +237,6 @@ char *object_to_ini(const char *object_data)
     char *end = json_copy + strlen(json_copy) - 1; // Points to closing '}'
     *end = '\0'; // Terminate at the closing brace
     
-    char *lineStart = result;
     int resultLen = 0;
     
     while (p && *p) {
@@ -563,4 +562,44 @@ char *read_shortcuts_object(const char *json_data)
     strncpy(object_data, start, object_length);
     object_data[object_length] = '\0';
     return object_data;
+}
+
+int read_id_counter_value(const char *json_data)
+{
+    if (json_data == NULL)
+    {
+        return -1;
+    }
+
+    const char *id_counter_key = "\"id_counter\":";
+    char *start = strstr(json_data, id_counter_key);
+    if (start == NULL)
+    {
+        return -1; // "id_counter" key not found
+    }
+    start += strlen(id_counter_key);
+    while (*start != '\0' && (*start == ' ' || *start == '\t' || *start == '\n' || *start == '\r'))
+    {
+        start++;
+    }
+    char *end = start;
+    while (*end != '\0' && (*end >= '0' && *end <= '9'))
+    {
+        end++;
+    }
+    if (end == start)
+    {
+        return -1; // No digits found
+    }
+    size_t num_length = end - start;
+    char *num_str = (char *)malloc(num_length + 1);
+    if (num_str == NULL)
+    {
+        return -1; // Memory allocation failed
+    }
+    strncpy(num_str, start, num_length);
+    num_str[num_length] = '\0';
+    int id_counter = atoi(num_str);
+    free(num_str);
+    return id_counter;
 }

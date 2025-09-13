@@ -73,5 +73,6 @@ char *read_exercise_array(const char *json_data);
 char *read_workout_array(const char *json_data);
 char *read_config_object(const char *json_data);
 char *read_shortcuts_object(const char *json_data);
+int read_id_counter_value(const char *json_data);
 
 #endif
