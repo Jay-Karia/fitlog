@@ -54,7 +54,6 @@ int cmd_import(int argc, char *argv[])
         return 1;
     }
 
-    
     // Get the exercises array
     char *exercise_array = read_exercise_array(json_data);
     if (exercise_array != NULL)
@@ -95,54 +94,74 @@ int cmd_import(int argc, char *argv[])
 
     // Get the config object
     char *config_object = read_config_object(json_data);
-    char *config_ini = object_to_ini(config_object);
-    if (config_ini != NULL)
+    if (config_object != NULL)
     {
-        // Write the config ini to the config file
-        char config_path[256];
-        sprintf(config_path, "%s/%s", FITLOG_DIR, CONFIG_FILE);
-        FILE *config_fp = fopen(config_path, "w");
-        if (config_fp != NULL)
+        char *config_ini = object_to_ini(config_object);
+        free(config_object);
+
+        if (config_ini != NULL)
         {
-            fwrite(config_ini, 1, strlen(config_ini), config_fp);
-            fclose(config_fp);
+            // Write the config ini to the config file
+            char config_path[256];
+            sprintf(config_path, "%s/%s", FITLOG_DIR, CONFIG_FILE);
+            FILE *config_fp = fopen(config_path, "w");
+            if (config_fp != NULL)
+            {
+                // Use fputs for direct writing without formatting
+                fputs(config_ini, config_fp);
+                fclose(config_fp);
+            }
+            else
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write config data to file.\n" ANSI_COLOR_RESET);
+            }
+            free(config_ini);
         }
         else
         {
-            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write config data to file.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not convert config data to INI format.\n" ANSI_COLOR_RESET);
         }
-        free(config_ini);
     }
     else
     {
         printf(ANSI_COLOR_YELLOW "No config data found in the import file.\n" ANSI_COLOR_RESET);
     }
-    
+
     // Get the shortcuts object
     char *shortcuts_object = read_shortcuts_object(json_data);
-    char *shortcuts_ini = object_to_ini(shortcuts_object);
-    if (shortcuts_ini != NULL)
+    if (shortcuts_object != NULL)
     {
-        // Write the shortcuts ini to the shortcuts file
-        char shortcuts_path[256];
-        sprintf(shortcuts_path, "%s/%s", FITLOG_DIR, SHORTCUTS_FILE);
-        FILE *shortcuts_fp = fopen(shortcuts_path, "w");
-        if (shortcuts_fp != NULL)
+        char *shortcuts_ini = object_to_ini(shortcuts_object);
+        free(shortcuts_object);
+
+        if (shortcuts_ini != NULL)
         {
-            fwrite(shortcuts_ini, 1, strlen(shortcuts_ini), shortcuts_fp);
-            fclose(shortcuts_fp);
+            // Write the shortcuts ini to the shortcuts file
+            char shortcuts_path[256];
+            sprintf(shortcuts_path, "%s/%s", FITLOG_DIR, SHORTCUTS_FILE);
+            FILE *shortcuts_fp = fopen(shortcuts_path, "w");
+            if (shortcuts_fp != NULL)
+            {
+                // Use fputs for direct writing without formatting
+                fputs(shortcuts_ini, shortcuts_fp);
+                fclose(shortcuts_fp);
+            }
+            else
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write shortcuts data to file.\n" ANSI_COLOR_RESET);
+            }
+            free(shortcuts_ini);
         }
         else
         {
-            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write shortcuts data to file.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not convert shortcuts data to INI format.\n" ANSI_COLOR_RESET);
         }
-        free(shortcuts_ini);
     }
     else
     {
         printf(ANSI_COLOR_YELLOW "No shortcuts data found in the import file.\n" ANSI_COLOR_RESET);
     }
-    
+
     // Get the id counter value
 
     free(json_data);

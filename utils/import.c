@@ -218,51 +218,113 @@ char *object_to_ini(const char *object_data)
         return NULL; // Invalid JSON object
     }
 
-    // Remove the surrounding braces
-    char *data = strdup(object_data + 1);
-    data[strlen(data) - 1] = '\0';
-
-    // Prepare INI result
-    char *ini_result = malloc(strlen(data) + 1);
-    ini_result[0] = '\0';
-
-    char *pair = strtok(data, ",");
-    while (pair != NULL)
-    {
-        char *colon = strchr(pair, ':');
-        if (colon != NULL)
-        {
-            *colon = '\0';
-            char *key = pair;
-            char *value = colon + 1;
-
-            // Remove surrounding quotes if present
-            if (key[0] == '\"' && key[strlen(key) - 1] == '\"')
-            {
-                key[strlen(key) - 1] = '\0';
-                key++;
-            }
-            if (value[0] == '\"' && value[strlen(value) - 1] == '\"')
-            {
-                value[strlen(value) - 1] = '\0';
-                value++;
-            }
-
-            // Append to INI result
-            if (strlen(ini_result) > 0)
-            {
-                strcat(ini_result, "\n");
-            }
-            strcat(ini_result, key);
-            strcat(ini_result, "=");
-            strcat(ini_result, value);
-        }
-
-        pair = strtok(NULL, ",");
+    // Make a copy of the original JSON string for safer processing
+    char *json_copy = strdup(object_data);
+    if (json_copy == NULL) {
+        return NULL; // Memory allocation failed
     }
 
-    free(data);
-    return ini_result;
+    // Prepare result buffer
+    char *result = malloc(strlen(json_copy) * 2); // Allocate plenty of space
+    if (result == NULL) {
+        free(json_copy);
+        return NULL;
+    }
+    result[0] = '\0';
+
+    // We'll parse the JSON manually to avoid issues with strtok modifying the string
+    char *p = json_copy + 1; // Skip opening '{'
+    char *end = json_copy + strlen(json_copy) - 1; // Points to closing '}'
+    *end = '\0'; // Terminate at the closing brace
+    
+    char *lineStart = result;
+    int resultLen = 0;
+    
+    while (p && *p) {
+        // Skip whitespace
+        while (*p && (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')) p++;
+        if (!*p) break;
+        
+        // Check for key (should start with a quote)
+        if (*p != '"') {
+            p++;
+            continue;
+        }
+        
+        p++; // Skip opening quote of key
+        char *keyStart = p;
+        
+        // Find end of key
+        while (*p && *p != '"') p++;
+        if (!*p) break;
+        
+        *p = '\0'; // Terminate key
+        char *key = keyStart;
+        
+        p++; // Skip past the closing quote
+        
+        // Look for colon
+        while (*p && *p != ':') p++;
+        if (!*p) break;
+        
+        p++; // Skip colon
+        
+        // Skip whitespace before value
+        while (*p && (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')) p++;
+        if (!*p) break;
+        
+        char *valueStart;
+        char *valueEnd;
+        
+        // Handle quoted value
+        if (*p == '"') {
+            p++; // Skip opening quote
+            valueStart = p;
+            
+            // Find end of quoted value
+            while (*p && *p != '"') p++;
+            if (!*p) break;
+            
+            valueEnd = p;
+            p++; // Skip closing quote
+        } else {
+            // Unquoted value - find end (comma or end of object)
+            valueStart = p;
+            while (*p && *p != ',' && *p != '}') p++;
+            valueEnd = p;
+            
+            // Trim trailing whitespace from value
+            char *vEnd = valueEnd - 1;
+            while (vEnd > valueStart && (*vEnd == ' ' || *vEnd == '\t' || *vEnd == '\n' || *vEnd == '\r')) {
+                vEnd--;
+            }
+            valueEnd = vEnd + 1;
+        }
+        
+        // Temporarily terminate value
+        char origChar = *valueEnd;
+        *valueEnd = '\0';
+        
+        // Append to result: key=value\\n
+        if (resultLen > 0) {
+            strcat(result, "\n");
+            resultLen += 1;
+        }
+        strcat(result, key);
+        strcat(result, "=");
+        strcat(result, valueStart);
+        resultLen += strlen(key) + 1 + strlen(valueStart);
+        
+        // Restore value terminator
+        *valueEnd = origChar;
+        
+        // Move to next key-value pair
+        while (*p && *p != ',') p++;
+        if (*p == ',') p++;
+    }
+    
+    free(json_copy);
+    return result;
 }
 
 char *read_workout_array(const char *json_data)
