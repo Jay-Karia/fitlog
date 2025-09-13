@@ -4,7 +4,7 @@
 #define FITLOG_CONSTANTS_H
 
 // Internal
-#define FITLOG_VERSION "0.0.1"
+#define FITLOG_VERSION "0.0.2"
 #define MAX_EXERCISE_NAME 64
 #define MAX_NOTES 128
 

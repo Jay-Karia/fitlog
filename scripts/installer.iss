@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "fitlog"
-#define MyAppVersion "0.0.1"
+#define MyAppVersion "0.0.2"
 #define MyAppPublisher "Jay Karia"
 #define MyAppURL "https://github.com/Jay-Karia/fitlog"
 #define MyAppExeName "fitlog.exe"
