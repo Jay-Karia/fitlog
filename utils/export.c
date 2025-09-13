@@ -35,10 +35,12 @@ char *get_exercise_array(void)
             continue;
         }
 
-        // Parse CSV fields (assuming format: id,name,description)
+        // Parse CSV fields (format: Id,Name,Shortcut,Description,Type)
         char *id = strtok(buffer, ",");
         char *name = strtok(NULL, ",");
+        char *shortcut = strtok(NULL, ",");
         char *description = strtok(NULL, ",");
+        char *type = strtok(NULL, ",");
 
         if (id && name)
         {
@@ -49,10 +51,6 @@ char *get_exercise_array(void)
                 strcat(result, ",");
                 total_length += 1;
             }
-
-            // Parse CSV fields (assuming format: id,name,shortcut,description,type)
-            char *shortcut = strtok(NULL, ",");
-            char *type = strtok(NULL, ",");
 
             // Create JSON object for exercise
             char json_obj[512];

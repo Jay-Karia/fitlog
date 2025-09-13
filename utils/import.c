@@ -34,9 +34,19 @@ int write_csv_from_array(const char *array_data, const char *output_path)
     if (start)
     {
         // Find the closing }
-        char *end = strchr(start, '}');
-        if (end)
-        {
+        char *end = NULL;
+        int brace_count = 1;
+        char *pos = start + 1;
+        
+        while (*pos != '\0' && brace_count > 0) {
+            if (*pos == '{') brace_count++;
+            else if (*pos == '}') brace_count--;
+            pos++;
+        }
+        
+        if (brace_count == 0) {
+            end = pos - 1;
+            
             size_t length = end - start + 1;
             first_object = (char *)malloc(length + 1);
             if (first_object)
@@ -46,6 +56,11 @@ int write_csv_from_array(const char *array_data, const char *output_path)
 
                 // Check if it's a workout or exercise by looking for specific keys
                 is_workout = strstr(first_object, "\"exercise\"") != NULL;
+                
+                // Debug - print object type
+                //printf("Object type: %s\n", is_workout ? "workout" : "exercise");
+                //printf("First object: %s\n", first_object);
+                
                 free(first_object);
             }
         }
@@ -118,6 +133,9 @@ int write_csv_from_array(const char *array_data, const char *output_path)
                 {
                     key_pos += strlen(keys[i]); // Move past the key
 
+                    // Skip whitespace
+                    while (*key_pos == ' ' || *key_pos == '\t') key_pos++;
+
                     // Find the value (should be in quotes)
                     if (*key_pos == '\"')
                     {
@@ -134,6 +152,19 @@ int write_csv_from_array(const char *array_data, const char *output_path)
                             }
                         }
                     }
+                    else if (*key_pos >= '0' && *key_pos <= '9') {
+                        // Handle numeric values without quotes
+                        char *end_val = key_pos;
+                        while ((*end_val >= '0' && *end_val <= '9') || *end_val == '.') end_val++;
+                        
+                        size_t val_len = end_val - key_pos;
+                        fields[i] = (char *)malloc(val_len + 1);
+                        if (fields[i])
+                        {
+                            strncpy(fields[i], key_pos, val_len);
+                            fields[i][val_len] = '\0';
+                        }
+                    }
                 }
 
                 // If field is NULL, use empty string
@@ -146,13 +177,19 @@ int write_csv_from_array(const char *array_data, const char *output_path)
         else
         {
             // For exercises: id, name, shortcut, description, type
+            // CSV Order: Id,Name,Shortcut,Description,Type
             const char *keys[] = {"\"id\":", "\"name\":", "\"shortcut\":", "\"description\":", "\"type\":"};
+            const int key_order[] = {0, 1, 2, 3, 4}; // Maps JSON key index to CSV field index
             for (int i = 0; i < 5; i++)
             {
-                char *key_pos = strstr(obj, keys[i]);
+                int key_idx = key_order[i];
+                char *key_pos = strstr(obj, keys[key_idx]);
                 if (key_pos)
                 {
-                    key_pos += strlen(keys[i]); // Move past the key
+                    key_pos += strlen(keys[key_idx]); // Move past the key
+
+                    // Skip whitespace
+                    while (*key_pos == ' ' || *key_pos == '\t') key_pos++;
 
                     // Find the value (should be in quotes)
                     if (*key_pos == '\"')
@@ -168,6 +205,19 @@ int write_csv_from_array(const char *array_data, const char *output_path)
                                 strncpy(fields[i], key_pos, val_len);
                                 fields[i][val_len] = '\0';
                             }
+                        }
+                    }
+                    else if (*key_pos >= '0' && *key_pos <= '9') {
+                        // Handle numeric values without quotes
+                        char *end_val = key_pos;
+                        while ((*end_val >= '0' && *end_val <= '9') || *end_val == '.') end_val++;
+                        
+                        size_t val_len = end_val - key_pos;
+                        fields[i] = (char *)malloc(val_len + 1);
+                        if (fields[i])
+                        {
+                            strncpy(fields[i], key_pos, val_len);
+                            fields[i][val_len] = '\0';
                         }
                     }
                 }

@@ -1,0 +1,20 @@
+{
+  "exercises": [
+    {
+      "id": "1",
+      "name": "Bench Press",
+      "shortcut": "bp",
+      "description": "(null)",
+      "type": "sets"
+    }
+  ],
+  "workouts": [],
+  "config": {
+    "date_format": "YYYY-MM-DD",
+    "weight_unit": "lbs",
+    "time_unit": "s",
+    "default_exercise_type": "sets"
+  },
+  "shortcuts": { "bp": "Bench Press" },
+  "id_counter": 2
+}

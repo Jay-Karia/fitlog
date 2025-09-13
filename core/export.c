@@ -12,12 +12,12 @@ int cmd_export(int argc, char *argv[])
         }
     }
 
-    // Check for optional --output file argument
+    // Check for optional --file file argument
     char output_path[100] = "fitlog_export.json";
     
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "--output") == 0 && i + 1 < argc)
+        if (strcmp(argv[i], "--file") == 0 && i + 1 < argc)
         {
             strncpy(output_path, argv[++i], sizeof(output_path) - 1);
             output_path[sizeof(output_path) - 1] = '\0';
