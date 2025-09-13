@@ -293,7 +293,86 @@ char *get_config_object(void)
 
 char *get_shortcuts_object(void)
 {
-    return NULL;
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, SHORTCUTS_FILE);
+    FILE *file = fopen(full_path, "r");
+    if (file == NULL)
+    {
+        return NULL;
+    }
+
+    char *result = malloc(2); // Start with "{"
+    strcpy(result, "{");
+    size_t total_length = 1;
+    char buffer[1024];
+    bool first_entry = true;
+
+    while (fgets(buffer, sizeof(buffer), file))
+    {
+        // Remove newline if present
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        // Skip empty lines and comments
+        if (strlen(buffer) == 0 || buffer[0] == '#' || buffer[0] == ';')
+            continue;
+
+        // Look for key=value pairs
+        char *equals = strchr(buffer, '=');
+        if (equals != NULL)
+        {
+            *equals = '\0'; // Split at equals sign
+            char *key = buffer;
+            char *value = equals + 1;
+
+            // Trim whitespace from key and value
+            while (*key == ' ' || *key == '\t')
+                key++;
+            while (*value == ' ' || *value == '\t')
+                value++;
+
+            char *key_end = key + strlen(key) - 1;
+            while (key_end > key && (*key_end == ' ' || *key_end == '\t'))
+            {
+                *key_end = '\0';
+                key_end--;
+            }
+
+            char *value_end = value + strlen(value) - 1;
+            while (value_end > value && (*value_end == ' ' || *value_end == '\t'))
+            {
+                *value_end = '\0';
+                value_end--;
+            }
+
+            if (strlen(key) > 0)
+            {
+                // Add comma if not first entry
+                if (!first_entry)
+                {
+                    result = realloc(result, total_length + 2);
+                    strcat(result, ",");
+                    total_length += 1;
+                }
+
+                // Create key-value pair in JSON format
+                char json_pair[512];
+                snprintf(json_pair, sizeof(json_pair), "\"%s\":\"%s\"", key, value);
+
+                size_t pair_length = strlen(json_pair);
+                result = realloc(result, total_length + pair_length + 1);
+                strcat(result, json_pair);
+                total_length += pair_length;
+                first_entry = false;
+            }
+        }
+    }
+
+    // Close the object
+    result = realloc(result, total_length + 2);
+    strcat(result, "}");
+
+    fclose(file);
+    return result;
 }
 
 int get_id_counter_value(void)
