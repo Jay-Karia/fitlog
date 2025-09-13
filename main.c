@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include "fitlog.h"
 
-// TODO: fix --dir command to print full directory
-// TODO: feat import commandexpo
-
+// TODO: feat import command
 
 int main(int argc, char *argv[])
 {
@@ -32,10 +30,10 @@ int main(int argc, char *argv[])
     // Check for the --dir flag
     if (strcmp(command, "--dir") == 0)
     {
-        char *home = getenv("HOME");
-        if (home)
+        char absolute_path[256];
+        if (_fullpath(absolute_path, FITLOG_DIR, sizeof(absolute_path)) != NULL)
         {
-            printf("%s\\%s\n", home, FITLOG_DIR);
+            printf("%s\n", absolute_path);
         }
         else
         {
