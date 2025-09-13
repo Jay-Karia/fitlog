@@ -13,10 +13,12 @@ char *get_exercise_array(void)
     size_t count = 0;
 
     char buffer[1024];
-    char *result = malloc(2); // Start with "["
+    char *result = malloc(2);
     strcpy(result, "[");
     size_t total_length = 1;
 
+    bool is_header = true;
+    
     while (fgets(buffer, sizeof(buffer), file) && count < 256)
     {
         // Remove newline if present
@@ -25,6 +27,13 @@ char *get_exercise_array(void)
         // Skip empty lines
         if (strlen(buffer) == 0)
             continue;
+
+        // Skip header row
+        if (is_header)
+        {
+            is_header = false;
+            continue;
+        }
 
         // Parse CSV fields (assuming format: id,name,description)
         char *id = strtok(buffer, ",");

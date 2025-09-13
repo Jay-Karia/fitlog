@@ -114,7 +114,12 @@ int cmd_export(int argc, char *argv[])
     free(shortcuts_json);
 
     fclose(fp);
-    printf(ANSI_COLOR_GREEN "Data successfully exported to %s\n" ANSI_COLOR_RESET, output_path);
+    char absolute_path[_MAX_PATH];
+    if (_fullpath(absolute_path, output_path, _MAX_PATH) != NULL) {
+        printf(ANSI_COLOR_GREEN "Data successfully exported to %s\n" ANSI_COLOR_RESET, absolute_path);
+    } else {
+        printf(ANSI_COLOR_GREEN "Data successfully exported to %s\n" ANSI_COLOR_RESET, output_path);
+    }
 
     return 0;
 }

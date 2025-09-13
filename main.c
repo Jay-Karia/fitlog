@@ -2,8 +2,7 @@
 #include "fitlog.h"
 
 // TODO: fix --dir command to print full directory
-// TODO: print the directory where the export json is created
-// TODO: feat import command
+// TODO: feat import commandexpo
 
 
 int main(int argc, char *argv[])
