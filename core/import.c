@@ -64,7 +64,7 @@ int cmd_import(int argc, char *argv[])
         int exercises_written = write_csv_from_array(exercise_array, exercises_path);
         if (exercises_written <= 0)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write exercises data to file.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_YELLOW "Warning: Could not write exercises data to file. Data was empty\n" ANSI_COLOR_RESET);
         }
         free(exercise_array);
     }
@@ -83,7 +83,7 @@ int cmd_import(int argc, char *argv[])
         int workouts_written = write_csv_from_array(workout_array, workouts_path);
         if (workouts_written <= 0)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write workouts data to file.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_YELLOW "Warning: Could not write workouts data to file. Data was empty\n" ANSI_COLOR_RESET);
         }
         free(workout_array);
     }
@@ -113,13 +113,13 @@ int cmd_import(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, ANSI_COLOR_RED "Warning: Could not write config data to file.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_YELLOW "Warning: Could not write config data to file. Data was empty\n" ANSI_COLOR_RESET);
             }
             free(config_ini);
         }
         else
         {
-            fprintf(stderr, ANSI_COLOR_RED "Warning: Could not convert config data to INI format.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_YELLOW "Warning: Could not convert config data to INI format. Data was empty\n" ANSI_COLOR_RESET);
         }
     }
     else
