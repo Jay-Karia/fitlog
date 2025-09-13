@@ -377,5 +377,21 @@ char *get_shortcuts_object(void)
 
 int get_id_counter_value(void)
 {
-    return -1;
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, ID_COUNTER_FILE);
+    FILE *file = fopen(full_path, "r");
+    if (file == NULL)
+    {
+        return -1;
+    }
+
+    int counter_value = 0;
+    if (fscanf(file, "%d", &counter_value) != 1)
+    {
+        fclose(file);
+        return -1;
+    }
+
+    fclose(file);
+    return counter_value;
 }
