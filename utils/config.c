@@ -164,6 +164,12 @@ bool is_valid_config_value(const char *config_key, const char *value)
                 strcmp(value, "time") == 0 ||
                 strcmp(value, "body") == 0);
     }
+    else if (strcmp(config_key, "distance_unit") == 0)
+    {
+        return (strcmp(value, "m") == 0 ||
+                strcmp(value, "km") == 0 ||
+                strcmp(value, "miles") == 0);
+    }
     return false; // Unknown key
 }
 
@@ -193,4 +199,29 @@ int reset_config_to_defaults(void)
     printf(ANSI_COLOR_GREEN "Configuration reset to default values.\n" ANSI_COLOR_RESET);
 
     return 0;
+}
+
+DistanceUnit get_config_distance_unit()
+{
+    char buffer[32];
+    int result = read_config_value("distance_unit", "m", buffer, sizeof(buffer));
+    if (result == 0 || result == 1)
+    {
+        if (strcmp(buffer, "km") == 0)
+        {
+            return DISTANCE_KM;
+        }
+        else if (strcmp(buffer, "miles") == 0)
+        {
+            return DISTANCE_MI;
+        }
+        else
+        {
+            return DISTANCE_M;
+        }
+    }
+    else
+    {
+        return DEFAULT_DISTANCE_UNIT; // Default if error
+    }
 }

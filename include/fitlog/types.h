@@ -9,10 +9,10 @@ typedef struct Config Config;
 typedef struct WorkoutLog WorkoutLog;
 
 typedef enum WeightUnit WeightUnit;
-typedef enum TimeFormat TimeFormat;
 typedef enum DateFormat DateFormat;
 typedef enum ExerciseType ExerciseType;
 typedef enum TimeUnit TimeUnit;
+typedef enum DistanceUnit DistanceUnit;
 
 struct WorkoutLog
 {
@@ -22,6 +22,7 @@ struct WorkoutLog
     char reps[20];
     char weight[50];
     char time[20];
+    char distance[20];
     char date[20];
     char notes[200];
 };
@@ -51,12 +52,6 @@ enum WeightUnit
     UNIT_LBS
 };
 
-enum TimeFormat
-{
-    TIME_24H,
-    TIME_12H
-};
-
 enum TimeUnit
 {
     TIME_S,
@@ -76,6 +71,13 @@ enum ExerciseType
     TYPE_WEIGHT,
     TYPE_TIME,
     TYPE_BODY,
+};
+
+enum DistanceUnit
+{
+    DISTANCE_M,
+    DISTANCE_KM,
+    DISTANCE_MI
 };
 
 #endif

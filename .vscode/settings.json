@@ -2,5 +2,6 @@
     "files.associations": {
         "*.html": "html",
         "fitlog.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

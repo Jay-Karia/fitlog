@@ -42,6 +42,7 @@ int cmd_init(int argc, char *argv[])
     fprintf(config_fp, "date_format=YYYY-MM-DD\n\n");
     fprintf(config_fp, "# Units and measurements\n");
     fprintf(config_fp, "weight_unit=lbs\n");
+    fprintf(config_fp, "distance_unit=m\n");
     fprintf(config_fp, "time_unit=s\n\n");
     fprintf(config_fp, "# Behaviour\n");
     fprintf(config_fp, "default_exercise_type=weight\n");
@@ -59,7 +60,7 @@ int cmd_init(int argc, char *argv[])
         return 1;
     }
 
-    fprintf(workouts_fp, "Id,Exercise,Sets,Reps,Weight,Time,Date,Notes\n");
+    fprintf(workouts_fp, "Id,Exercise,Sets,Reps,Weight,Time,Distance,Date,Notes\n");
     fclose(workouts_fp);
 
     // Create the shortcuts map file

@@ -23,6 +23,9 @@ int read_config_value(const char *key, const char *default_value, char *buffer, 
 WeightUnit get_config_weight_unit();
 TimeUnit get_config_time_unit();
 DateFormat get_config_date_format();
+DistanceUnit get_config_distance_unit();
+bool is_valid_config_value(const char *config_key, const char *value);
+int reset_config_to_defaults(void);
 
 // Id counter handling
 int get_next_exercise_id(void);
@@ -54,10 +57,6 @@ bool is_valid_date_format(const char *input_date, const enum DateFormat required
 char *get_today_date(const enum DateFormat required_format);
 char *convert_date_to_standard(const char *input_date, const enum DateFormat input_format);
 char *get_date_in_format(const char *standard_date, const enum DateFormat required_format);
-
-// Config utils
-bool is_valid_config_value(const char *config_key, const char *value);
-int reset_config_to_defaults(void);
 
 // Export Utils
 char *get_exercise_array();

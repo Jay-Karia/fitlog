@@ -71,7 +71,7 @@ void get_workouts_by_id(const char *id, WorkoutLog *workouts)
             row++;
             continue;
         } // skip header
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -85,6 +85,8 @@ void get_workouts_by_id(const char *id, WorkoutLog *workouts)
         if (p)
             p = parse_csv_field(time, sizeof(time), p);
         if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
+        if (p)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
@@ -96,6 +98,7 @@ void get_workouts_by_id(const char *id, WorkoutLog *workouts)
             safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
             safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
             safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+            safe_strncpy(workouts[count].distance, distance, sizeof(workouts[count].distance));
             safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
             safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
             count++;
@@ -122,7 +125,7 @@ void get_workouts_by_date(const char *date, WorkoutLog *workouts)
             row++;
             continue;
         } // skip header
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date_field[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date_field[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -136,6 +139,8 @@ void get_workouts_by_date(const char *date, WorkoutLog *workouts)
         if (p)
             p = parse_csv_field(time, sizeof(time), p);
         if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
+        if (p)
             p = parse_csv_field(date_field, sizeof(date_field), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
@@ -147,6 +152,7 @@ void get_workouts_by_date(const char *date, WorkoutLog *workouts)
             safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
             safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
             safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+            safe_strncpy(workouts[count].distance, distance, sizeof(workouts[count].distance));
             safe_strncpy(workouts[count].date, date_field, sizeof(workouts[count].date));
             safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
             count++;
@@ -210,7 +216,7 @@ void remove_workouts(const WorkoutLog *workouts)
 
         // Parse this workout's data
         char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "",
-             weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+             weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
 
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
@@ -224,6 +230,8 @@ void remove_workouts(const WorkoutLog *workouts)
             p = parse_csv_field(weight, sizeof(weight), p);
         if (p)
             p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
         if (p)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
@@ -298,33 +306,36 @@ void print_workouts(const WorkoutLog *workouts)
     int reps_width = 3;
     int weight_width = 6;
     int time_width = 6;
+    int distance_width = 8;
     int date_width = 10;
     int notes_width = 8;
 
     // Column headers
-    const char *headers[] = {"ID", "Exercise", "Set", "Rep", "Weight", "Time", "Date", "Notes"};
+    const char *headers[] = {"ID", "Exercise", "Set", "Rep", "Weight", "Time", "Distance", "Date", "Notes"};
 
     // Update widths based on header lengths
-    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
-    exercise_width = exercise_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : exercise_width;
-    sets_width = sets_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : sets_width;
-    reps_width = reps_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : reps_width;
-    weight_width = weight_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : weight_width;
-    time_width = time_width < (int) strlen(headers[5]) ? (int) strlen(headers[5]) : time_width;
-    date_width = date_width < (int) strlen(headers[6]) ? (int) strlen(headers[6]) : date_width;
-    notes_width = notes_width < (int) strlen(headers[7]) ? (int) strlen(headers[7]) : notes_width;
+    id_width = id_width < (int)strlen(headers[0]) ? (int)strlen(headers[0]) : id_width;
+    exercise_width = exercise_width < (int)strlen(headers[1]) ? (int)strlen(headers[1]) : exercise_width;
+    sets_width = sets_width < (int)strlen(headers[2]) ? (int)strlen(headers[2]) : sets_width;
+    reps_width = reps_width < (int)strlen(headers[3]) ? (int)strlen(headers[3]) : reps_width;
+    weight_width = weight_width < (int)strlen(headers[4]) ? (int)strlen(headers[4]) : weight_width;
+    time_width = time_width < (int)strlen(headers[5]) ? (int)strlen(headers[5]) : time_width;
+    distance_width = distance_width < (int)strlen(headers[6]) ? (int)strlen(headers[6]) : distance_width;
+    date_width = date_width < (int)strlen(headers[7]) ? (int)strlen(headers[7]) : date_width;
+    notes_width = notes_width < (int)strlen(headers[8]) ? (int)strlen(headers[8]) : notes_width;
 
     // Calculate max widths based on actual data
     for (int i = 0; i < length; i++)
     {
-        id_width = id_width < (int) strlen(workouts[i].id) ? (int) strlen(workouts[i].id) : id_width;
-        exercise_width = exercise_width < (int) strlen(workouts[i].exercise) ? (int) strlen(workouts[i].exercise) : exercise_width;
-        sets_width = sets_width < (int) strlen(workouts[i].sets) ? (int) strlen(workouts[i].sets) : sets_width;
-        reps_width = reps_width < (int) strlen(workouts[i].reps) ? (int) strlen(workouts[i].reps) : reps_width;
-        weight_width = weight_width < (int) strlen(workouts[i].weight) ? (int) strlen(workouts[i].weight) : weight_width;
-        time_width = time_width < (int) strlen(workouts[i].time) ? (int) strlen(workouts[i].time) : time_width;
-        date_width = date_width < (int) strlen(workouts[i].date) ? (int) strlen(workouts[i].date) : date_width;
-        notes_width = notes_width < (int) strlen(workouts[i].notes) ? (int) strlen(workouts[i].notes) : notes_width;
+        id_width = id_width < (int)strlen(workouts[i].id) ? (int)strlen(workouts[i].id) : id_width;
+        exercise_width = exercise_width < (int)strlen(workouts[i].exercise) ? (int)strlen(workouts[i].exercise) : exercise_width;
+        sets_width = sets_width < (int)strlen(workouts[i].sets) ? (int)strlen(workouts[i].sets) : sets_width;
+        reps_width = reps_width < (int)strlen(workouts[i].reps) ? (int)strlen(workouts[i].reps) : reps_width;
+        weight_width = weight_width < (int)strlen(workouts[i].weight) ? (int)strlen(workouts[i].weight) : weight_width;
+        time_width = time_width < (int)strlen(workouts[i].time) ? (int)strlen(workouts[i].time) : time_width;
+        distance_width = distance_width < (int)strlen(workouts[i].weight) ? (int)strlen(workouts[i].weight) : distance_width;
+        date_width = date_width < (int)strlen(workouts[i].date) ? (int)strlen(workouts[i].date) : date_width;
+        notes_width = notes_width < (int)strlen(workouts[i].notes) ? (int)strlen(workouts[i].notes) : notes_width;
     }
 
     // Add padding for better readability (2 spaces on each side)
@@ -334,60 +345,86 @@ void print_workouts(const WorkoutLog *workouts)
     reps_width += 2;
     weight_width += 2;
     time_width += 2;
+    distance_width += 2;
     date_width += 2;
     notes_width += 2;
 
     // Limit excessive column widths (especially for notes)
-    if (notes_width > 40) notes_width = 40;
-    if (exercise_width > 30) exercise_width = 30;
+    if (notes_width > 40)
+        notes_width = 40;
+    if (exercise_width > 30)
+        exercise_width = 30;
 
     // Print top border
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < exercise_width + 2; i++) printf("-");
+    for (int i = 0; i < exercise_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < sets_width + 2; i++) printf("-");
+    for (int i = 0; i < sets_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < reps_width + 2; i++) printf("-");
+    for (int i = 0; i < reps_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < weight_width + 2; i++) printf("-");
+    for (int i = 0; i < weight_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < time_width + 2; i++) printf("-");
+    for (int i = 0; i < time_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < date_width + 2; i++) printf("-");
+    for (int i = 0; i < distance_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < notes_width + 2; i++) printf("-");
+    for (int i = 0; i < date_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < notes_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Print header
-    printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
+    printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
            id_width, headers[0],
            exercise_width, headers[1],
            sets_width, headers[2],
            reps_width, headers[3],
            weight_width, headers[4],
            time_width, headers[5],
-           date_width, headers[6],
-           notes_width, headers[7]);
+           distance_width, headers[6],
+           date_width, headers[7],
+           notes_width, headers[8]);
 
     // Print header separator
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < exercise_width + 2; i++) printf("-");
+    for (int i = 0; i < exercise_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < sets_width + 2; i++) printf("-");
+    for (int i = 0; i < sets_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < reps_width + 2; i++) printf("-");
+    for (int i = 0; i < reps_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < weight_width + 2; i++) printf("-");
+    for (int i = 0; i < weight_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < time_width + 2; i++) printf("-");
+    for (int i = 0; i < time_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < date_width + 2; i++) printf("-");
+    for (int i = 0; i < distance_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < notes_width + 2; i++) printf("-");
+    for (int i = 0; i < date_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < notes_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Print data rows
@@ -396,49 +433,63 @@ void print_workouts(const WorkoutLog *workouts)
         // Truncate notes if they're too long for display
         char truncated_notes[41] = {0};
         strncpy(truncated_notes, workouts[i].notes, 40);
-        if (strlen(workouts[i].notes) > 40) {
+        if (strlen(workouts[i].notes) > 40)
+        {
             truncated_notes[37] = '.';
             truncated_notes[38] = '.';
             truncated_notes[39] = '.';
         }
-        
+
         // Truncate exercise if too long for display
         char truncated_exercise[31] = {0};
         strncpy(truncated_exercise, workouts[i].exercise, 30);
-        if (strlen(workouts[i].exercise) > 30) {
+        if (strlen(workouts[i].exercise) > 30)
+        {
             truncated_exercise[27] = '.';
             truncated_exercise[28] = '.';
             truncated_exercise[29] = '.';
         }
 
-        printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
+        printf("| %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s | %-*s |\n",
                id_width, workouts[i].id,
                exercise_width, truncated_exercise,
                sets_width, workouts[i].sets,
                reps_width, workouts[i].reps,
                weight_width, workouts[i].weight,
                time_width, workouts[i].time,
+               distance_width, workouts[i].distance,
                date_width, workouts[i].date,
                notes_width, truncated_notes);
     }
 
     // Print bottom border
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < exercise_width + 2; i++) printf("-");
+    for (int i = 0; i < exercise_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < sets_width + 2; i++) printf("-");
+    for (int i = 0; i < sets_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < reps_width + 2; i++) printf("-");
+    for (int i = 0; i < reps_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < weight_width + 2; i++) printf("-");
+    for (int i = 0; i < weight_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < time_width + 2; i++) printf("-");
+    for (int i = 0; i < time_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < date_width + 2; i++) printf("-");
+    for (int i = 0; i < distance_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < notes_width + 2; i++) printf("-");
+    for (int i = 0; i < date_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < notes_width + 2; i++)
+        printf("-");
     printf("+\n");
 }
 
@@ -513,7 +564,7 @@ int show_last_n_workouts(int n)
     // Now read the remaining workouts into the array
     while (fgets(line, sizeof(line), fp) && count < 100)
     {
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -527,6 +578,8 @@ int show_last_n_workouts(int n)
         if (p)
             p = parse_csv_field(time, sizeof(time), p);
         if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
+        if (p)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
@@ -536,6 +589,7 @@ int show_last_n_workouts(int n)
         safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
         safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
         safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+        safe_strncpy(workouts[count].distance, distance, sizeof(workouts[count].distance));
         safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
         safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
         count++;
@@ -567,7 +621,7 @@ int show_all_workouts()
     // Read all workouts into the array
     while (fgets(line, sizeof(line), fp) && count < 100)
     {
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -578,6 +632,8 @@ int show_all_workouts()
             p = parse_csv_field(reps, sizeof(reps), p);
         if (p)
             p = parse_csv_field(weight, sizeof(weight), p);
+        if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
         if (p)
             p = parse_csv_field(time, sizeof(time), p);
         if (p)
@@ -590,6 +646,7 @@ int show_all_workouts()
         safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
         safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
         safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+        safe_strncpy(workouts[count].distance, distance, sizeof(workouts[count].distance));
         safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
         safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
         count++;
@@ -602,7 +659,7 @@ int show_all_workouts()
 int show_workouts_in_date_range(const char *from_date, const char *to_date)
 {
     // The dates are already in YYYY-MM-DD format from the calling function
-    
+
     if (strcmp(from_date, to_date) > 0)
     {
         printf(ANSI_COLOR_RED "Error: 'from' date cannot be later than 'to' date.\n" ANSI_COLOR_RESET);
@@ -629,7 +686,7 @@ int show_workouts_in_date_range(const char *from_date, const char *to_date)
     // Read all workouts into the array
     while (fgets(line, sizeof(line), fp) && count < 100)
     {
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -643,15 +700,18 @@ int show_workouts_in_date_range(const char *from_date, const char *to_date)
         if (p)
             p = parse_csv_field(time, sizeof(time), p);
         if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
+        if (p)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
             parse_csv_field(notes, sizeof(notes), p);
-            
+
         // Skip entries with invalid dates
-        if (strlen(date) == 0) {
+        if (strlen(date) == 0)
+        {
             continue;
         }
-        
+
         // Check if the workout date is within the range
         if (strcmp(date, from_date) >= 0 && strcmp(date, to_date) <= 0)
         {
@@ -661,6 +721,7 @@ int show_workouts_in_date_range(const char *from_date, const char *to_date)
             safe_strncpy(workouts[count].reps, reps, sizeof(workouts[count].reps));
             safe_strncpy(workouts[count].weight, weight, sizeof(workouts[count].weight));
             safe_strncpy(workouts[count].time, time, sizeof(workouts[count].time));
+            safe_strncpy(workouts[count].distance, distance, sizeof(workouts[count].distance));
             safe_strncpy(workouts[count].date, date, sizeof(workouts[count].date));
             safe_strncpy(workouts[count].notes, notes, sizeof(workouts[count].notes));
             count++;

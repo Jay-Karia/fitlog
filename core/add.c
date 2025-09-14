@@ -184,13 +184,13 @@ int cmd_add(int argc, char *argv[])
             return 1;
         }
 
-        // Format: ID,Name,Type,Sets,Reps,Weight,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets,
                 reps,
                 weight_str,
+                "",
                 "",
                 standard_date_str,
                 notes);
@@ -211,9 +211,10 @@ int cmd_add(int argc, char *argv[])
     }
     else if (type == TYPE_TIME)
     {
-        // Check for time and sets option
+        // Check for time, distance and sets option
         int duration = -1;
         int sets = -1;
+        int distance = -1;
 
         for (int i = 2; i < argc; i++)
         {
@@ -224,6 +225,10 @@ int cmd_add(int argc, char *argv[])
             else if ((strcmp(argv[i], "--sets") == 0 || strcmp(argv[i], "-s") == 0) && i + 1 < argc)
             {
                 sets = atoi(argv[++i]);
+            }
+            else if ((strcmp(argv[i], "--distance") == 0 || strcmp(argv[i], "-dist") == 0) && i + 1 < argc)
+            {
+                distance = atoi(argv[++i]);
             }
             else if ((strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
             {
@@ -290,14 +295,44 @@ int cmd_add(int argc, char *argv[])
             snprintf(sets_str, sizeof(sets_str), "%d", sets);
         }
 
-        // Format: ID,Name,Type,Duration,Date,Notes
-        fprintf(fp, "%d,%s,%s,%s,%s,%s,%s,%s\n",
+        char distance_str[20];
+        if (distance == -1)
+        {
+            strcpy(distance_str, "");
+        }
+        else
+        {
+            snprintf(distance_str, sizeof(distance_str), "%d", distance);
+        }
+
+        // Get the distance unit
+        char *distance_unit_str;
+        switch (get_config_distance_unit())
+        {
+        case DISTANCE_KM:
+            distance_unit_str = "km";
+            break;
+        case DISTANCE_MI:
+            distance_unit_str = "miles";
+            break;
+        default:
+            distance_unit_str = "m";
+            break;
+        }
+        if (distance != -1)
+        {
+            strcat(distance_str, " ");
+            strcat(distance_str, distance_unit_str);
+        }
+
+        fprintf(fp, "%d,%s,%s,%s,%s,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets_str,
                 "",
                 "",
                 time_str,
+                distance_str,
                 standard_date_str,
                 notes);
 
@@ -308,10 +343,8 @@ int cmd_add(int argc, char *argv[])
         printf(BOLD_TEXT "Exercise Logged :\n" ANSI_COLOR_RESET);
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
-        if (sets > 0)
-        {
-            printf(DARK_GRAY_TEXT "  Sets: %s\n" ANSI_COLOR_RESET, sets_str);
-        }
+        printf(DARK_GRAY_TEXT "  Sets: %s\n" ANSI_COLOR_RESET, sets_str);
+        printf("  Distance: %s\n", distance_str);
         printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
         printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
@@ -371,12 +404,12 @@ int cmd_add(int argc, char *argv[])
             return 1;
         }
 
-        // Format: ID,Name,Sets,Reps,Date,Notes
-        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
                 sets,
                 reps,
+                "",
                 "",
                 "",
                 standard_date_str,
