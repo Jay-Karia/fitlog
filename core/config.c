@@ -7,7 +7,7 @@ int cmd_config(int argc, char *argv[])
     {
         if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
         {
-            print_add_help();
+            print_config_help();
             return 0;
         }
     }
@@ -15,7 +15,7 @@ int cmd_config(int argc, char *argv[])
     // Check for --get options
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "--get") == 0 && i + 1 < argc)
+        if ((strcmp(argv[i], "--get") == 0 || strcmp(argv[i], "-g") == 0) && i + 1 < argc)
         {
             const char *key = argv[++i];
             char value[256];
@@ -36,7 +36,7 @@ int cmd_config(int argc, char *argv[])
     // Check for --set options
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "--set") == 0 && i + 2 < argc)
+        if ((strcmp(argv[i], "--set") == 0 || strcmp(argv[i], "-s") == 0) && i + 2 < argc)
         {
             const char *key = argv[++i];
             const char *value = argv[++i];
@@ -103,7 +103,7 @@ int cmd_config(int argc, char *argv[])
     // Check for --list option
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "--list") == 0)
+        if (strcmp(argv[i], "--list") == 0 || strcmp(argv[i], "-l") == 0)
         {
             char config_path[256];
             sprintf(config_path, "%s/%s", FITLOG_DIR, CONFIG_FILE);
@@ -131,7 +131,7 @@ int cmd_config(int argc, char *argv[])
     // Check for --reset option
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "--reset") == 0)
+        if (strcmp(argv[i], "--reset") == 0 || strcmp(argv[i], "-r") == 0)
         {
             return reset_config_to_defaults();
         }

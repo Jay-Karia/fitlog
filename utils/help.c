@@ -152,11 +152,11 @@ void print_config_help(void)
     printf("fitlog config - Manage configuration values\n\n");
     printf("Usage: fitlog config [options]\n\n");
     printf("Options:\n");
-    printf("  --get <key>            Get the value of a configuration key\n");
-    printf("  --set <key> <value>    Set the value of a configuration key\n");
-    printf("  --list                 Print all configuration key-value pairs\n");
-    printf("  --reset                Reset configuration to default values\n");
-    printf("  --help                 Show this help message\n");
+    printf("  --get, -g <key>        Get the value of a configuration key\n");
+    printf("  --set, -s <key> <value> Set the value of a configuration key\n");
+    printf("  --list, -l             Print all configuration key-value pairs\n");
+    printf("  --reset, -r            Reset configuration to default values\n");
+    printf("  --help, -h             Show this help message\n");
     printf("\nDescription:\n");
     printf("  This command allows you to view and modify configuration\n");
     printf("  settings for the fitlog CLI application.\n");
