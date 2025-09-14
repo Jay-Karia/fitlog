@@ -48,7 +48,7 @@ int cmd_add(int argc, char *argv[])
 
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
+        if ((strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
         {
             strncpy(date_str, argv[++i], sizeof(date_str) - 1);
             date_str[sizeof(date_str) - 1] = '\0';
@@ -97,7 +97,7 @@ int cmd_add(int argc, char *argv[])
     char notes[256] = "";
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--notes") == 0 && i + 1 < argc)
+        if ((strcmp(argv[i], "--notes") == 0 || strcmp(argv[i], "-n") == 0) && i + 1 < argc)
         {
             strncpy(notes, argv[++i], sizeof(notes) - 1);
             notes[sizeof(notes) - 1] = '\0';
@@ -113,27 +113,42 @@ int cmd_add(int argc, char *argv[])
 
         for (int i = 2; i < argc; i++)
         {
-            if (strcmp(argv[i], "--reps") == 0 && i + 1 < argc)
+            if (strcmp(argv[i], "--reps") == 0 || strcmp(argv[i], "-r") == 0)
             {
-                reps = atoi(argv[++i]);
+                if (i + 1 < argc)
+                {
+                    reps = atoi(argv[++i]);
+                }
             }
-            else if (strcmp(argv[i], "--weight") == 0 && i + 1 < argc)
+            else if (strcmp(argv[i], "--weight") == 0 || strcmp(argv[i], "-w") == 0)
             {
-                weight = atof(argv[++i]);
+                if (i + 1 < argc)
+                {
+                    weight = atof(argv[++i]);
+                }
             }
-            else if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
+            else if (strcmp(argv[i], "--sets") == 0 || strcmp(argv[i], "-s") == 0)
             {
-                sets = atof(argv[++i]);
+                if (i + 1 < argc)
+                {
+                    sets = atoi(argv[++i]);
+                }
             }
-            else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
+            else if (strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0)
             {
-                i++;
-                continue;
+                if (i + 1 < argc)
+                {
+                    i++;
+                    continue;
+                }
             }
-            else if (strcmp(argv[i], "--notes") == 0 && i + 1 < argc)
+            else if (strcmp(argv[i], "--notes") == 0 || strcmp(argv[i], "-n") == 0)
             {
-                i++;
-                continue;
+                if (i + 1 < argc)
+                {
+                    i++;
+                    continue;
+                }
             }
             else
             {
@@ -202,20 +217,20 @@ int cmd_add(int argc, char *argv[])
 
         for (int i = 2; i < argc; i++)
         {
-            if (strcmp(argv[i], "--time") == 0 && i + 1 < argc)
+            if ((strcmp(argv[i], "--time") == 0 || strcmp(argv[i], "-t") == 0) && i + 1 < argc)
             {
                 duration = atoi(argv[++i]);
             }
-            else if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
+            else if ((strcmp(argv[i], "--sets") == 0 || strcmp(argv[i], "-s") == 0) && i + 1 < argc)
             {
                 sets = atoi(argv[++i]);
             }
-            else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
+            else if ((strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
             {
                 i++;
                 continue;
             }
-            else if (strcmp(argv[i], "--notes") == 0 && i + 1 < argc)
+            else if ((strcmp(argv[i], "--notes") == 0 || strcmp(argv[i], "-n") == 0) && i + 1 < argc)
             {
                 i++;
                 continue;
@@ -292,27 +307,27 @@ int cmd_add(int argc, char *argv[])
     {
         int sets = -1;
         int reps = -1;
-        
+
         // Check for --sets and --reps required options
         for (int i = 2; i < argc; i++)
         {
-            if (strcmp(argv[i], "--sets") == 0 && i + 1 < argc)
+            if ((strcmp(argv[i], "--sets") == 0 || strcmp(argv[i], "-s") == 0) && i + 1 < argc)
             {
-                sets = atoi(argv[++i]);
+            sets = atoi(argv[++i]);
             }
-            else if (strcmp(argv[i], "--reps") == 0 && i + 1 < argc)
+            else if ((strcmp(argv[i], "--reps") == 0 || strcmp(argv[i], "-r") == 0) && i + 1 < argc)
             {
-                reps = atoi(argv[++i]);
+            reps = atoi(argv[++i]);
             }
-            else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
+            else if ((strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
             {
-                i++;
-                continue;
+            i++;
+            continue;
             }
-            else if (strcmp(argv[i], "--notes") == 0 && i + 1 < argc)
+            else if ((strcmp(argv[i], "--notes") == 0 || strcmp(argv[i], "-n") == 0) && i + 1 < argc)
             {
-                i++;
-                continue;
+            i++;
+            continue;
             }
             else
             {
@@ -326,7 +341,7 @@ int cmd_add(int argc, char *argv[])
             fprintf(stderr, ANSI_COLOR_RED "--sets and --reps must be provided for bodyweight exercises.\n" ANSI_COLOR_RESET);
             return 1;
         }
-        
+
         // Get the id
         int next_id = get_next_exercise_id();
         increment_exercise_id();
@@ -344,14 +359,14 @@ int cmd_add(int argc, char *argv[])
 
         // Format: ID,Name,Sets,Reps,Date,Notes
         fprintf(fp, "%d,%s,%d,%d,%s,%s,%s,%s\n",
-            next_id,
-            exercise_name,
-            sets,
-            reps,
-            "",
-            "",
-            standard_date_str,
-            notes);
+                next_id,
+                exercise_name,
+                sets,
+                reps,
+                "",
+                "",
+                standard_date_str,
+                notes);
 
         fclose(fp);
 

@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     char *command = argv[1];
 
     // Check for command-specific help flags
-    if (argc > 2 && (strcmp(argv[2], "--help") == 0 || strcmp(argv[2], "-h") == 0))
+    if (argc > 2 && strcmp(argv[2], "--help") == 0)
     {
         print_command_help(command);
         return 0;

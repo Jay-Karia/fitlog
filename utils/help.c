@@ -16,6 +16,7 @@ void print_usage(void)
     printf("  import      Import fitlog data from JSON\n");
     printf("  help        Show this help message\n\n");
     printf("Options:\n");
+    printf("  --help        Show this help message\n");
     printf("  --version     Show version information\n");
     printf("  --dir         Print the .fitlog directory path\n");
     printf("\nFor command-specific help: fitlog <command> --help\n");
@@ -98,13 +99,13 @@ void print_add_help(void)
     printf("Arguments:\n");
     printf("  <exercise>          Name of the exercise or shortcut to log\n\n");
     printf("Options:\n");
-    printf("  --sets <number>     Number of sets performed (default: 1)\n");
-    printf("  --reps <number>     Number of repetitions per set\n");
-    printf("  --weight <value>    Weight used for the exercise\n");
-    printf("  --time <value>      Time taken to complete the exercise\n");
-    printf("  --date <date>       Date of the workout (default: today)\n");
-    printf("  --notes <text>      Additional notes about the workout\n");
-    printf("  --help              Show this help message\n");
+    printf("  --sets, -s <number>     Number of sets performed (default: 1)\n");
+    printf("  --reps, -r <number>     Number of repetitions per set\n");
+    printf("  --weight, -w <value>    Weight used for the exercise\n");
+    printf("  --time, -t <value>      Time taken to complete the exercise\n");
+    printf("  --date, -d <date>       Date of the workout (default: today)\n");
+    printf("  --notes, -n <text>      Additional notes about the workout\n");
+    printf("  --help, -h              Show this help message\n");
     printf("\nDescription:\n");
     printf("  This command logs a workout entry for the specified exercise,\n");
     printf("  including performance details like sets, reps, and weight.\n");
