@@ -44,7 +44,7 @@ int cmd_init(int argc, char *argv[])
     fprintf(config_fp, "weight_unit=lbs\n");
     fprintf(config_fp, "time_unit=s\n\n");
     fprintf(config_fp, "# Behaviour\n");
-    fprintf(config_fp, "default_exercise_type=sets\n");
+    fprintf(config_fp, "default_exercise_type=weight\n");
 
     fclose(config_fp);
 

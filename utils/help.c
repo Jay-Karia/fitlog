@@ -80,12 +80,12 @@ void print_create_help(void)
     printf("fitlog create - Create a new exercise\n\n");
     printf("Usage: fitlog create <name> [shortcut] [options]\n\n");
     printf("Arguments:\n");
-    printf("  <name>                   Name of the exercise to create (must be unique)\n");
-    printf("  [shortcut]               Optional short alias for exercise\n\n");
+    printf("  <name>                          Name of the exercise to create (must be unique)\n");
+    printf("  [shortcut]                      Optional short alias for exercise\n\n");
     printf("Options:\n");
-    printf("  --desc, -d <text>        Description for the exercise\n");
-    printf("  --type, -t <sets|time|body> Exercise type (default: sets)\n");
-    printf("  --help, -h               Show this help message\n");
+    printf("  --desc, -d <text>               Description for the exercise\n");
+    printf("  --type, -t <weight|time|body>   Exercise type (default: weight)\n");
+    printf("  --help, -h                      Show this help message\n");
     printf("\nDescription:\n");
     printf("  Creates a new exercise definition that can be referenced when\n");
     printf("  logging workouts with the 'add' command. If a shortcut is provided,\n");
@@ -99,7 +99,7 @@ void print_add_help(void)
     printf("Arguments:\n");
     printf("  <exercise>          Name of the exercise or shortcut to log\n\n");
     printf("Options:\n");
-    printf("  --sets, -s <number>     Number of sets performed (default: 1)\n");
+    printf("  --sets, -s <number>     Number of sets performed\n");
     printf("  --reps, -r <number>     Number of repetitions per set\n");
     printf("  --weight, -w <value>    Weight used for the exercise\n");
     printf("  --time, -t <value>      Time taken to complete the exercise\n");

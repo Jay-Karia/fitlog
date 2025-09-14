@@ -10,7 +10,7 @@ CLI Workout Logger
 
 ## Features
 
-- Track exercises with customizable types (sets, time, bodyweight)
+- Track exercises with customizable types (weight, time, bodyweight)
 - Log workouts with sets, reps, weight, time, and notes
 - View workout history by date range or specific criteria
 - Use shortcuts for quick and efficient workout logging

@@ -104,9 +104,9 @@ int cmd_add(int argc, char *argv[])
         }
     }
 
-    if (type == TYPE_SETS)
+    if (type == TYPE_WEIGHT)
     {
-        // Check for reps and weight options
+        // Check for reps, sets and weight options
         int reps = -1;
         int sets = -1;
         float weight = -1.0;
@@ -157,10 +157,10 @@ int cmd_add(int argc, char *argv[])
             }
         }
 
-        // Check if both reps and weight are provided
+        // Check if reps, sets and weight are provided
         if (reps == -1 || weight == -1.0 || sets == -1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "--reps, --weight, and --sets must be provided for sets-based exercises.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "--reps, --weight, and --sets must be provided for weight-based exercises.\n" ANSI_COLOR_RESET);
             return 1;
         }
 

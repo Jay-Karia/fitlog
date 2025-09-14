@@ -38,7 +38,7 @@ int cmd_create(int argc, char *argv[])
         argc--;
     }
 
-    // Get the default exercise type from config (sets or time)
+    // Get the default exercise type from config
     char default_type_str[32];
     read_config_value("default_exercise_type", "time", default_type_str, sizeof(default_type_str));
     enum ExerciseType type;
@@ -51,17 +51,17 @@ int cmd_create(int argc, char *argv[])
         }
         else
         {
-            type = TYPE_TIME; // default
+            type = TYPE_WEIGHT; // default
         }
         break;
     case 's':
-        if (strcmp(default_type_str, "sets") == 0)
+        if (strcmp(default_type_str, "weight") == 0)
         {
-            type = TYPE_SETS;
+            type = TYPE_WEIGHT;
         }
         else
         {
-            type = TYPE_TIME; // default
+            type = TYPE_WEIGHT; // default
         }
         break;
     case 'b':
@@ -71,11 +71,11 @@ int cmd_create(int argc, char *argv[])
         }
         else
         {
-            type = TYPE_TIME; // default
+            type = TYPE_WEIGHT; // default
         }
         break;
     default:
-        type = TYPE_TIME; // default
+        type = TYPE_WEIGHT; // default
         break;
     }
 
@@ -88,9 +88,9 @@ int cmd_create(int argc, char *argv[])
         else if ((strcmp(argv[i], "--type") == 0 || strcmp(argv[i], "-t") == 0) && i + 1 < argc)
         {
             i++; // Move to the type value
-            if (strcmp(argv[i], "sets") == 0)
+            if (strcmp(argv[i], "weight") == 0)
             {
-                type = TYPE_SETS;
+                type = TYPE_WEIGHT;
             }
             else if (strcmp(argv[i], "time") == 0)
             {
@@ -102,7 +102,7 @@ int cmd_create(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid exercise type. Use 'sets' or 'time' or 'body'.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid exercise type. Use 'weight' or 'time' or 'body'.\n" ANSI_COLOR_RESET);
                 return 1;
             }
         }
@@ -182,7 +182,7 @@ int cmd_create(int argc, char *argv[])
     increment_exercise_id();
 
     // Write the new exercise to the file as a new line in CSV format
-    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id, exercise_name, shortcut, description, type == TYPE_SETS ? "sets" : (type == TYPE_TIME ? "time" : "body"));
+    fprintf(fp, "%d,%s,%s,%s,%s\n", next_id, exercise_name, shortcut, description, type == TYPE_WEIGHT ? "weight" : (type == TYPE_TIME ? "time" : "body"));
     fclose(fp);
 
     // Update the shortcuts map file if a shortcut is provided
@@ -228,7 +228,7 @@ int cmd_create(int argc, char *argv[])
     printf("  Name: %s\n", exercise_name);
     printf(DARK_GRAY_TEXT "  Shortcut: %s\n" ANSI_COLOR_RESET, shortcut);
     printf("  Description: %s\n", description);
-    printf(DARK_GRAY_TEXT "  Type: %s\n" ANSI_COLOR_RESET, type == TYPE_SETS ? "sets" : (type == TYPE_TIME ? "time" : "body"));
+    printf(DARK_GRAY_TEXT "  Type: %s\n" ANSI_COLOR_RESET, type == TYPE_WEIGHT ? "weight" : (type == TYPE_TIME ? "time" : "body"));
     printf("+------------------------------+\n");
 
     return 0;

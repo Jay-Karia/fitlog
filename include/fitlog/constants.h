@@ -18,11 +18,7 @@
 
 // Default configuration values
 #define DEFAULT_DATE_FORMAT DATE_YYYY_MM_DD
-#define DEFAULT_TIME_FORMAT "HH:MM"
 #define DEFAULT_WEIGHT_UNIT UNIT_KG
-#define DEFAULT_DECIMAL_PLACES 1
-#define DEFAULT_RECENT_COUNT 5
 #define DEFAULT_TIME_UNIT TIME_S
-
 
 #endif

@@ -73,7 +73,7 @@ enum DateFormat
 
 enum ExerciseType
 {
-    TYPE_SETS,
+    TYPE_WEIGHT,
     TYPE_TIME,
     TYPE_BODY,
 };

@@ -160,7 +160,7 @@ bool is_valid_config_value(const char *config_key, const char *value)
     }
     else if (strcmp(config_key, "default_exercise_type") == 0)
     {
-        return (strcmp(value, "sets") == 0 ||
+        return (strcmp(value, "weight") == 0 ||
                 strcmp(value, "time") == 0 ||
                 strcmp(value, "body") == 0);
     }
@@ -186,7 +186,7 @@ int reset_config_to_defaults(void)
     fprintf(fp, "weight_unit=lbs\n");
     fprintf(fp, "time_unit=s\n\n");
     fprintf(fp, "# Behaviour\n");
-    fprintf(fp, "default_exercise_type=sets\n");
+    fprintf(fp, "default_exercise_type=weight\n");
 
     fclose(fp);
 

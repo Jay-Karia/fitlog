@@ -82,9 +82,9 @@ ExerciseType check_exercise_type(const char *name)
         if (strcmp(exercise_name, name) == 0)
         {
             fclose(fp);
-            if (strcmp(type_str, "sets") == 0)
+            if (strcmp(type_str, "weight") == 0)
             {
-                return TYPE_SETS;
+                return TYPE_WEIGHT;
             }
             else if (strcmp(type_str, "time") == 0)
             {
