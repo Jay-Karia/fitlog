@@ -81,11 +81,11 @@ int cmd_create(int argc, char *argv[])
 
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--desc") == 0 && i + 1 < argc)
+        if ((strcmp(argv[i], "--desc") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
         {
             description = argv[++i];
         }
-        else if (strcmp(argv[i], "--type") == 0 && i + 1 < argc)
+        else if ((strcmp(argv[i], "--type") == 0 || strcmp(argv[i], "-t") == 0) && i + 1 < argc)
         {
             i++; // Move to the type value
             if (strcmp(argv[i], "sets") == 0)
@@ -206,7 +206,7 @@ int cmd_create(int argc, char *argv[])
             fclose(sfp);
             return 0;
         }
-        
+
         // Append the new shortcut
         sfp = fopen(shortcuts_path, "a");
         if (sfp == NULL)

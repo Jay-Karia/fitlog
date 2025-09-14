@@ -37,23 +37,23 @@ int cmd_show(int argc, char *argv[])
 
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--id") == 0 && i + 1 < argc)
+        if ((strcmp(argv[i], "--id") == 0 || strcmp(argv[i], "-i") == 0) && i + 1 < argc)
         {
             strcpy(id, argv[++i]);
         }
-        else if (strcmp(argv[i], "--from") == 0 && i + 1 < argc)
+        else if ((strcmp(argv[i], "--from") == 0 || strcmp(argv[i], "-f") == 0) && i + 1 < argc)
         {
             strcpy(from_date, argv[++i]);
         }
-        else if (strcmp(argv[i], "--to") == 0 && i + 1 < argc)
+        else if ((strcmp(argv[i], "--to") == 0 || strcmp(argv[i], "-t") == 0) && i + 1 < argc)
         {
             strcpy(to_date, argv[++i]);
         }
-        else if (strcmp(argv[i], "--last") == 0 && i + 1 < argc)
+        else if ((strcmp(argv[i], "--last") == 0 || strcmp(argv[i], "-l") == 0) && i + 1 < argc)
         {
             last_n = atoi(argv[++i]);
         }
-        else if (strcmp(argv[i], "--all") == 0)
+        else if (strcmp(argv[i], "--all") == 0 || strcmp(argv[i], "-a") == 0)
         {
             all = true;
         }

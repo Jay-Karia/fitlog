@@ -32,7 +32,7 @@ int cmd_remove(int argc, char *argv[])
     bool force = false;
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--force") == 0)
+        if (strcmp(argv[i], "--force") == 0 || strcmp(argv[i], "-f") == 0)
         {
             force = true;
             break;
@@ -45,11 +45,11 @@ int cmd_remove(int argc, char *argv[])
 
     for (int i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i], "--id") == 0 && i + 1 < argc)
+        if ((strcmp(argv[i], "--id") == 0 || strcmp(argv[i], "-i") == 0) && i + 1 < argc)
         {
             strcpy(id, argv[++i]);
         }
-        else if (strcmp(argv[i], "--date") == 0 && i + 1 < argc)
+        else if ((strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
         {
             strcpy(date, argv[++i]);
         }
