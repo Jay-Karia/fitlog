@@ -34,7 +34,7 @@ int cmd_add(int argc, char *argv[])
         }
         else
         {
-            fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please add it first using 'fitlog add-exercise'.\n" ANSI_COLOR_RESET, exercise_name);
+            fprintf(stderr, ANSI_COLOR_RED "Exercise '%s' does not exist. Please add it first using 'fitlog add exercise'.\n" ANSI_COLOR_RESET, exercise_name);
             return 1;
         }
     }
