@@ -132,37 +132,28 @@ int cmd_remove(int argc, char *argv[])
             enum DateFormat date_format = get_config_date_format();
             char standard_date_str[20];
 
-            // Use today date if not given date
-            if (strlen(date) == 0)
+            char *date_format_str;
+            switch (date_format)
             {
-                strcpy(date, get_today_date(date_format));
+            case DATE_DD_MM_YYYY:
+                date_format_str = "DD-MM-YYYY";
+                break;
+            case DATE_MM_DD_YYYY:
+                date_format_str = "MM-DD-YYYY";
+                break;
+            case DATE_YYYY_MM_DD:
+                date_format_str = "YYYY-MM-DD";
+                break;
+            default:
+                date_format_str = "Unknown";
+                break;
             }
-            else
+
+            // Check the date format
+            if (!is_valid_date_format(date, date_format))
             {
-
-                char *date_format_str;
-                switch (date_format)
-                {
-                case DATE_DD_MM_YYYY:
-                    date_format_str = "DD-MM-YYYY";
-                    break;
-                case DATE_MM_DD_YYYY:
-                    date_format_str = "MM-DD-YYYY";
-                    break;
-                case DATE_YYYY_MM_DD:
-                    date_format_str = "YYYY-MM-DD";
-                    break;
-                default:
-                    date_format_str = "Unknown";
-                    break;
-                }
-
-                // Check the date format
-                if (!is_valid_date_format(date, date_format))
-                {
-                    fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
-                    return 1;
-                }
+                fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
+                return 1;
             }
 
             // Update the date string to standard format (YYYY-MM-DD)

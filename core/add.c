@@ -58,7 +58,7 @@ int cmd_add(int argc, char *argv[])
     // Use today date if not given date
     if (strlen(date_str) == 0)
     {
-        strcpy(date_str, get_today_date(date_format));
+        strcpy(standard_date_str, get_today_date());
     }
     else
     {
@@ -86,12 +86,13 @@ int cmd_add(int argc, char *argv[])
             fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
             return 1;
         }
+
+        // Update the date string to standard format (YYYY-MM-DD)
+        strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
     }
+
     // Check the earguments based on exercise type
     enum ExerciseType type = check_exercise_type(exercise_name);
-
-    // Update the date string to standard format (YYYY-MM-DD)
-    strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
 
     // Get notes
     char notes[256] = "";

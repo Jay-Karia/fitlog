@@ -50,27 +50,13 @@ bool is_valid_date_format(const char *input_date, const enum DateFormat required
     return false;
 }
 
-char *get_today_date(const enum DateFormat required_format)
+char *get_today_date()
 {
     static char date_str[11];
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
-    if (required_format == DATE_DD_MM_YYYY)
-    {
-        strftime(date_str, sizeof(date_str), "%d-%m-%Y", t);
-    }
-    else if (required_format == DATE_MM_DD_YYYY)
-    {
-        strftime(date_str, sizeof(date_str), "%m-%d-%Y", t);
-    }
-    else if (required_format == DATE_YYYY_MM_DD)
-    {
-        strftime(date_str, sizeof(date_str), "%Y-%m-%d", t);
-    }
-    else
-    {
-        strcpy(date_str, "Invalid");
-    }
+    strftime(date_str, sizeof(date_str), "%Y-%d-%m", t);
+
     return date_str;
 }
 
@@ -79,11 +65,11 @@ char *convert_date_to_standard(const char *input_date, const enum DateFormat inp
     // Use thread-local storage with two buffers to allow for two calls without conflict
     static __thread int buffer_index = 0;
     static __thread char standard_date_buffers[2][11];
-    
+
     // Alternate between the two buffers
     buffer_index = (buffer_index + 1) % 2;
     char *standard_date = standard_date_buffers[buffer_index];
-    
+
     int day, month, year;
 
     // Check for null input

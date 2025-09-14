@@ -54,7 +54,7 @@ int show_all_workouts(void);
 
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);
-char *get_today_date(const enum DateFormat required_format);
+char *get_today_date();
 char *convert_date_to_standard(const char *input_date, const enum DateFormat input_format);
 char *get_date_in_format(const char *standard_date, const enum DateFormat required_format);
 

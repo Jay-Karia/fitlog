@@ -162,8 +162,7 @@ int cmd_show(int argc, char *argv[])
             // If only --from is given, set --to as today
             if (strlen(from_date) > 0 && strlen(to_date) == 0)
             {
-                DateFormat config_date_format = get_config_date_format();
-                char *today = get_today_date(config_date_format);
+                char *today = get_today_date();
                 strcpy(to_date, today);
             }
             // If only --to is given, set --from as a very old date
