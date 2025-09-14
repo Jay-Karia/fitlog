@@ -1,4 +1,5 @@
 #include "../include/fitlog.h"
+#include <io.h>
 
 int cmd_export(int argc, char *argv[])
 {
@@ -24,6 +25,26 @@ int cmd_export(int argc, char *argv[])
         } else {
             fprintf(stderr, ANSI_COLOR_RED "Unknown option: %s\n" ANSI_COLOR_RESET, argv[i]);
             return 1;
+        }
+    }
+
+    // Get confirmation if file already exists
+    if (access(output_path, F_OK) != -1)
+    {
+        char response[10];
+        printf(ANSI_COLOR_YELLOW "Warning: File '%s' already exists. Overwrite? (y/N): " ANSI_COLOR_RESET, output_path);
+        if (fgets(response, sizeof(response), stdin) != NULL)
+        {
+            if (response[0] != 'y' && response[0] != 'Y')
+            {
+                printf("Export cancelled.\n");
+                return 0;
+            }
+        }
+        else
+        {
+            printf("Export cancelled.\n");
+            return 0;
         }
     }
 
