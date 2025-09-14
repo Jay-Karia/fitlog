@@ -242,9 +242,9 @@ int cmd_add(int argc, char *argv[])
             }
         }
 
-        if (duration == -1 || sets == -1)
+        if (duration == -1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "--time and --sets must be provided for time-based exercises.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "--time must be provided for time-based exercises.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -280,11 +280,21 @@ int cmd_add(int argc, char *argv[])
             return 1;
         }
 
+        char sets_str[20];
+        if (sets == -1)
+        {
+            strcpy(sets_str, "");
+        }
+        else
+        {
+            snprintf(sets_str, sizeof(sets_str), "%d", sets);
+        }
+
         // Format: ID,Name,Type,Duration,Date,Notes
-        fprintf(fp, "%d,%s,%d,%s,%s,%s,%s,%s\n",
+        fprintf(fp, "%d,%s,%s,%s,%s,%s,%s,%s\n",
                 next_id,
                 exercise_name,
-                sets,
+                sets_str,
                 "",
                 "",
                 time_str,
@@ -298,6 +308,10 @@ int cmd_add(int argc, char *argv[])
         printf(BOLD_TEXT "Exercise Logged :\n" ANSI_COLOR_RESET);
         printf(DARK_GRAY_TEXT "  ID: %d\n" ANSI_COLOR_RESET, next_id);
         printf("  Name: %s\n", exercise_name);
+        if (sets > 0)
+        {
+            printf(DARK_GRAY_TEXT "  Sets: %s\n" ANSI_COLOR_RESET, sets_str);
+        }
         printf(DARK_GRAY_TEXT "  Duration: %s\n" ANSI_COLOR_RESET, time_str);
         printf("  Date: %s\n", standard_date_str);
         printf(DARK_GRAY_TEXT "  Notes: %s\n" ANSI_COLOR_RESET, strlen(notes) == 0 ? "(null)" : notes);
@@ -313,21 +327,21 @@ int cmd_add(int argc, char *argv[])
         {
             if ((strcmp(argv[i], "--sets") == 0 || strcmp(argv[i], "-s") == 0) && i + 1 < argc)
             {
-            sets = atoi(argv[++i]);
+                sets = atoi(argv[++i]);
             }
             else if ((strcmp(argv[i], "--reps") == 0 || strcmp(argv[i], "-r") == 0) && i + 1 < argc)
             {
-            reps = atoi(argv[++i]);
+                reps = atoi(argv[++i]);
             }
             else if ((strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0) && i + 1 < argc)
             {
-            i++;
-            continue;
+                i++;
+                continue;
             }
             else if ((strcmp(argv[i], "--notes") == 0 || strcmp(argv[i], "-n") == 0) && i + 1 < argc)
             {
-            i++;
-            continue;
+                i++;
+                continue;
             }
             else
             {
