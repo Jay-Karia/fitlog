@@ -69,7 +69,7 @@ int write_csv_from_array(const char *array_data, const char *output_path)
     // Write the appropriate CSV header
     if (is_workout)
     {
-        fprintf(fp, "Id,Exercise,Sets,Reps,Weight,Time,Date,Notes\n");
+        fprintf(fp, "Id,Exercise,Sets,Reps,Weight,Time,Distance,Date,Notes\n");
     }
     else
     {
@@ -124,9 +124,9 @@ int write_csv_from_array(const char *array_data, const char *output_path)
 
         if (is_workout)
         {
-            // For workouts: id, exercise, sets, reps, weight, time, date, notes
-            const char *keys[] = {"\"id\":", "\"exercise\":", "\"sets\":", "\"reps\":", "\"weight\":", "\"time\":", "\"date\":", "\"notes\":"};
-            for (int i = 0; i < 8; i++)
+            // For workouts: id, exercise, sets, reps, weight, time, distance, date, notes
+            const char *keys[] = {"\"id\":", "\"exercise\":", "\"sets\":", "\"reps\":", "\"weight\":", "\"time\":", "\"distance\":", "\"date\":", "\"notes\":"};
+            for (int i = 0; i < 9; i++)
             {
                 char *key_pos = strstr(obj, keys[i]);
                 if (key_pos)
@@ -233,9 +233,9 @@ int write_csv_from_array(const char *array_data, const char *output_path)
         // Write CSV line
         if (is_workout)
         {
-            fprintf(fp, "%s,%s,%s,%s,%s,%s,%s,%s\n",
+            fprintf(fp, "%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                     fields[0], fields[1], fields[2], fields[3],
-                    fields[4], fields[5], fields[6], fields[7]);
+                    fields[4], fields[5], fields[6], fields[7], fields[8]);
         }
         else
         {

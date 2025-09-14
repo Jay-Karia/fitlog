@@ -621,7 +621,7 @@ int show_all_workouts()
     // Read all workouts into the array
     while (fgets(line, sizeof(line), fp) && count < 100)
     {
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20] = "", date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)
@@ -633,9 +633,9 @@ int show_all_workouts()
         if (p)
             p = parse_csv_field(weight, sizeof(weight), p);
         if (p)
-            p = parse_csv_field(distance, sizeof(distance), p);
-        if (p)
             p = parse_csv_field(time, sizeof(time), p);
+        if (p)
+            p = parse_csv_field(distance, sizeof(distance), p);
         if (p)
             p = parse_csv_field(date, sizeof(date), p);
         if (p)
@@ -686,7 +686,7 @@ int show_workouts_in_date_range(const char *from_date, const char *to_date)
     // Read all workouts into the array
     while (fgets(line, sizeof(line), fp) && count < 100)
     {
-        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
+        char workout_id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "", weight[50] = "", time[20] = "", distance[20] = "", date[20] = "", notes[200] = "";
         const char *p = line;
         p = parse_csv_field(workout_id, sizeof(workout_id), p);
         if (p)

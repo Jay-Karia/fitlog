@@ -116,14 +116,14 @@ char *get_workout_array(void)
         // Parse CSV fields properly preserving empty fields
         // Format: Id,Exercise,Sets,Reps,Weight,Time,Date,Notes
         char id[20] = "", exercise[100] = "", sets[20] = "", reps[20] = "";
-        char weight[50] = "", time[20] = "", date[20] = "", notes[200] = "";
+        char weight[50] = "", time[20] = "", distance[20], date[20] = "", notes[200] = "";
 
         // Manual CSV parsing to handle empty fields correctly
         char *ptr = buffer_copy;
         int field = 0;
         char *start = ptr;
 
-        while (*ptr != '\0' && field < 8)
+        while (*ptr != '\0' && field < 9)  // Updated to 9 fields to include distance
         {
             if (*ptr == ',')
             {
@@ -158,6 +158,10 @@ char *get_workout_array(void)
                     time[sizeof(time) - 1] = '\0';
                     break;
                 case 6:
+                    strncpy(distance, start, sizeof(distance) - 1);
+                    distance[sizeof(distance) - 1] = '\0';
+                    break;
+                case 7:
                     strncpy(date, start, sizeof(date) - 1);
                     date[sizeof(date) - 1] = '\0';
                     break;
@@ -174,7 +178,7 @@ char *get_workout_array(void)
         }
 
         // Handle the last field (notes) or any remaining text
-        if (field == 7)
+        if (field == 8)
         {
             strncpy(notes, start, sizeof(notes) - 1);
             notes[sizeof(notes) - 1] = '\0';
@@ -191,12 +195,11 @@ char *get_workout_array(void)
                 total_length += 1;
             }
 
-            // Create JSON object for workout
-            // Increase buffer size to safely accommodate all fields (especially notes which can be up to 200 chars)
+            // Create JSON object for workout with distance field
             char json_obj[1024];
             snprintf(json_obj, sizeof(json_obj),
-                     "{\"id\":\"%s\",\"exercise\":\"%s\",\"sets\":\"%s\",\"reps\":\"%s\",\"weight\":\"%s\",\"time\":\"%s\",\"date\":\"%s\",\"notes\":\"%s\"}",
-                     id, exercise, sets, reps, weight, time, date, notes);
+                     "{\"id\":\"%s\",\"exercise\":\"%s\",\"sets\":\"%s\",\"reps\":\"%s\",\"weight\":\"%s\",\"time\":\"%s\",\"distance\":\"%s\",\"date\":\"%s\",\"notes\":\"%s\"}",
+                     id, exercise, sets, reps, weight, time, distance, date, notes);
 
             size_t obj_length = strlen(json_obj);
             result = realloc(result, total_length + obj_length + 1);
