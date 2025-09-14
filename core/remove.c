@@ -96,7 +96,7 @@ int cmd_remove(int argc, char *argv[])
 
             // Ask for confirmation
             char confirmation[10];
-            printf(ANSI_COLOR_RED "Are you sure you want to remove this exercise? (y/N): " ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_YELLOW "Are you sure you want to remove this exercise? (y/N): " ANSI_COLOR_RESET);
             fgets(confirmation, sizeof(confirmation), stdin);
 
             // Check the response
@@ -190,7 +190,7 @@ int cmd_remove(int argc, char *argv[])
 
         // Ask for confirmation
         char confirmation[10];
-        printf(ANSI_COLOR_RED "Are you sure you want to remove logs? (y/N): " ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Are you sure you want to remove logs? (y/N): " ANSI_COLOR_RESET);
         fgets(confirmation, sizeof(confirmation), stdin);
 
         // Remove workouts

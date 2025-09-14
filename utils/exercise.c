@@ -67,6 +67,7 @@ ExerciseType check_exercise_type(const char *name)
     sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
     FILE *fp = fopen(full_path, "r");
     if (fp == NULL)
+
     {
         perror("Error opening exercises file");
         return -1; // Indicate error
@@ -159,11 +160,11 @@ bool print_exercise_details_from_id(const char *id)
     const char *headers[] = {"ID", "Name", "Shortcut", "Description", "Type"};
 
     // Update with header lengths
-    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
-    name_width = name_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : name_width;
-    shortcut_width = shortcut_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : shortcut_width;
-    description_width = description_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : description_width;
-    type_width = type_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : type_width;
+    id_width = id_width < (int)strlen(headers[0]) ? (int)strlen(headers[0]) : id_width;
+    name_width = name_width < (int)strlen(headers[1]) ? (int)strlen(headers[1]) : name_width;
+    shortcut_width = shortcut_width < (int)strlen(headers[2]) ? (int)strlen(headers[2]) : shortcut_width;
+    description_width = description_width < (int)strlen(headers[3]) ? (int)strlen(headers[3]) : description_width;
+    type_width = type_width < (int)strlen(headers[4]) ? (int)strlen(headers[4]) : type_width;
 
     // Variables to store the found exercise data
     char exercise_id[20] = "", exercise_name[100] = "", shortcut[100] = "", description[200] = "", type[20] = "";
@@ -189,28 +190,34 @@ bool print_exercise_details_from_id(const char *id)
     }
 
     // Calculate widths based on content
-    id_width = id_width < (int) strlen(exercise_id) ? (int) strlen(exercise_id) : id_width;
-    name_width = name_width < (int) strlen(exercise_name) ? (int) strlen(exercise_name) : name_width;
-    
+    id_width = id_width < (int)strlen(exercise_id) ? (int)strlen(exercise_id) : id_width;
+    name_width = name_width < (int)strlen(exercise_name) ? (int)strlen(exercise_name) : name_width;
+
     // Handle shortcut display
     char display_shortcut[100];
-    if (strcmp(shortcut, "(null)") == 0) {
+    if (strcmp(shortcut, "(null)") == 0)
+    {
         strcpy(display_shortcut, "none");
-    } else {
+    }
+    else
+    {
         strcpy(display_shortcut, shortcut);
     }
-    shortcut_width = shortcut_width < (int) strlen(display_shortcut) ? (int) strlen(display_shortcut) : shortcut_width;
-    
+    shortcut_width = shortcut_width < (int)strlen(display_shortcut) ? (int)strlen(display_shortcut) : shortcut_width;
+
     // Handle description display
     char display_desc[200];
-    if (strcmp(description, "(null)") == 0) {
+    if (strcmp(description, "(null)") == 0)
+    {
         strcpy(display_desc, "none");
-    } else {
+    }
+    else
+    {
         strcpy(display_desc, description);
     }
-    description_width = description_width < (int) strlen(display_desc) ? (int) strlen(display_desc) : description_width;
-    
-    type_width = type_width < (int) strlen(type) ? (int) strlen(type) : type_width;
+    description_width = description_width < (int)strlen(display_desc) ? (int)strlen(display_desc) : description_width;
+
+    type_width = type_width < (int)strlen(type) ? (int)strlen(type) : type_width;
 
     // Add padding for better readability
     id_width += 2;
@@ -220,38 +227,47 @@ bool print_exercise_details_from_id(const char *id)
     type_width += 2;
 
     // Limit maximum width for readability
-    if (name_width > 30) name_width = 30;
-    if (description_width > 40) description_width = 40;
+    if (name_width > 30)
+        name_width = 30;
+    if (description_width > 40)
+        description_width = 40;
 
     // Truncate if needed
     char truncated_name[31] = {0};
     strncpy(truncated_name, exercise_name, 30);
-    if ((int) strlen(exercise_name) > 30) {
+    if ((int)strlen(exercise_name) > 30)
+    {
         truncated_name[27] = '.';
         truncated_name[28] = '.';
         truncated_name[29] = '.';
     }
-    
+
     char truncated_desc[41] = {0};
     strncpy(truncated_desc, display_desc, 40);
-    if ((int) strlen(display_desc) > 40) {
+    if ((int)strlen(display_desc) > 40)
+    {
         truncated_desc[37] = '.';
         truncated_desc[38] = '.';
         truncated_desc[39] = '.';
     }
 
-    // Print table with dynamic widths
+    // Print table with dynamic widths - similar to workout table format
     // Top border
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Header
@@ -264,36 +280,44 @@ bool print_exercise_details_from_id(const char *id)
 
     // Header separator
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
-    // Data row with color alternation
-    printf("| " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-*s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-*s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " |\n",
+    // Data row with color formatting (similar to workout table)
+    printf("| %-*s | %-*s | %-*s | %-*s | %-*s |\n",
            id_width, exercise_id,
            name_width, truncated_name,
            shortcut_width, display_shortcut,
            description_width, truncated_desc,
-           type_width, type);
-
-    // Bottom border
+           type_width, type); // Bottom border
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     return true;
@@ -535,7 +559,8 @@ int show_last_n_exercises(int n)
     }
 
     // Store the exercises to display for dynamic width calculation
-    struct ExerciseData {
+    struct ExerciseData
+    {
         char id[20];
         char name[100];
         char shortcut[100];
@@ -545,7 +570,7 @@ int show_last_n_exercises(int n)
 
     struct ExerciseData exercises[100] = {0};
     int count = 0;
-    
+
     // Define minimum column widths
     int id_width = 6;
     int name_width = 10;
@@ -557,40 +582,39 @@ int show_last_n_exercises(int n)
     const char *headers[] = {"ID", "Name", "Shortcut", "Description", "Type"};
 
     // Update with header lengths
-    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
-    name_width = name_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : name_width;
-    shortcut_width = shortcut_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : shortcut_width;
-    description_width = description_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : description_width;
-    type_width = type_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : type_width;
+    id_width = id_width < (int)strlen(headers[0]) ? (int)strlen(headers[0]) : id_width;
+    name_width = name_width < (int)strlen(headers[1]) ? (int)strlen(headers[1]) : name_width;
+    shortcut_width = shortcut_width < (int)strlen(headers[2]) ? (int)strlen(headers[2]) : shortcut_width;
+    description_width = description_width < (int)strlen(headers[3]) ? (int)strlen(headers[3]) : description_width;
+    type_width = type_width < (int)strlen(headers[4]) ? (int)strlen(headers[4]) : type_width;
 
     // Read and store the remaining exercises
     while (fgets(line, sizeof(line), fp) && count < n)
     {
         sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s",
-               exercises[count].id, exercises[count].name, exercises[count].shortcut, 
+               exercises[count].id, exercises[count].name, exercises[count].shortcut,
                exercises[count].description, exercises[count].type);
-               
+
         // Update max column widths
-        id_width = id_width < (int) strlen(exercises[count].id) ? (int) strlen(exercises[count].id) : id_width;
-        name_width = name_width < (int) strlen(exercises[count].name) ? (int) strlen(exercises[count].name) : name_width;
-        
+        id_width = id_width < (int)strlen(exercises[count].id) ? (int)strlen(exercises[count].id) : id_width;
+        name_width = name_width < (int)strlen(exercises[count].name) ? (int)strlen(exercises[count].name) : name_width;
+
         // Handle shortcut display
-        if (strcmp(exercises[count].shortcut, "(null)") == 0) {
+        if (strcmp(exercises[count].shortcut, "(null)") == 0)
+        {
             strcpy(exercises[count].shortcut, "none");
         }
-        shortcut_width = shortcut_width < (int) strlen(exercises[count].shortcut) ? 
-                         (int) strlen(exercises[count].shortcut) : shortcut_width;
-        
+        shortcut_width = shortcut_width < (int)strlen(exercises[count].shortcut) ? (int)strlen(exercises[count].shortcut) : shortcut_width;
+
         // Handle description display
-        if (strcmp(exercises[count].description, "(null)") == 0) {
+        if (strcmp(exercises[count].description, "(null)") == 0)
+        {
             strcpy(exercises[count].description, "none");
         }
-        description_width = description_width < (int) strlen(exercises[count].description) ? 
-                            (int) strlen(exercises[count].description) : description_width;
-        
-        type_width = type_width < (int) strlen(exercises[count].type) ? 
-                     (int) strlen(exercises[count].type) : type_width;
-        
+        description_width = description_width < (int)strlen(exercises[count].description) ? (int)strlen(exercises[count].description) : description_width;
+
+        type_width = type_width < (int)strlen(exercises[count].type) ? (int)strlen(exercises[count].type) : type_width;
+
         count++;
     }
     fclose(fp);
@@ -603,21 +627,28 @@ int show_last_n_exercises(int n)
     type_width += 2;
 
     // Limit maximum width for readability
-    if (name_width > 30) name_width = 30;
-    if (description_width > 40) description_width = 40;
+    if (name_width > 30)
+        name_width = 30;
+    if (description_width > 40)
+        description_width = 40;
 
-    // Print table with dynamic widths
+    // Print table with dynamic widths - similar to workout table format
     // Top border
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Header
@@ -630,15 +661,20 @@ int show_last_n_exercises(int n)
 
     // Header separator
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Print each exercise
@@ -647,41 +683,48 @@ int show_last_n_exercises(int n)
         // Truncate if needed
         char truncated_name[31] = {0};
         strncpy(truncated_name, exercises[i].name, 30);
-        if ((int) strlen(exercises[i].name) > 30) {
+        if ((int)strlen(exercises[i].name) > 30)
+        {
             truncated_name[27] = '.';
             truncated_name[28] = '.';
             truncated_name[29] = '.';
         }
-        
+
         char truncated_desc[41] = {0};
         strncpy(truncated_desc, exercises[i].description, 40);
-        if ((int) strlen(exercises[i].description) > 40) {
+        if ((int)strlen(exercises[i].description) > 40)
+        {
             truncated_desc[37] = '.';
             truncated_desc[38] = '.';
             truncated_desc[39] = '.';
         }
 
-        // Data row with color alternation
-        printf("| " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-*s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-*s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " |\n",
+        // Data row similar to workout table
+        printf("| %-*s | %-*s | %-*s | %-*s | %-*s |\n",
                id_width, exercises[i].id,
                name_width, truncated_name,
                shortcut_width, exercises[i].shortcut,
                description_width, truncated_desc,
                type_width, exercises[i].type);
-
-        // Row separator
-        printf("+");
-        for (int j = 0; j < id_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < name_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < shortcut_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < description_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < type_width + 2; j++) printf("-");
-        printf("+\n");
     }
+
+    // Bottom border
+    printf("+");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
+    printf("+\n");
 
     return 0;
 }
@@ -702,7 +745,8 @@ int show_all_exercises()
     fgets(line, sizeof(line), fp);
 
     // First pass: collect all exercises and calculate max column widths
-    struct ExerciseData {
+    struct ExerciseData
+    {
         char id[20];
         char name[100];
         char shortcut[100];
@@ -712,7 +756,7 @@ int show_all_exercises()
 
     struct ExerciseData exercises[100] = {0};
     int count = 0;
-    
+
     // Define minimum column widths
     int id_width = 6;
     int name_width = 10;
@@ -724,11 +768,11 @@ int show_all_exercises()
     const char *headers[] = {"ID", "Name", "Shortcut", "Description", "Type"};
 
     // Update with header lengths
-    id_width = id_width < (int) strlen(headers[0]) ? (int) strlen(headers[0]) : id_width;
-    name_width = name_width < (int) strlen(headers[1]) ? (int) strlen(headers[1]) : name_width;
-    shortcut_width = shortcut_width < (int) strlen(headers[2]) ? (int) strlen(headers[2]) : shortcut_width;
-    description_width = description_width < (int) strlen(headers[3]) ? (int) strlen(headers[3]) : description_width;
-    type_width = type_width < (int) strlen(headers[4]) ? (int) strlen(headers[4]) : type_width;
+    id_width = id_width < (int)strlen(headers[0]) ? (int)strlen(headers[0]) : id_width;
+    name_width = name_width < (int)strlen(headers[1]) ? (int)strlen(headers[1]) : name_width;
+    shortcut_width = shortcut_width < (int)strlen(headers[2]) ? (int)strlen(headers[2]) : shortcut_width;
+    description_width = description_width < (int)strlen(headers[3]) ? (int)strlen(headers[3]) : description_width;
+    type_width = type_width < (int)strlen(headers[4]) ? (int)strlen(headers[4]) : type_width;
 
     // Read and store all exercises
     bool found = false;
@@ -736,30 +780,29 @@ int show_all_exercises()
     {
         found = true;
         sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s",
-               exercises[count].id, exercises[count].name, exercises[count].shortcut, 
+               exercises[count].id, exercises[count].name, exercises[count].shortcut,
                exercises[count].description, exercises[count].type);
-               
+
         // Update max column widths
-        id_width = id_width < (int) strlen(exercises[count].id) ? (int) strlen(exercises[count].id) : id_width;
-        name_width = name_width < (int) strlen(exercises[count].name) ? (int) strlen(exercises[count].name) : name_width;
-        
+        id_width = id_width < (int)strlen(exercises[count].id) ? (int)strlen(exercises[count].id) : id_width;
+        name_width = name_width < (int)strlen(exercises[count].name) ? (int)strlen(exercises[count].name) : name_width;
+
         // Handle shortcut display
-        if (strcmp(exercises[count].shortcut, "(null)") == 0) {
+        if (strcmp(exercises[count].shortcut, "(null)") == 0)
+        {
             strcpy(exercises[count].shortcut, "none");
         }
-        shortcut_width = shortcut_width < (int) strlen(exercises[count].shortcut) ? 
-                         (int) strlen(exercises[count].shortcut) : shortcut_width;
-        
+        shortcut_width = shortcut_width < (int)strlen(exercises[count].shortcut) ? (int)strlen(exercises[count].shortcut) : shortcut_width;
+
         // Handle description display
-        if (strcmp(exercises[count].description, "(null)") == 0) {
+        if (strcmp(exercises[count].description, "(null)") == 0)
+        {
             strcpy(exercises[count].description, "none");
         }
-        description_width = description_width < (int) strlen(exercises[count].description) ? 
-                            (int) strlen(exercises[count].description) : description_width;
-        
-        type_width = type_width < (int) strlen(exercises[count].type) ? 
-                     (int) strlen(exercises[count].type) : type_width;
-        
+        description_width = description_width < (int)strlen(exercises[count].description) ? (int)strlen(exercises[count].description) : description_width;
+
+        type_width = type_width < (int)strlen(exercises[count].type) ? (int)strlen(exercises[count].type) : type_width;
+
         count++;
     }
     fclose(fp);
@@ -778,21 +821,28 @@ int show_all_exercises()
     type_width += 2;
 
     // Limit maximum width for readability
-    if (name_width > 30) name_width = 30;
-    if (description_width > 40) description_width = 40;
+    if (name_width > 30)
+        name_width = 30;
+    if (description_width > 40)
+        description_width = 40;
 
-    // Print table with dynamic widths
+    // Print table with dynamic widths - similar to workout table format
     // Top border
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Header
@@ -805,15 +855,20 @@ int show_all_exercises()
 
     // Header separator
     printf("+");
-    for (int i = 0; i < id_width + 2; i++) printf("-");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < name_width + 2; i++) printf("-");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < shortcut_width + 2; i++) printf("-");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < description_width + 2; i++) printf("-");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
     printf("+");
-    for (int i = 0; i < type_width + 2; i++) printf("-");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
     printf("+\n");
 
     // Print each exercise
@@ -822,41 +877,48 @@ int show_all_exercises()
         // Truncate if needed
         char truncated_name[31] = {0};
         strncpy(truncated_name, exercises[i].name, 30);
-        if ((int) strlen(exercises[i].name) > 30) {
+        if ((int)strlen(exercises[i].name) > 30)
+        {
             truncated_name[27] = '.';
             truncated_name[28] = '.';
             truncated_name[29] = '.';
         }
-        
+
         char truncated_desc[41] = {0};
         strncpy(truncated_desc, exercises[i].description, 40);
-        if ((int) strlen(exercises[i].description) > 40) {
+        if ((int)strlen(exercises[i].description) > 40)
+        {
             truncated_desc[37] = '.';
             truncated_desc[38] = '.';
             truncated_desc[39] = '.';
         }
 
-        // Data row with color alternation
-        printf("| " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-*s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " | " DARK_GRAY_TEXT "%-*s" ANSI_COLOR_RESET " | " ANSI_COLOR_RESET "%-*s" ANSI_COLOR_RESET " |\n",
+        // Data row similar to workout table
+        printf("| %-*s | %-*s | %-*s | %-*s | %-*s |\n",
                id_width, exercises[i].id,
                name_width, truncated_name,
                shortcut_width, exercises[i].shortcut,
                description_width, truncated_desc,
                type_width, exercises[i].type);
-
-        // Row separator
-        printf("+");
-        for (int j = 0; j < id_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < name_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < shortcut_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < description_width + 2; j++) printf("-");
-        printf("+");
-        for (int j = 0; j < type_width + 2; j++) printf("-");
-        printf("+\n");
     }
+
+    // Bottom border
+    printf("+");
+    for (int i = 0; i < id_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < name_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < shortcut_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < description_width + 2; i++)
+        printf("-");
+    printf("+");
+    for (int i = 0; i < type_width + 2; i++)
+        printf("-");
+    printf("+\n");
 
     return 0;
 }
