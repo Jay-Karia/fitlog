@@ -17,6 +17,7 @@ void print_remove_help(void);
 void print_config_help(void);
 void print_export_help(void);
 void print_import_help(void);
+void print_nuke_help(void);
 
 // Configuration handling
 int read_config_value(const char *key, const char *default_value, char *buffer, size_t buffer_size);
@@ -73,5 +74,7 @@ char *read_workout_array(const char *json_data);
 char *read_config_object(const char *json_data);
 char *read_shortcuts_object(const char *json_data);
 int read_id_counter_value(const char *json_data);
+
+int remove_directory(const char *path);
 
 #endif

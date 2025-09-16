@@ -21,6 +21,7 @@ int cmd_remove(int argc, char *argv[]);
 int cmd_config(int argc, char *argv[]);
 int cmd_export(int argc, char *argv[]);
 int cmd_import(int argc, char *argv[]);
+int cmd_nuke(int argc, char *argv[]);
 
 // Utility functions
 void print_usage(void);

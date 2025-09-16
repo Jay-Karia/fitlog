@@ -72,6 +72,10 @@ int main(int argc, char *argv[])
     {
         return cmd_import(argc - 1, argv + 1);
     }
+    else if (strcmp(command, "nuke") == 0)
+    {
+        return cmd_nuke(argc - 1, argv + 1);
+    }
     else if (strcmp(command, "help") == 0 || strcmp(command, "--help") == 0)
     {
         // If help command has an argument, show that command's help

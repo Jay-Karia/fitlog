@@ -14,6 +14,7 @@ void print_usage(void)
     printf("  config      Manage configuration values\n");
     printf("  export      Export fitlog data to JSON\n");
     printf("  import      Import fitlog data from JSON\n");
+    printf("  nuke        Delete the .fitlog directory\n");
     printf("  help        Show this help message\n\n");
     printf("Options:\n");
     printf("  --help,    -h    Show this help message\n");
@@ -55,6 +56,10 @@ void print_command_help(const char *command)
     else if (strcmp(command, "import") == 0)
     {
         print_import_help();
+    }
+    else if (strcmp(command, "nuke") == 0)
+    {
+        print_nuke_help();
     }
     else
     {
@@ -185,4 +190,16 @@ void print_import_help(void)
     printf("\nDescription:\n");
     printf("  This command imports fitlog data from a specified JSON file,\n");
     printf("  allowing you to restore or merge workout logs and exercises.\n");
+}
+
+void print_nuke_help(void)
+{
+    printf("fitlog nuke - Delete the .fitlog directory\n\n");
+    printf("Usage: fitlog nuke [options]\n\n");
+    printf("Options:\n");
+    printf("  --force, -f                Skip confirmation prompt\n");
+    printf("  --help,  -h                Show this help message\n");
+    printf("\nDescription:\n");
+    printf("  This command permanently deletes the entire .fitlog directory,\n");
+    printf("  including all exercises and workout logs. Use with caution!\n");
 }
