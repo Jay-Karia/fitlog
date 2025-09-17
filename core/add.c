@@ -40,7 +40,7 @@ int cmd_add(int argc, char *argv[])
     }
 
     // Get the date format
-    enum DateFormat date_format = get_config_date_format();
+    enum DateFormat config_date_format = get_config_date_format();
 
     // Get the date argument
     char date_str[20] = "";
@@ -64,7 +64,7 @@ int cmd_add(int argc, char *argv[])
     {
 
         char *date_format_str;
-        switch (date_format)
+        switch (config_date_format)
         {
         case DATE_DD_MM_YYYY:
             date_format_str = "DD-MM-YYYY";
@@ -81,14 +81,17 @@ int cmd_add(int argc, char *argv[])
         }
 
         // Check the date format
-        if (!is_valid_date_format(date_str, date_format))
+        if (!is_valid_date_format(date_str, config_date_format))
         {
             fprintf(stderr, ANSI_COLOR_RED "Invalid date format! Expected %s\n" ANSI_COLOR_RESET, date_format_str);
+            fprintf(stderr, ANSI_COLOR_YELLOW "Example: %s\n" ANSI_COLOR_RESET, 
+                config_date_format == DATE_DD_MM_YYYY ? "14-09-2025" : 
+                config_date_format == DATE_MM_DD_YYYY ? "09-14-2025" : "2025-14-09");
             return 1;
         }
 
         // Update the date string to standard format (YYYY-MM-DD)
-        strcpy(standard_date_str, convert_date_to_standard(date_str, date_format));
+        strcpy(standard_date_str, convert_date_to_standard(date_str, config_date_format));
     }
 
     // Check the earguments based on exercise type

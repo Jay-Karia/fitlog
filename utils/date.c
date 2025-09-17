@@ -35,10 +35,10 @@ bool is_valid_date_format(const char *input_date, const enum DateFormat required
     }
     else if (required_format == DATE_YYYY_MM_DD)
     {
-        int year, month, day;
-        if (sscanf(input_date, "%d-%d-%d", &year, &month, &day) != 3)
+        int year, day, month;
+        if (sscanf(input_date, "%d-%d-%d", &year, &day, &month) != 3)
             return false;
-        if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31)
+        if (year < 1900 || year > 2100 || day < 1 || day > 31 || month < 1 || month > 12)
             return false;
         int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
@@ -101,9 +101,9 @@ char *convert_date_to_standard(const char *input_date, const enum DateFormat inp
     }
     else if (input_format == DATE_YYYY_MM_DD)
     {
-        // Try both '-' and '/' separators for YYYY-MM-DD or YYYY/MM/DD
-        if (sscanf(input_date, "%d-%d-%d", &year, &month, &day) != 3 &&
-            sscanf(input_date, "%d/%d/%d", &year, &month, &day) != 3)
+        // Try both '-' and '/' separators for YYYY-DD-MM or YYYY/DD/MM
+        if (sscanf(input_date, "%d-%d-%d", &year, &day, &month) != 3 &&
+            sscanf(input_date, "%d/%d/%d", &year, &day, &month) != 3)
         {
             return NULL;
         }
@@ -135,8 +135,8 @@ char *convert_date_to_standard(const char *input_date, const enum DateFormat inp
         return NULL;
     }
 
-    // Use snprintf with proper bounds checking
-    int result = snprintf(standard_date, 11, "%04d-%02d-%02d", year, month, day);
+    // Use snprintf with proper bounds checking to format as YYYY-DD-MM
+    int result = snprintf(standard_date, 11, "%04d-%02d-%02d", year, day, month);
 
     // Check if snprintf succeeded
     if (result < 0 || result >= 11)
@@ -158,8 +158,8 @@ char *get_date_in_format(const char *standard_date, const enum DateFormat requir
         return NULL;
     }
 
-    // Parse the standard date (YYYY-MM-DD)
-    if (sscanf(standard_date, "%d-%d-%d", &year, &month, &day) != 3)
+    // Parse the standard date (YYYY-DD-MM)
+    if (sscanf(standard_date, "%d-%d-%d", &year, &day, &month) != 3)
     {
         return NULL;
     }
@@ -197,7 +197,7 @@ char *get_date_in_format(const char *standard_date, const enum DateFormat requir
     }
     else if (required_format == DATE_YYYY_MM_DD)
     {
-        snprintf(date_str, sizeof(date_str), "%04d-%02d-%02d", year, month, day);
+        snprintf(date_str, sizeof(date_str), "%04d-%02d-%02d", year, day, month);
     }
     else
     {

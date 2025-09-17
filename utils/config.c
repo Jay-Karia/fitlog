@@ -93,12 +93,12 @@ WeightUnit get_config_weight_unit()
 DateFormat get_config_date_format()
 {
     char buffer[32];
-    int result = read_config_value("date_format", "YYYY-MM-DD", buffer, sizeof(buffer));
+    int result = read_config_value("date_format", "YYYY-DD-MM", buffer, sizeof(buffer));
     if (result == 0 || result == 1)
     {
-        if (strcmp(buffer, "YYYY-MM-DD") == 0)
+        if (strcmp(buffer, "MM-DD-YYYY") == 0)
         {
-            return DATE_YYYY_MM_DD;
+            return DATE_MM_DD_YYYY;
         }
         else if (strcmp(buffer, "DD-MM-YYYY") == 0)
         {
@@ -106,7 +106,7 @@ DateFormat get_config_date_format()
         }
         else
         {
-            return DATE_MM_DD_YYYY;
+            return DATE_YYYY_MM_DD;
         }
     }
     else
@@ -144,7 +144,7 @@ bool is_valid_config_value(const char *config_key, const char *value)
 {
     if (strcmp(config_key, "date_format") == 0)
     {
-        return (strcmp(value, "YYYY-MM-DD") == 0 ||
+        return (strcmp(value, "YYYY-DD-MM") == 0 ||
                 strcmp(value, "DD-MM-YYYY") == 0 ||
                 strcmp(value, "MM-DD-YYYY") == 0);
     }
@@ -187,10 +187,11 @@ int reset_config_to_defaults(void)
     }
 
     fprintf(fp, "# Date and time\n");
-    fprintf(fp, "date_format=YYYY-MM-DD\n\n");
+    fprintf(fp, "date_format=YYYY-DD-MM\n\n");
     fprintf(fp, "# Units and measurements\n");
     fprintf(fp, "weight_unit=lbs\n");
-    fprintf(fp, "time_unit=s\n\n");
+    fprintf(fp, "time_unit=s\n");
+    fprintf(fp, "distance_unit=m\n\n");
     fprintf(fp, "# Behaviour\n");
     fprintf(fp, "default_exercise_type=weight\n");
 

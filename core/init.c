@@ -39,7 +39,7 @@ int cmd_init(int argc, char *argv[])
     }
 
     fprintf(config_fp, "# Date and time\n");
-    fprintf(config_fp, "date_format=YYYY-MM-DD\n\n");
+    fprintf(config_fp, "date_format=YYYY-DD-MM\n\n");
     fprintf(config_fp, "# Units and measurements\n");
     fprintf(config_fp, "weight_unit=lbs\n");
     fprintf(config_fp, "distance_unit=m\n");
