@@ -42,6 +42,8 @@ void remove_exercise_by_id(const char *id);
 int show_exercise_by_id(const char *id);
 int show_last_n_exercises(int n);
 int show_all_exercises();
+int show_exercise_by_name(const char *name);
+int get_exercise_by_name(const char *name, Exercise *exercises);
 
 // Workout utils
 void get_workouts_by_id(const char *id, WorkoutLog *workouts);

@@ -31,6 +31,7 @@ int cmd_show(int argc, char *argv[])
     // Get the show criteria
     char id[20] = "";
     char date[20] = "";
+    char name[100] = "";
     char from_date[20] = "";
     char to_date[20] = "";
     int last_n = -1;
@@ -62,6 +63,10 @@ int cmd_show(int argc, char *argv[])
         {
             strcpy(date, argv[++i]);
         }
+        else if ((strcmp(argv[i], "--name") == 0 || strcmp(argv[i], "-n") == 0) && i + 1 < argc)
+        {
+            strcpy(name, argv[++i]);
+        }
         else
         {
             fprintf(stderr, ANSI_COLOR_RED "Error: Unknown or incomplete argument '%s'.\n" ANSI_COLOR_RESET, argv[i]);
@@ -80,10 +85,10 @@ int cmd_show(int argc, char *argv[])
             return 1;
         }
 
-        // Check for alteast one of --id or --last or --all
-        if (strlen(id) == 0 && last_n == -1 && !all)
+        // Check for alteast one of --id or --last or --all or --name
+        if (strlen(id) == 0 && last_n == -1 && !all && strlen(name) == 0)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last for exercise display.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --all or --name for exercise display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -95,9 +100,11 @@ int cmd_show(int argc, char *argv[])
             criteria_count++;
         if (all)
             criteria_count++;
+        if (strlen(name) > 0)
+            criteria_count++;
         if (criteria_count > 1)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --all for exercise display.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --all or --name for exercise display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -113,6 +120,10 @@ int cmd_show(int argc, char *argv[])
         else if (all)
         {
             return show_all_exercises();
+        }
+        else if (strlen(name) > 0)
+        {
+            return show_exercise_by_name(name);
         }
     }
     if (strcmp(type, "log") == 0)

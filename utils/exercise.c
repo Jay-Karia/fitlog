@@ -922,3 +922,118 @@ int show_all_exercises()
 
     return 0;
 }
+
+int show_exercise_by_name(const char *name)
+{
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Exercises file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+
+    char line[256];
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+    bool found = false;
+    
+    // First, try to find by name
+    char exercise_id[20] = "";
+    
+    while (fgets(line, sizeof(line), fp))
+    {
+        char current_id[20];
+        char exercise_name[100];
+        
+        sscanf(line, "%19[^,],%99[^,]", current_id, exercise_name);
+        
+        if (strcmp(exercise_name, name) == 0)
+        {
+            strcpy(exercise_id, current_id);
+            found = true;
+            break;
+        }
+    }
+    
+    // If not found by name, try to find by shortcut
+    if (!found)
+    {
+        // Reset file pointer to beginning
+        fseek(fp, 0, SEEK_SET);
+        // Skip header line again
+        fgets(line, sizeof(line), fp);
+        
+        while (fgets(line, sizeof(line), fp))
+        {
+            char current_id[20];
+            char exercise_name[100];
+            char shortcut[100];
+            
+            sscanf(line, "%19[^,],%99[^,],%99[^,]", current_id, exercise_name, shortcut);
+            
+            if (strcmp(shortcut, name) == 0 && strcmp(shortcut, "(null)") != 0)
+            {
+                strcpy(exercise_id, current_id);
+                found = true;
+                printf("Found exercise with shortcut: " ANSI_COLOR_BLUE "%s\n" ANSI_COLOR_RESET, name);
+                break;
+            }
+        }
+    }
+    
+    fclose(fp);
+    
+    if (!found)
+    {
+        printf(ANSI_COLOR_RED "Error: No exercise found with name or shortcut '%s'.\n" ANSI_COLOR_RESET, name);
+        return 1;
+    }
+    
+    // Display the exercise details using the found ID
+    return show_exercise_by_id(exercise_id);
+}
+
+int get_exercise_by_name(const char *name, Exercise *exercise)
+{
+    char full_path[256];
+    sprintf(full_path, "%s/%s", FITLOG_DIR, EXERCISES_FILE);
+    FILE *fp = fopen(full_path, "r");
+    if (fp == NULL)
+    {
+        printf(ANSI_COLOR_RED "Error: Exercises file not found. Please run 'fitlog init' first.\n" ANSI_COLOR_RESET);
+        return 1;
+    }
+    char line[256];
+    // Skip header line
+    fgets(line, sizeof(line), fp);
+    bool found = false;
+    while (fgets(line, sizeof(line), fp))
+    {
+        char exercise_id[20];
+        char exercise_name[100];
+        char shortcut[100];
+        char description[200];
+        char type_str[20];
+
+        sscanf(line, "%19[^,],%99[^,],%99[^,],%199[^,],%19s",
+               exercise_id, exercise_name, shortcut, description, type_str);
+
+        if (strcmp(exercise_name, name) == 0)
+        {
+            found = true;
+            strcpy(exercise->name, exercise_name);
+            // Note: Exercise struct doesn't have fields for shortcut, description, or type
+            // so we're only setting the name here
+            break;
+        }
+    }
+    fclose(fp);
+    if (!found)
+    {
+        printf(ANSI_COLOR_RED "Error: No exercise found with name '%s'.\n" ANSI_COLOR_RESET, name);
+        return 1;
+    }
+    return 0;
+}

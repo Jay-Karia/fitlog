@@ -129,6 +129,7 @@ void print_show_help(void)
     printf("  --to,    -t <date>       Show entries until this date\n");
     printf("  --last,  -l <number>     Show only the last N entries\n");
     printf("  --date,  -d <date>       Show entries from this specific date\n");
+    printf("  --name,  -n <name>       Show entries for this exercise name or shortcut\n");
     printf("  --all,   -a              Show all the entries in the database\n");
     printf("  --help,  -h              Show this help message\n");
     printf("\nDescription:\n");
