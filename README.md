@@ -1,8 +1,8 @@
 # 📋 fitlog
 
-![fitlog](./public/fitlog-0.0.2.png)
+![fitlog](./public/fitlog-0.0.3.png)
 
-[![Version](https://img.shields.io/badge/version-0.0.2-blue.svg)](https://github.com/yourusername/fitlog)
+[![Version](https://img.shields.io/badge/version-0.0.3-blue.svg)](https://github.com/yourusername/fitlog)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Star this repo](https://img.shields.io/github/stars/Jay-Karia/fitlog?style=social)](https://github.com/Jay-Karia/fitlog)
 
