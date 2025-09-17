@@ -128,17 +128,17 @@ int cmd_show(int argc, char *argv[])
     }
     if (strcmp(type, "log") == 0)
     {
-        // If --from or --to is given, --last, --id, --all and --date is not allowed
-        if ((strlen(from_date) > 0 || strlen(to_date) > 0) && (last_n != -1 || strlen(id) > 0 || all || strlen(date) > 0))
+        // If --from or --to is given, --last, --id, --all, --date and --name is not allowed
+        if ((strlen(from_date) > 0 || strlen(to_date) > 0) && (last_n != -1 || strlen(id) > 0 || all || strlen(date) > 0 || strlen(name) > 0))
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to cannot be used with --last or --id or --all or --date.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to cannot be used with --last or --id or --all or --date or --name.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
-        // Check for alteast one of --id or --last or --from or --to or --add or -date
-        if (strlen(id) == 0 && last_n == -1 && strlen(from_date) == 0 && strlen(to_date) == 0 && !all && strlen(date) == 0)
+        // Check for alteast one of --id or --last or --from or --to or --add or -date or --name
+        if (strlen(id) == 0 && last_n == -1 && strlen(from_date) == 0 && strlen(to_date) == 0 && !all && strlen(date) == 0 && strlen(name) == 0)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --from or --to or --all or --date for log display.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --from or --to or --all or --date or --name for log display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -152,10 +152,12 @@ int cmd_show(int argc, char *argv[])
             criteria_count++;
         if (strlen(date) > 0)
             criteria_count++;
+        if (strlen(name) > 0)
+            criteria_count++;
         if (all)
             if (criteria_count > 1)
             {
-                fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all or --date for log display.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all or --date or --name for log display.\n" ANSI_COLOR_RESET);
                 return 1;
             }
 
@@ -174,6 +176,7 @@ int cmd_show(int argc, char *argv[])
         {
             return show_all_workouts();
         }
+        // Display from specific date
         else if (strlen(date) > 0)
         {
             // Validate date format
@@ -202,6 +205,11 @@ int cmd_show(int argc, char *argv[])
             strcpy(std_date, temp_date);
 
             return show_workouts_by_date(std_date);
+        }
+        // Display from name
+        else if (strlen(name) > 0)
+        {
+            return show_workouts_by_exercise_name(name);
         }
         // Display workouts --from and --to
         if (strlen(from_date) > 0 || strlen(to_date) > 0)
