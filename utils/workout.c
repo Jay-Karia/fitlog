@@ -736,3 +736,17 @@ int show_workouts_in_date_range(const char *from_date, const char *to_date)
     print_workouts(workouts);
     return 0;
 }
+
+int show_workouts_by_date(const char *date)
+{
+    WorkoutLog workouts[100] = {0};
+    get_workouts_by_date(date, workouts);
+    int length = get_workout_array_length(workouts, 100);
+    if (length == 0)
+    {
+        printf(ANSI_COLOR_YELLOW "No workouts found on date '%s'.\n" ANSI_COLOR_RESET, date);
+        return 0;
+    }
+    print_workouts(workouts);
+    return 0;
+}

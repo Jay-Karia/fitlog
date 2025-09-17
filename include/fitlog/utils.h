@@ -52,6 +52,7 @@ int show_workout_by_id(const char *id);
 int show_last_n_workouts(int n);
 int show_workouts_in_date_range(const char *from_date, const char *to_date);
 int show_all_workouts(void);
+int show_workouts_by_date(const char *date);
 
 // Date utils
 bool is_valid_date_format(const char *input_date, const enum DateFormat required_format);

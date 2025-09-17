@@ -30,6 +30,7 @@ int cmd_show(int argc, char *argv[])
 
     // Get the show criteria
     char id[20] = "";
+    char date[20] = "";
     char from_date[20] = "";
     char to_date[20] = "";
     int last_n = -1;
@@ -57,6 +58,10 @@ int cmd_show(int argc, char *argv[])
         {
             all = true;
         }
+        else if (strcmp(argv[i], "--date") == 0 || strcmp(argv[i], "-d") == 0)
+        {
+            strcpy(date, argv[++i]);
+        }
         else
         {
             fprintf(stderr, ANSI_COLOR_RED "Error: Unknown or incomplete argument '%s'.\n" ANSI_COLOR_RESET, argv[i]);
@@ -67,11 +72,11 @@ int cmd_show(int argc, char *argv[])
     // Check if criteria is provided
     if (strcmp(type, "exercise") == 0)
     {
-        // --from and --to is not allowed
-        if (strlen(from_date) > 0 || strlen(to_date) > 0)
+        // --from, --to, and --date is not allowed
+        if (strlen(from_date) > 0 || strlen(to_date) > 0 || strlen(date) > 0)
         {
 
-            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to is not allowed while displaying exercise.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from, --to, and --date is not allowed while displaying exercise.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -112,17 +117,17 @@ int cmd_show(int argc, char *argv[])
     }
     if (strcmp(type, "log") == 0)
     {
-        // If --from or --to is given, --last, --id and --all is not allowed
-        if ((strlen(from_date) > 0 || strlen(to_date) > 0) && (last_n != -1 || strlen(id) > 0 || all))
+        // If --from or --to is given, --last, --id, --all and --date is not allowed
+        if ((strlen(from_date) > 0 || strlen(to_date) > 0) && (last_n != -1 || strlen(id) > 0 || all || strlen(date) > 0))
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to cannot be used with --last or --id or --all.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Arguments --from and --to cannot be used with --last or --id or --all or --date.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
-        // Check for alteast one of --id or --last or --from or --to or --add
-        if (strlen(id) == 0 && last_n == -1 && strlen(from_date) == 0 && strlen(to_date) == 0 && !all)
+        // Check for alteast one of --id or --last or --from or --to or --add or -date
+        if (strlen(id) == 0 && last_n == -1 && strlen(from_date) == 0 && strlen(to_date) == 0 && !all && strlen(date) == 0)
         {
-            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --from or --to or --all for log display.\n" ANSI_COLOR_RESET);
+            fprintf(stderr, ANSI_COLOR_RED "Error: Please provide --id or --last or --from or --to or --all or --date for log display.\n" ANSI_COLOR_RESET);
             return 1;
         }
 
@@ -134,10 +139,12 @@ int cmd_show(int argc, char *argv[])
             criteria_count++;
         if (strlen(from_date) > 0 || strlen(to_date) > 0)
             criteria_count++;
+        if (strlen(date) > 0)
+            criteria_count++;
         if (all)
             if (criteria_count > 1)
             {
-                fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all for log display.\n" ANSI_COLOR_RESET);
+                fprintf(stderr, ANSI_COLOR_RED "Error: Please provide only one of --id or --last or --from --to or --all or --date for log display.\n" ANSI_COLOR_RESET);
                 return 1;
             }
 
@@ -155,6 +162,35 @@ int cmd_show(int argc, char *argv[])
         else if (all)
         {
             return show_all_workouts();
+        }
+        else if (strlen(date) > 0)
+        {
+            // Validate date format
+            DateFormat config_date_format = get_config_date_format();
+
+            if (!is_valid_date_format(date, config_date_format))
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Error: Invalid date format. Please use the configured date format: %s\n" ANSI_COLOR_RESET, config_date_format == DATE_DD_MM_YYYY ? "DD-MM-YYYY" : config_date_format == DATE_MM_DD_YYYY ? "MM-DD-YYYY"
+                                                                                                                                                                                                                                        : "YYYY-MM-DD");
+                return 1;
+            }
+
+            // Convert date to standard format
+            char std_date[11];
+
+            // Get standardized date and store it in local variable
+            char *temp_date = convert_date_to_standard(date, config_date_format);
+
+            if (temp_date == NULL)
+            {
+                fprintf(stderr, ANSI_COLOR_RED "Error: Failed to convert date format.\n" ANSI_COLOR_RESET);
+                return 1;
+            }
+
+            // Copy the result to our local buffer to ensure we have our own copy
+            strcpy(std_date, temp_date);
+
+            return show_workouts_by_date(std_date);
         }
         // Display workouts --from and --to
         if (strlen(from_date) > 0 || strlen(to_date) > 0)
